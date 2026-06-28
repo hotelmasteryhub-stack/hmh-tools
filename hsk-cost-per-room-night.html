@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HSK Cost Per Room Night -- Hotel Mastery Hub</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:Georgia,serif; background:#F8F5F0; min-height:100vh; color:#1A1A1A; }
+.header { background:#1A1A1A; padding:0 24px; height:52px; display:flex; align-items:center; justify-content:space-between; }
+.hb { color:#B8962E; font-size:10px; letter-spacing:4px; font-family:system-ui; font-weight:600; }
+.hs { color:#8A8070; font-size:10px; letter-spacing:3px; font-family:system-ui; margin-left:16px; }
+.btn-outline { background:transparent; border:1px solid rgba(184,150,46,0.4); color:#D4AF5A; padding:6px 16px; font-size:11px; letter-spacing:2px; cursor:pointer; font-family:system-ui; }
+.wrap { max-width:760px; margin:0 auto; padding:28px 20px 60px; }
+.title-row { display:flex; align-items:flex-start; gap:16px; margin-bottom:24px; }
+.gold-bar { width:4px; background:#B8962E; align-self:stretch; min-height:52px; flex-shrink:0; }
+h1 { font-size:28px; color:#1A1A1A; font-weight:700; margin-bottom:6px; }
+.sub { font-size:14px; color:#8A8070; font-family:system-ui; font-style:italic; }
+.info-box { background:#FFF8F0; border-left:4px solid #B8962E; padding:12px 16px; font-size:13px; color:#1A1A1A; font-family:system-ui; line-height:1.6; margin-bottom:24px; }
+.card { background:#fff; border:1px solid #E5DDD0; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:20px; }
+.card-head { padding:12px 18px; }
+.card-title { font-size:12px; font-weight:700; color:#F5F0E8; letter-spacing:1px; font-family:system-ui; }
+.card-body { padding:16px 18px; }
+label { display:block; font-size:10px; color:#8A8070; letter-spacing:2px; font-family:system-ui; font-weight:600; margin-bottom:5px; }
+.field { margin-bottom:14px; }
+.field:last-child { margin-bottom:0; }
+.input-row { display:flex; align-items:center; gap:8px; }
+.currency { font-size:14px; color:#8A8070; font-family:system-ui; flex-shrink:0; }
+input[type=number] { flex:1; padding:9px 12px; border:1px solid #E5DDD0; font-size:14px; font-family:system-ui; background:#FAFAFA; color:#1A1A1A; outline:none; -moz-appearance:textfield; }
+input[type=number]::-webkit-inner-spin-button { -webkit-appearance:none; }
+input[type=number]:focus { border-color:#B8962E; background:#FFFFF8; }
+.sub-label { font-size:11px; color:#8A8070; font-family:system-ui; font-style:italic; margin-top:4px; }
+.divider { height:1px; background:#F0EBE3; margin:16px 0; }
+.total-row { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-top:2px solid #1A1A1A; margin-top:8px; }
+.total-label { font-size:13px; font-weight:700; color:#1A1A1A; font-family:system-ui; }
+.total-value { font-size:16px; font-weight:700; color:#1A1A1A; font-family:system-ui; }
+
+/* RESULTS */
+.results-bar { background:#1A1A1A; padding:20px 24px; display:grid; grid-template-columns:repeat(3,1fr); gap:0; margin-bottom:24px; }
+.res-item { padding:0 20px; border-right:1px solid #2A2A2A; }
+.res-item:first-child { padding-left:0; }
+.res-item:last-child { border-right:none; }
+.res-label { font-size:9px; color:#8A8070; letter-spacing:3px; font-family:system-ui; font-weight:600; margin-bottom:6px; }
+.res-value { font-size:28px; font-weight:700; color:#B8962E; line-height:1; }
+.res-sub { font-size:11px; color:#8A8070; font-family:system-ui; margin-top:4px; }
+
+/* BREAKDOWN */
+.breakdown-row { display:flex; justify-content:space-between; align-items:center; padding:9px 0; border-bottom:1px solid #F0EBE3; }
+.breakdown-row:last-child { border-bottom:none; }
+.br-label { font-size:13px; font-family:system-ui; color:#1A1A1A; }
+.br-value { font-size:13px; font-weight:700; font-family:system-ui; color:#B8962E; }
+.br-pct { font-size:11px; color:#8A8070; font-family:system-ui; margin-left:8px; }
+.pct-bar { height:4px; background:#E5DDD0; border-radius:2px; margin-top:4px; }
+.pct-fill { height:4px; background:#B8962E; border-radius:2px; }
+
+/* TREND TABLE */
+.trend-header { font-size:10px; color:#8A8070; letter-spacing:3px; font-family:system-ui; font-weight:600; margin-bottom:10px; }
+.trend-table { width:100%; border-collapse:collapse; }
+.trend-table th { padding:8px 12px; font-size:10px; color:#8A8070; letter-spacing:2px; font-family:system-ui; font-weight:600; background:#F8F5F0; border-bottom:1px solid #E5DDD0; text-align:left; }
+.trend-table th:not(:first-child) { text-align:right; }
+.trend-table td { padding:9px 12px; font-size:13px; font-family:system-ui; border-bottom:1px solid #F0EBE3; }
+.trend-table td:not(:first-child) { text-align:right; }
+.trend-table input { width:100%; border:none; background:transparent; font-size:13px; font-family:system-ui; text-align:right; color:#1A1A1A; outline:none; padding:2px 0; border-bottom:1px solid #E5DDD0; }
+.trend-table input:focus { border-bottom-color:#B8962E; }
+.add-row-btn { background:#F8F5F0; border:1px dashed #E5DDD0; color:#8A8070; padding:8px; font-size:11px; font-family:system-ui; cursor:pointer; width:100%; text-align:center; margin-top:4px; }
+.add-row-btn:hover { border-color:#B8962E; color:#B8962E; }
+
+.action-row { display:flex; gap:10px; margin-top:20px; }
+.btn-gold { background:#B8962E; border:none; color:#1A1A1A; padding:13px 24px; font-size:12px; font-family:system-ui; font-weight:700; letter-spacing:1px; cursor:pointer; flex:1; }
+.btn-dark { background:#1A1A1A; border:none; color:#B8962E; padding:13px 24px; font-size:12px; font-family:system-ui; font-weight:700; letter-spacing:1px; cursor:pointer; }
+.save-note { font-size:11px; color:#8A8070; font-family:system-ui; margin-top:10px; text-align:center; }
+.footer-note { text-align:center; margin-top:32px; color:#8A8070; font-size:11px; font-family:system-ui; letter-spacing:2px; }
+@media print { .header,.action-row,.save-note,.footer-note,.add-row-btn { display:none !important; } body { background:#fff; } .wrap { padding:10px; } input { border:none; background:transparent; } }
+@media (max-width:600px) { .results-bar { grid-template-columns:1fr; } .res-item { border-right:none; border-bottom:1px solid #2A2A2A; padding:0 0 16px; margin-bottom:16px; } .res-item:last-child { border-bottom:none; margin-bottom:0; padding-bottom:0; } }
+</style>
+</head>
+<body>
+<div class="header">
+  <div style="display:flex;align-items:center;"><span class="hb">HOTEL MASTERY HUB</span><span class="hs">&middot; HSK COST CONTROL</span></div>
+  <button class="btn-outline" onclick="window.print()">SAVE AS PDF</button>
+</div>
+<div class="wrap">
+  <div class="title-row">
+    <div class="gold-bar"></div>
+    <div><h1>HSK Cost Per Room Night Sold</h1><p class="sub">Track your housekeeping cost per sold room night. Enter this month's numbers.</p></div>
+  </div>
+
+  <div class="info-box">
+    Enter your total housekeeping costs for the month and your room nights sold. The calculator shows your HSK cost per room night — and breaks it down by wages, laundry, and supplies. Track this number monthly to spot trends before they become problems.
+  </div>
+
+  <!-- RESULTS -->
+  <div class="results-bar">
+    <div class="res-item">
+      <div class="res-label">HSK COST PER ROOM NIGHT</div>
+      <div class="res-value" id="res-cprn">&euro;0.00</div>
+      <div class="res-sub">Total HSK &divide; room nights sold</div>
+    </div>
+    <div class="res-item">
+      <div class="res-label">HSK AS % OF ROOM RATE</div>
+      <div class="res-value" id="res-pct">0%</div>
+      <div class="res-sub">Cost per night &divide; ADR</div>
+    </div>
+    <div class="res-item">
+      <div class="res-label">TOTAL HSK THIS MONTH</div>
+      <div class="res-value" id="res-total">&euro;0</div>
+      <div class="res-sub">Wages + laundry + supplies</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+    <!-- WAGES -->
+    <div class="card">
+      <div class="card-head" style="background:#1A3A5C;"><span class="card-title">WAGES</span></div>
+      <div class="card-body">
+        <div class="field">
+          <label>MANAGEMENT WAGES (fixed)</label>
+          <div class="input-row"><span class="currency">&euro;</span><input type="number" id="w-mgmt" value="3800" oninput="calc()"></div>
+          <div class="sub-label">Same every month regardless of occupancy</div>
+        </div>
+        <div class="field">
+          <label>SUPERVISOR / HOUSEMAN WAGES</label>
+          <div class="input-row"><span class="currency">&euro;</span><input type="number" id="w-sup" value="2200" oninput="calc()"></div>
+          <div class="sub-label">Semi-fixed — scales with occupancy</div>
+        </div>
+        <div class="field">
+          <label>FLOOR HOUSEKEEPER WAGES</label>
+          <div class="input-row"><span class="currency">&euro;</span><input type="number" id="w-floor" value="5400" oninput="calc()"></div>
+          <div class="sub-label">Variable — hours worked this month</div>
+        </div>
+        <div class="field">
+          <label>OUTSOURCED CLEANING STAFF</label>
+          <div class="input-row"><span class="currency">&euro;</span><input type="number" id="w-agency" value="0" oninput="calc()"></div>
+          <div class="sub-label">Agency or contractor cost if used</div>
+        </div>
+        <div class="divider"></div>
+        <div class="total-row">
+          <span class="total-label">TOTAL WAGES</span>
+          <span class="total-value" id="wages-total">&euro;0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- LAUNDRY + SUPPLIES + OCCUPANCY -->
+    <div style="display:flex;flex-direction:column;gap:20px;">
+      <div class="card">
+        <div class="card-head" style="background:#1E4620;"><span class="card-title">LAUNDRY</span></div>
+        <div class="card-body">
+          <div class="field">
+            <label>MONTHLY LAUNDRY COST</label>
+            <div class="input-row"><span class="currency">&euro;</span><input type="number" id="laundry" value="3200" oninput="calc()"></div>
+            <div class="sub-label">Invoice total — use quarterly avg if uneven</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head" style="background:#4A235A;"><span class="card-title">SUPPLIES</span></div>
+        <div class="card-body">
+          <div class="field">
+            <label>CLEANING PRODUCTS & AMENITIES</label>
+            <div class="input-row"><span class="currency">&euro;</span><input type="number" id="supplies" value="800" oninput="calc()"></div>
+            <div class="sub-label">Use quarterly avg if ordering is uneven</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head" style="background:#2A2A2A;"><span class="card-title">OCCUPANCY</span></div>
+        <div class="card-body">
+          <div class="field">
+            <label>ROOM NIGHTS SOLD THIS MONTH</label>
+            <input type="number" id="room-nights" value="780" oninput="calc()">
+            <div class="sub-label">From PMS — total rooms &times; occupancy% &times; days</div>
+          </div>
+          <div class="field">
+            <label>AVERAGE ROOM RATE (ADR) &euro;</label>
+            <div class="input-row"><span class="currency">&euro;</span><input type="number" id="adr" value="85" oninput="calc()"></div>
+            <div class="sub-label">Your ADR this month</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BREAKDOWN -->
+  <div class="card">
+    <div class="card-head" style="background:#1A1A1A;"><span class="card-title">COST BREAKDOWN PER ROOM NIGHT</span></div>
+    <div class="card-body" id="breakdown-body"></div>
+  </div>
+
+  <!-- TREND TRACKER -->
+  <div class="card">
+    <div class="card-head" style="background:#1A1A1A;"><span class="card-title">MONTHLY TREND TRACKER</span></div>
+    <div class="card-body" style="padding:0;">
+      <table class="trend-table">
+        <thead><tr><th>MONTH</th><th>ROOM NIGHTS SOLD</th><th>TOTAL HSK COST</th><th>HSK / ROOM NIGHT</th><th>HSK % OF ADR</th></tr></thead>
+        <tbody id="trend-body"></tbody>
+      </table>
+      <button class="add-row-btn" onclick="addTrendRow()">+ ADD MONTH</button>
+    </div>
+  </div>
+
+  <div style="background:#1A1A1A;padding:16px 20px;margin-bottom:20px;">
+    <div style="font-size:10px;color:#B8962E;letter-spacing:3px;font-family:system-ui;font-weight:600;margin-bottom:8px;">READING YOUR NUMBER</div>
+    <div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.7;">
+      A rising trend means wages, laundry, or supplies changed — or room nights sold dropped. Track monthly. Use quarterly averages for laundry and supplies if spend is uneven due to batch orders. This number matches what your Stay Cost Calculator produces for the HSK section.
+    </div>
+  </div>
+
+  <div class="action-row">
+    <button class="btn-dark" onclick="window.print()">SAVE AS PDF</button>
+    <button class="btn-gold" onclick="calc()">RECALCULATE</button>
+  </div>
+  <p class="save-note">To save as PDF, a PDF printer or "Save as PDF" option must be available on your device.</p>
+  <div class="footer-note">HOTEL MASTERY HUB &middot; HSK COST CONTROL &middot; COST PER ROOM NIGHT</div>
+</div>
+
+<script>
+let trendRows = 0;
+
+function v(id) { return parseFloat(document.getElementById(id)?.value)||0; }
+function fmt(n) { return '&euro;'+n.toFixed(2); }
+function fmtInt(n) { return '&euro;'+Math.round(n).toLocaleString('en-GB'); }
+
+function calc() {
+  const wMgmt = v('w-mgmt'), wSup = v('w-sup'), wFloor = v('w-floor'), wAgency = v('w-agency');
+  const totalWages = wMgmt + wSup + wFloor + wAgency;
+  const laundry = v('laundry');
+  const supplies = v('supplies');
+  const total = totalWages + laundry + supplies;
+  const roomNights = v('room-nights');
+  const adr = v('adr');
+  const cprn = roomNights > 0 ? total/roomNights : 0;
+  const pctAdr = adr > 0 ? (cprn/adr)*100 : 0;
+
+  document.getElementById('wages-total').innerHTML = fmtInt(totalWages);
+  document.getElementById('res-cprn').innerHTML = fmt(cprn);
+  document.getElementById('res-pct').textContent = pctAdr.toFixed(1)+'%';
+  document.getElementById('res-total').innerHTML = fmtInt(total);
+
+  const items = [
+    {label:'Wages per room night', val:roomNights>0?totalWages/roomNights:0, monthly:totalWages},
+    {label:'Laundry per room night', val:roomNights>0?laundry/roomNights:0, monthly:laundry},
+    {label:'Supplies per room night', val:roomNights>0?supplies/roomNights:0, monthly:supplies},
+  ];
+
+  document.getElementById('breakdown-body').innerHTML = items.map(item=>{
+    const pct = total>0?(item.monthly/total)*100:0;
+    return `
+      <div class="breakdown-row">
+        <div>
+          <div class="br-label">${item.label}</div>
+          <div class="pct-bar"><div class="pct-fill" style="width:${Math.min(pct,100)}%;"></div></div>
+        </div>
+        <div style="text-align:right;flex-shrink:0;margin-left:16px;">
+          <span class="br-value">${fmt(item.val)}</span>
+          <span class="br-pct">${pct.toFixed(1)}%</span>
+        </div>
+      </div>
+    `;
+  }).join('') + `
+    <div class="breakdown-row" style="border-top:2px solid #1A1A1A;margin-top:8px;padding-top:12px;">
+      <div><div class="br-label" style="font-size:13px;font-weight:700;color:#1A1A1A;">TOTAL HSK per room night</div></div>
+      <div style="text-align:right;flex-shrink:0;margin-left:16px;"><span class="br-value" style="font-size:18px;">${fmt(cprn)}</span></div>
+    </div>
+  `;
+}
+
+function addTrendRow() {
+  trendRows++;
+  const tbody = document.getElementById('trend-body');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><input type="text" placeholder="e.g. Jan 2026" style="text-align:left;"></td>
+    <td><input type="number" placeholder="0" onchange="calcTrendRow(this)"></td>
+    <td><input type="number" placeholder="0" onchange="calcTrendRow(this)"></td>
+    <td id="tr-cprn-${trendRows}" style="color:#B8962E;font-weight:700;">-</td>
+    <td id="tr-pct-${trendRows}">-</td>
+  `;
+  tr.dataset.idx = trendRows;
+  tbody.appendChild(tr);
+}
+
+function calcTrendRow(el) {
+  const tr = el.closest('tr');
+  const idx = tr.dataset.idx;
+  const inputs = tr.querySelectorAll('input[type=number]');
+  const nights = parseFloat(inputs[0].value)||0;
+  const cost = parseFloat(inputs[1].value)||0;
+  const adr = v('adr');
+  const cprn = nights>0?cost/nights:0;
+  const pct = adr>0?(cprn/adr)*100:0;
+  document.getElementById('tr-cprn-'+idx).textContent = nights>0?'€'+cprn.toFixed(2):'-';
+  document.getElementById('tr-pct-'+idx).textContent = nights>0&&adr>0?pct.toFixed(1)+'%':'-';
+}
+
+// Init with 3 empty trend rows
+for(let i=0;i<3;i++) addTrendRow();
+calc();
+</script>
+</body>
+</html>

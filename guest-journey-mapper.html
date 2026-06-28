@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guest Journey Mapper -- Hotel Mastery Hub</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:Georgia,serif; background:#F8F5F0; min-height:100vh; color:#1A1A1A; }
+.header { background:#1A1A1A; padding:0 24px; height:52px; display:flex; align-items:center; justify-content:space-between; }
+.hb { color:#B8962E; font-size:10px; letter-spacing:4px; font-family:system-ui; font-weight:600; }
+.hs { color:#8A8070; font-size:10px; letter-spacing:3px; font-family:system-ui; margin-left:16px; }
+.btn-outline { background:transparent; border:1px solid rgba(184,150,46,0.4); color:#D4AF5A; padding:6px 16px; font-size:11px; letter-spacing:2px; cursor:pointer; font-family:system-ui; }
+.wrap { max-width:900px; margin:0 auto; padding:32px 20px 60px; }
+.title-row { display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; }
+.gold-bar { width:4px; background:#B8962E; align-self:stretch; min-height:52px; flex-shrink:0; }
+h1 { font-size:28px; color:#1A1A1A; font-weight:700; margin-bottom:6px; }
+.sub { font-size:14px; color:#8A8070; font-family:system-ui; font-style:italic; }
+.meta-row { display:flex; gap:16px; margin-bottom:28px; flex-wrap:wrap; }
+.meta-field { flex:1; min-width:200px; }
+label { display:block; font-size:10px; color:#8A8070; letter-spacing:2px; font-family:system-ui; font-weight:600; margin-bottom:6px; }
+input[type=text] { width:100%; padding:9px 12px; border:1px solid #E5DDD0; font-size:13px; font-family:system-ui; background:#FAFAFA; color:#1A1A1A; outline:none; }
+input[type=text]:focus { border-color:#B8962E; }
+textarea { width:100%; padding:9px 12px; border:1px solid #E5DDD0; font-size:13px; font-family:system-ui; background:#FAFAFA; color:#1A1A1A; outline:none; resize:vertical; min-height:68px; line-height:1.5; }
+textarea:focus { border-color:#B8962E; }
+.phase-card { background:#fff; border:1px solid #E5DDD0; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:24px; }
+.phase-header { padding:14px 20px; display:flex; align-items:center; gap:14px; }
+.phase-num { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; font-family:system-ui; color:#fff; flex-shrink:0; }
+.phase-title { font-size:18px; font-weight:700; color:#F5F0E8; }
+.phase-sub { font-size:12px; font-family:system-ui; margin-top:2px; }
+.questions-table { width:100%; border-collapse:collapse; }
+.questions-table thead th { padding:8px 14px; font-size:10px; color:#8A8070; letter-spacing:2px; font-family:system-ui; font-weight:600; background:#F8F5F0; border-bottom:1px solid #E5DDD0; text-align:left; }
+.questions-table tbody tr { border-bottom:1px solid #F0EBE3; }
+.questions-table tbody tr:last-child { border-bottom:none; }
+.q-cell { padding:14px; vertical-align:top; }
+.q-num { font-size:11px; color:#B8962E; font-family:system-ui; font-weight:700; margin-bottom:4px; }
+.q-text { font-size:13px; font-weight:700; color:#1A1A1A; margin-bottom:4px; }
+.q-prompt { font-size:11px; color:#8A8070; font-family:system-ui; font-style:italic; }
+.answer-cell { padding:10px 14px; vertical-align:top; }
+.answer-cell textarea { min-height:60px; }
+.action-row { display:flex; gap:10px; margin-top:8px; }
+.btn-gold { background:#B8962E; border:none; color:#1A1A1A; padding:13px 24px; font-size:12px; font-family:system-ui; font-weight:700; letter-spacing:1px; cursor:pointer; flex:1; }
+.btn-dark { background:#1A1A1A; border:none; color:#B8962E; padding:13px 24px; font-size:12px; font-family:system-ui; font-weight:700; letter-spacing:1px; cursor:pointer; flex:1; }
+.save-note { font-size:11px; color:#8A8070; font-family:system-ui; margin-top:10px; text-align:center; }
+.footer-note { text-align:center; margin-top:32px; color:#8A8070; font-size:11px; font-family:system-ui; letter-spacing:2px; }
+@media print { .header,.action-row,.save-note,.footer-note { display:none !important; } body { background:#fff; } .wrap { padding:10px; } textarea { border:none; background:transparent; font-size:12px; } input[type=text] { border:none; background:transparent; } }
+@media (max-width:650px) { .questions-table, .questions-table thead, .questions-table tbody, .questions-table th, .questions-table td, .questions-table tr { display:block; } .questions-table thead { display:none; } }
+</style>
+</head>
+<body>
+<div class="header">
+  <div style="display:flex;align-items:center;"><span class="hb">HOTEL MASTERY HUB</span><span class="hs">&middot; LESSON 1.6</span></div>
+  <button class="btn-outline" onclick="window.print()">SAVE AS PDF</button>
+</div>
+<div class="wrap">
+  <div class="title-row">
+    <div class="gold-bar"></div>
+    <div><h1>Guest Journey Mapper</h1><p class="sub">Map how guests actually experience your hotel. Your reality, not an ideal model.</p></div>
+  </div>
+  <div class="meta-row">
+    <div class="meta-field"><label>PROPERTY NAME</label><input type="text" placeholder="e.g. Hotel Bella Vista"></div>
+    <div class="meta-field"><label>DATE MAPPED</label><input type="text" id="date-field"></div>
+  </div>
+
+  <!-- ARRIVAL -->
+  <div class="phase-card">
+    <div class="phase-header" style="background:#1A3A5C;">
+      <div class="phase-num" style="background:#B8962E;color:#1A1A1A;">1</div>
+      <div><div class="phase-title">Arrival</div><div class="phase-sub" style="color:#8A8070;">From first contact to entering the room</div></div>
+    </div>
+    <table class="questions-table">
+      <thead><tr><th style="width:35%;">WHAT HAPPENS?</th><th style="width:20%;">WHO IS RESPONSIBLE?</th><th>WHAT CAN GO WRONG?</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="q-cell"><div class="q-num">1</div><div class="q-text">First contact with your hotel</div><div class="q-prompt">e.g. Booking confirmation email, directions, pre-arrival message</div></td>
+          <td class="answer-cell"><textarea placeholder="Describe what happens..."></textarea></td>
+          <td class="answer-cell"><textarea placeholder="Who is responsible?"></textarea></td>
+        </tr>
+        <tr>
+          <td class="q-cell"><div class="q-num">2</div><div class="q-text">How the guest physically arrives</div><div class="q-prompt">e.g. Car, taxi, walk-in — parking, entrance, luggage</div></td>
+          <td class="answer-cell"><textarea placeholder="Describe what happens..."></textarea></td>
+          <td class="answer-cell"><textarea placeholder="What can go wrong?"></textarea></td>
+        </tr>
+        <tr>
+          <td class="q-cell"><div class="q-num">3</div><div class="q-text">What happens at check-in</div><div class="q-prompt">e.g. Who greets them, verification, payment, room allocation</div></td>
+          <td class="answer-cell"><textarea placeholder="Describe what happens..."></textarea></td>
+          <td class="answer-cell"><textarea placeholder="What can go wrong?"></textarea></td>
+        </tr>
+        <tr>
+          <td class="q-cell"><div class="q-num">4</div><div class="q-text">Early arrivals — room not ready</div><div class="q-prompt">e.g. Luggage storage, waiting area, refreshment offer</div></td>
+          <td class="answer-cell"><textarea placeholder="Describe what happens..."></textarea></td>
+          <td class="answer-cell"><textarea placeholder="What can go wrong?"></textarea></td>
+        </tr>
+        <tr>
+          <td class="q-cell"><div class="q-num">5</div><div class="q-text">Walk-in guest experience</div><div class="q-prompt">e.g. Availability check, rate offered, ID and payment</div></td>
+          <td class="answer-cell"><textarea placeholder="Describe what happens..."></textarea></td>
+          <td class="answer-cell"><textarea placeholder="What can go wrong?"></textarea></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- STAY -->
+  <div class="phase-card">
+    <div class="phase-header" style="background:#1E4620;">
+      <div class="phase-num" style="background:#B8962E;color:#1A1A1A;">2</div>
+      <div><div class="phase-title">Stay</div><div class="phase-sub" style="color:#8A8070;">From room entry to departure morning</div></div>
+    </div>
+    <table class="questions-table">
+      <thead><tr><th style="width:35%;">WHAT HAPPENS?</th><th style="width:20%;">WHO IS RESPONSIBLE?</th><th>WHAT CAN GO WRONG?</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="q-cell"><div class="q-num">1</div><div class="q-text">How guests make requests during stay</div><div class="q-prompt">e.g. Call reception, WhatsApp, in person — response time?</div></td>
+          <td class="answer-cell"><textarea placeholder="Describe what happens..."></textarea></td>
+          <td class="answer-cell"><textarea placeholder="What can go wrong?"></textarea></td>
+        </tr>
+        <tr>
+          <td class="q-cell"><div class="q-num">2</div><div class="q-text">How housekeeping is coordinated</div><div class="q-prompt">e.g. DND handling, towel replacement, cleaning timing</div></td>
+          <td class="answer-cell"><textarea placeholder="Describe what happens..."></textarea></td>
+          <td class="answer-cell"><textarea placeholder="What can go wrong?"></textarea></td>
+        </tr>
+        <tr>
+          <td class="q-cell"><div class="q-num">3</div><div class="q-text">How maintenance issues are handled</div><div class="q-prompt">e.g. Guest reports broken item — what happens next?</div></td>
+          <td class="answer-cell"><textarea placeholder="Describe what happens..."></textarea></td>
+          <td class="answer-cell"><textarea placeholder="What can go wrong?"></textarea></td>
+        </tr>
+        <tr>
+          <td class="q-cell"><div class="q-num">4</div><div class="q-text">How guest complaints are handled</div><div class="q-prompt">e.g. Who receives them, first response, what is offered</div></td>
+          <td class="answer-cell"><textarea placeholder="Describe what happens..."></textarea></td>
+          <td class="answer-cell"><textarea placeholder="What can go wrong?"></textarea></td>
+        </tr>
+        <tr>
+          <td class="q-cell"><div class="q-num">5</div><div class="q-text">Breakfast / food service experience</div><div class="q-prompt">e.g. Timing, location, what is included, how communicated</div></td>
+          <td class="answer-cell"><textarea placeholder="Describe what happens..."></textarea></td>
+          <td class="answer-cell"><textarea placeholder="What can go wrong?"></textarea></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- DEPARTURE -->
+  <div class="phase-card">
+    <div class="phase-header" style="background:#4A235A;">
+      <div class="phase-num" style="background:#B8962E;color:#1A1A1A;">3</div>
+      <div><div class="phase-title">Departure</div><div class="phase-sub" style="color:#8A8070;">From checkout to post-stay</div></div>
+    </div>
+    <table class="questions-table">
+      <thead><tr><th style="width:35%;">WHAT HAPPENS?</th><th style="width:20%;">WHO IS RESPONSIBLE?</th><th>WHAT CAN GO WRONG?</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="q-cell"><div class="q-num">1</div><div class="q-text">How the guest checks out</div><div class="q-prompt">e.g. Reception, express, self-service — what is verified?</div></td>
+          <td class="answer-cell"><textarea placeholder="Describe what happens..."></textarea></td>
+          <td class="answer-cell"><textarea placeholder="What can go wrong?"></textarea></td>
+        </tr>
+        <tr>
+          <td class="q-cell"><div class="q-num">2</div><div class="q-text">How the bill is finalised</div><div class="q-prompt">e.g. Pre-auth release, invoice sent, disputes handled</div></td>
+          <td class="answer-cell"><textarea placeholder="Describe what happens..."></textarea></td>
+          <td class="answer-cell"><textarea placeholder="What can go wrong?"></textarea></td>
+        </tr>
+        <tr>
+          <td class="q-cell"><div class="q-num">3</div><div class="q-text">How late checkout works</div><div class="q-prompt">e.g. Policy, who decides, fee, how housekeeping is informed</div></td>
+          <td class="answer-cell"><textarea placeholder="Describe what happens..."></textarea></td>
+          <td class="answer-cell"><textarea placeholder="What can go wrong?"></textarea></td>
+        </tr>
+        <tr>
+          <td class="q-cell"><div class="q-num">4</div><div class="q-text">How guest feedback is collected</div><div class="q-prompt">e.g. Review request, feedback form, verbal — by whom?</div></td>
+          <td class="answer-cell"><textarea placeholder="Describe what happens..."></textarea></td>
+          <td class="answer-cell"><textarea placeholder="What can go wrong?"></textarea></td>
+        </tr>
+        <tr>
+          <td class="q-cell"><div class="q-num">5</div><div class="q-text">How room is handed back to housekeeping</div><div class="q-prompt">e.g. Checkout notification, inspection, room status update</div></td>
+          <td class="answer-cell"><textarea placeholder="Describe what happens..."></textarea></td>
+          <td class="answer-cell"><textarea placeholder="What can go wrong?"></textarea></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="action-row">
+    <button class="btn-dark" onclick="clearAll()">CLEAR ALL</button>
+    <button class="btn-gold" onclick="window.print()">SAVE AS PDF</button>
+  </div>
+  <p class="save-note">To save as PDF, a PDF printer or "Save as PDF" option must be available on your device.</p>
+  <div class="footer-note">HOTEL MASTERY HUB &middot; OPERATIONS MANUAL TOOLKIT &middot; LESSON 1.6</div>
+</div>
+<script>
+document.getElementById('date-field').value = new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
+function clearAll() {
+  if(!confirm('Clear all entries?')) return;
+  document.querySelectorAll('textarea, input[type=text]').forEach(el => el.value='');
+  document.getElementById('date-field').value = new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
+}
+</script>
+</body>
+</html>

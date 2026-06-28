@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Room Cost Calculator -- Hotel Mastery Hub</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:Georgia,serif; background:#F8F5F0; min-height:100vh; color:#1A1A1A; }
+.header { background:#1A1A1A; padding:0 24px; height:52px; display:flex; align-items:center; justify-content:space-between; }
+.hb { color:#B8962E; font-size:10px; letter-spacing:4px; font-family:system-ui; font-weight:600; }
+.hs { color:#8A8070; font-size:10px; letter-spacing:3px; font-family:system-ui; margin-left:16px; }
+.btn-outline { background:transparent; border:1px solid rgba(184,150,46,0.4); color:#D4AF5A; padding:6px 16px; font-size:11px; letter-spacing:2px; cursor:pointer; font-family:system-ui; }
+
+.wrap { max-width:960px; margin:0 auto; padding:28px 20px 60px; }
+
+/* TITLE */
+.title-row { display:flex; align-items:flex-start; gap:16px; margin-bottom:24px; }
+.gold-bar { width:4px; background:#B8962E; align-self:stretch; min-height:52px; flex-shrink:0; }
+h1 { font-size:28px; color:#1A1A1A; font-weight:700; margin-bottom:6px; }
+.sub { font-size:14px; color:#8A8070; font-family:system-ui; font-style:italic; }
+
+/* RESULT BAR */
+.result-bar { background:#1A1A1A; padding:20px 28px; margin-bottom:24px; display:flex; gap:0; flex-wrap:wrap; }
+.result-item { flex:1; min-width:160px; padding:0 20px; border-right:1px solid #2A2A2A; }
+.result-item:first-child { padding-left:0; }
+.result-item:last-child { border-right:none; }
+.result-label { font-size:9px; color:#8A8070; letter-spacing:3px; font-family:system-ui; font-weight:600; margin-bottom:6px; }
+.result-value { font-size:30px; font-weight:700; color:#B8962E; font-family:Georgia,serif; line-height:1; }
+.result-value.green { color:#55AA55; }
+.result-value.red { color:#CC5555; }
+.result-sub { font-size:11px; color:#8A8070; font-family:system-ui; margin-top:4px; }
+
+/* GRID */
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:20px; }
+.card { background:#fff; border:1px solid #E5DDD0; box-shadow:0 2px 8px rgba(0,0,0,0.06); }
+.card-head { padding:12px 18px; display:flex; align-items:center; justify-content:space-between; }
+.card-title { font-size:12px; font-weight:700; color:#F5F0E8; letter-spacing:1px; font-family:system-ui; }
+.card-total { font-size:13px; font-weight:700; color:#B8962E; font-family:system-ui; }
+.card-body { padding:16px 18px; }
+
+/* INPUTS */
+.field { margin-bottom:12px; }
+.field:last-child { margin-bottom:0; }
+label { display:block; font-size:10px; color:#8A8070; letter-spacing:2px; font-family:system-ui; font-weight:600; margin-bottom:5px; }
+.input-row { display:flex; align-items:center; gap:8px; }
+.currency { font-size:14px; color:#8A8070; font-family:system-ui; flex-shrink:0; }
+input[type=number] { flex:1; padding:9px 12px; border:1px solid #E5DDD0; font-size:14px; font-family:system-ui; background:#FAFAFA; color:#1A1A1A; outline:none; -moz-appearance:textfield; }
+input[type=number]::-webkit-inner-spin-button { -webkit-appearance:none; }
+input[type=number]:focus { border-color:#B8962E; background:#FFFFF8; }
+.type-badge { font-size:10px; font-family:system-ui; font-weight:600; letter-spacing:1px; padding:2px 8px; border-radius:2px; flex-shrink:0; }
+.fixed-badge { background:#E8F0FF; color:#3A5A9A; }
+.variable-badge { background:#FFF0E8; color:#8A4A1A; }
+
+/* PROPERTY SETUP */
+.setup-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+
+/* SENSITIVITY TABLE */
+.sens-table { width:100%; border-collapse:collapse; margin-top:4px; }
+.sens-table th { padding:8px 12px; font-size:10px; color:#8A8070; letter-spacing:2px; font-family:system-ui; font-weight:600; background:#F8F5F0; border-bottom:1px solid #E5DDD0; text-align:right; }
+.sens-table th:first-child { text-align:left; }
+.sens-table td { padding:9px 12px; font-size:13px; font-family:system-ui; border-bottom:1px solid #F0EBE3; text-align:right; }
+.sens-table td:first-child { text-align:left; font-weight:700; }
+.sens-table tr.current { background:#FFFDF5; }
+.sens-table tr.current td { color:#B8962E; font-weight:700; }
+.bar-cell { width:140px; }
+.mini-bar { height:8px; background:#E5DDD0; border-radius:4px; overflow:hidden; display:inline-block; width:100%; }
+.mini-bar-fill { height:100%; border-radius:4px; }
+
+/* COST BREAKDOWN */
+.breakdown-table { width:100%; border-collapse:collapse; }
+.breakdown-table th { padding:8px 12px; font-size:10px; color:#8A8070; letter-spacing:2px; font-family:system-ui; font-weight:600; background:#F8F5F0; border-bottom:1px solid #E5DDD0; text-align:right; }
+.breakdown-table th:first-child { text-align:left; }
+.breakdown-table td { padding:9px 12px; font-size:13px; font-family:system-ui; border-bottom:1px solid #F0EBE3; text-align:right; }
+.breakdown-table td:first-child { text-align:left; }
+.breakdown-table tr:last-child td { font-weight:700; color:#1A1A1A; border-top:2px solid #1A1A1A; border-bottom:none; }
+.pct-bar { height:6px; background:#E5DDD0; border-radius:3px; margin-top:4px; }
+.pct-fill { height:6px; border-radius:3px; background:#B8962E; }
+
+/* INFO BOX */
+.info-box { background:#FFF8F0; border-left:4px solid #B8962E; padding:12px 16px; font-size:13px; color:#1A1A1A; font-family:system-ui; line-height:1.6; margin-bottom:20px; }
+
+.full-width { grid-column:1/-1; }
+.section-label { font-size:10px; color:#8A8070; letter-spacing:3px; font-family:system-ui; font-weight:600; margin-bottom:10px; }
+
+.action-row { display:flex; gap:10px; margin-top:20px; }
+.btn-gold { background:#B8962E; border:none; color:#1A1A1A; padding:13px 24px; font-size:12px; font-family:system-ui; font-weight:700; letter-spacing:1px; cursor:pointer; flex:1; }
+.btn-dark { background:#1A1A1A; border:none; color:#B8962E; padding:13px 24px; font-size:12px; font-family:system-ui; font-weight:700; letter-spacing:1px; cursor:pointer; }
+.save-note { font-size:11px; color:#8A8070; font-family:system-ui; margin-top:10px; text-align:center; }
+.footer-note { text-align:center; margin-top:32px; color:#8A8070; font-size:11px; font-family:system-ui; letter-spacing:2px; }
+
+@media print {
+  .header,.action-row,.save-note,.footer-note { display:none !important; }
+  body { background:#fff; }
+  .wrap { padding:10px; }
+  input[type=number] { border:none; background:transparent; }
+}
+@media (max-width:700px) {
+  .two-col { grid-template-columns:1fr; }
+  .setup-grid { grid-template-columns:1fr 1fr; }
+  .result-bar { flex-direction:column; gap:16px; }
+  .result-item { border-right:none; border-bottom:1px solid #2A2A2A; padding:0 0 16px; }
+  .result-item:last-child { border-bottom:none; padding-bottom:0; }
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <div style="display:flex;align-items:center;"><span class="hb">HOTEL MASTERY HUB</span><span class="hs">&middot; FINANCE & PRICING</span></div>
+  <button class="btn-outline" onclick="window.print()">SAVE AS PDF</button>
+</div>
+
+<div class="wrap">
+  <div class="title-row">
+    <div class="gold-bar"></div>
+    <div>
+      <h1>Room Cost Calculator</h1>
+      <p class="sub">Enter your monthly costs. See what one sold room actually costs — and what price you need to survive.</p>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <strong>How to use:</strong> Fill in your monthly costs below. The calculator divides everything by your rooms sold to show the true cost of one sold room — and the minimum price you need to charge to hit your margin target.
+  </div>
+
+  <!-- RESULT BAR -->
+  <div class="result-bar" id="result-bar">
+    <div class="result-item">
+      <div class="result-label">COST PER SOLD ROOM</div>
+      <div class="result-value" id="res-cost">€0</div>
+      <div class="result-sub">All costs &divide; rooms sold</div>
+    </div>
+    <div class="result-item">
+      <div class="result-label">REQUIRED PRICE (excl. VAT)</div>
+      <div class="result-value green" id="res-price">€0</div>
+      <div class="result-sub">Cost &divide; (1 &minus; margin)</div>
+    </div>
+    <div class="result-item">
+      <div class="result-label">TOTAL MONTHLY COSTS</div>
+      <div class="result-value" id="res-total">€0</div>
+      <div class="result-sub">All departments combined</div>
+    </div>
+    <div class="result-item">
+      <div class="result-label">ROOMS SOLD / MONTH</div>
+      <div class="result-value" id="res-rooms">0</div>
+      <div class="result-sub">Rooms &times; days &times; occupancy</div>
+    </div>
+  </div>
+
+  <!-- PROPERTY SETUP -->
+  <div class="card" style="margin-bottom:20px;">
+    <div class="card-head" style="background:#1A1A1A;"><span class="card-title">PROPERTY SETUP</span></div>
+    <div class="card-body">
+      <div class="setup-grid">
+        <div class="field">
+          <label>TOTAL ROOMS</label>
+          <div class="input-row"><input type="number" id="rooms" value="40" min="1" oninput="calc()"></div>
+        </div>
+        <div class="field">
+          <label>DAYS IN MONTH</label>
+          <div class="input-row"><input type="number" id="days" value="30" min="1" oninput="calc()"></div>
+        </div>
+        <div class="field">
+          <label>OCCUPANCY %</label>
+          <div class="input-row"><input type="number" id="occ" value="65" min="1" max="100" oninput="calc()"><span class="currency">%</span></div>
+        </div>
+        <div class="field">
+          <label>TARGET MARGIN %</label>
+          <div class="input-row"><input type="number" id="margin" value="20" min="1" max="99" oninput="calc()"><span class="currency">%</span></div>
+        </div>
+        <div class="field">
+          <label>HOTEL NAME (optional)</label>
+          <div class="input-row"><input type="text" id="hotelname" placeholder="e.g. Hotel Bella Vista" style="flex:1;padding:9px 12px;border:1px solid #E5DDD0;font-size:14px;font-family:system-ui;background:#FAFAFA;color:#1A1A1A;outline:none;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COSTS INPUT -->
+  <div class="two-col">
+    <!-- FIXED COSTS -->
+    <div class="card">
+      <div class="card-head" style="background:#1A3A5C;">
+        <span class="card-title">FIXED COSTS <span style="font-size:10px;color:#8A8070;font-weight:400;">&mdash; always there</span></span>
+        <span class="card-total" id="fixed-total">€0</span>
+      </div>
+      <div class="card-body">
+        <div class="field">
+          <label>RENT / LEASE</label>
+          <div class="input-row"><span class="currency">&euro;</span><input type="number" id="c-rent" value="8200" oninput="calc()"><span class="type-badge fixed-badge">FIXED</span></div>
+        </div>
+        <div class="field">
+          <label>MANAGEMENT & BACK OFFICE PAYROLL</label>
+          <div class="input-row"><span class="currency">&euro;</span><input type="number" id="c-mgmt" value="5000" oninput="calc()"><span class="type-badge fixed-badge">FIXED</span></div>
+        </div>
+        <div class="field">
+          <label>SOFTWARE & SYSTEMS</label>
+          <div class="input-row"><span class="currency">&euro;</span><input type="number" id="c-software" value="820" oninput="calc()"><span class="type-badge fixed-badge">FIXED</span></div>
+        </div>
+        <div class="field">
+          <label>INSURANCE & ADMIN</label>
+          <div class="input-row"><span class="currency">&euro;</span><input type="number" id="c-insurance" value="1400" oninput="calc()"><span class="type-badge fixed-badge">FIXED</span></div>
+        </div>
+        <div class="field">
+          <label>OTHER FIXED COSTS</label>
+          <div class="input-row"><span class="currency">&euro;</span><input type="number" id="c-other-fixed" value="0" oninput="calc()"><span class="type-badge fixed-badge">FIXED</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VARIABLE COSTS -->
+    <div class="card">
+      <div class="card-head" style="background:#1E4620;">
+        <span class="card-title">VARIABLE COSTS <span style="font-size:10px;color:#8A8070;font-weight:400;">&mdash; scale with sales</span></span>
+        <span class="card-total" id="variable-total">€0</span>
+      </div>
+      <div class="card-body">
+        <div class="field">
+          <label>FRONT DESK PAYROLL</label>
+          <div class="input-row"><span class="currency">&euro;</span><input type="number" id="c-frontdesk" value="4500" oninput="calc()"><span class="type-badge variable-badge">VARIABLE</span></div>
+        </div>
+        <div class="field">
+          <label>HOUSEKEEPING (wages + laundry + products)</label>
+          <div class="input-row"><span class="currency">&euro;</span><input type="number" id="c-hsk" value="3600" oninput="calc()"><span class="type-badge variable-badge">VARIABLE</span></div>
+        </div>
+        <div class="field">
+          <label>MAINTENANCE</label>
+          <div class="input-row"><span class="currency">&euro;</span><input type="number" id="c-maintenance" value="1600" oninput="calc()"><span class="type-badge variable-badge">VARIABLE</span></div>
+        </div>
+        <div class="field">
+          <label>UTILITIES (electricity, water, gas)</label>
+          <div class="input-row"><span class="currency">&euro;</span><input type="number" id="c-utilities" value="3100" oninput="calc()"><span class="type-badge variable-badge">VARIABLE</span></div>
+        </div>
+        <div class="field">
+          <label>OTA COMMISSIONS (monthly avg)</label>
+          <div class="input-row"><span class="currency">&euro;</span><input type="number" id="c-ota" value="1800" oninput="calc()"><span class="type-badge variable-badge">VARIABLE</span></div>
+        </div>
+        <div class="field">
+          <label>BREAKFAST / F&B (if included)</label>
+          <div class="input-row"><span class="currency">&euro;</span><input type="number" id="c-fb" value="0" oninput="calc()"><span class="type-badge variable-badge">VARIABLE</span></div>
+        </div>
+        <div class="field">
+          <label>OTHER VARIABLE COSTS</label>
+          <div class="input-row"><span class="currency">&euro;</span><input type="number" id="c-other-var" value="0" oninput="calc()"><span class="type-badge variable-badge">VARIABLE</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COST BREAKDOWN -->
+    <div class="card full-width">
+      <div class="card-head" style="background:#2A2A2A;"><span class="card-title">COST BREAKDOWN PER SOLD ROOM</span></div>
+      <div class="card-body" style="padding:0;">
+        <table class="breakdown-table">
+          <thead><tr><th>COST CATEGORY</th><th>MONTHLY TOTAL</th><th>PER SOLD ROOM</th><th>% OF TOTAL</th><th>TYPE</th></tr></thead>
+          <tbody id="breakdown-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- OCCUPANCY SENSITIVITY -->
+    <div class="card full-width">
+      <div class="card-head" style="background:#2A2A2A;"><span class="card-title">OCCUPANCY SENSITIVITY &mdash; Required price at different occupancy levels</span></div>
+      <div class="card-body" style="padding:0;">
+        <table class="sens-table">
+          <thead><tr><th>OCCUPANCY</th><th>ROOMS SOLD/MO</th><th>COST/ROOM</th><th>REQUIRED PRICE</th><th>VS CURRENT</th><th style="text-align:left;">FIXED/ROOM</th></tr></thead>
+          <tbody id="sens-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPASS NOTE -->
+  <div style="background:#1A1A1A;padding:20px 24px;margin-bottom:20px;">
+    <div style="font-size:10px;color:#B8962E;letter-spacing:3px;font-family:system-ui;font-weight:600;margin-bottom:8px;">THE TOOL SUGGESTS A PRICE &mdash; NOT THE PRICE</div>
+    <p style="font-size:13px;color:#8A8070;font-family:system-ui;line-height:1.7;">The required price is based purely on your costs and target margin. It does not know what competitors charge or what the market will bear. <strong style="color:#F5F0E8;">Use it as a compass, not a ceiling.</strong> Selling below cost will erode your margin regardless of how full you are. Every extra room sold at any price above cost is better than an empty room.</p>
+  </div>
+
+  <div class="action-row">
+    <button class="btn-dark" onclick="resetToDefaults()">RESET</button>
+    <button class="btn-gold" onclick="window.print()">SAVE AS PDF</button>
+  </div>
+  <p class="save-note">To save as PDF, a PDF printer or "Save as PDF" option must be available on your device.</p>
+  <div class="footer-note">HOTEL MASTERY HUB &middot; FINANCE & PRICING &middot; ROOM COST CALCULATOR</div>
+</div>
+
+<script>
+const DEFAULTS = {
+  rooms:40, days:30, occ:65, margin:20,
+  'c-rent':8200,'c-mgmt':5000,'c-software':820,'c-insurance':1400,'c-other-fixed':0,
+  'c-frontdesk':4500,'c-hsk':3600,'c-maintenance':1600,'c-utilities':3100,'c-ota':1800,'c-fb':0,'c-other-var':0
+};
+
+function v(id) { return parseFloat(document.getElementById(id)?.value)||0; }
+function fmt(n) { return '€'+n.toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function fmtInt(n) { return Math.round(n).toLocaleString('en-GB'); }
+
+function calc() {
+  const rooms = v('rooms'), days = v('days'), occ = v('occ')/100, margin = v('margin')/100;
+  const roomsSold = rooms * days * occ;
+
+  // Costs
+  const costs = [
+    {name:'Rent / Lease', monthly:v('c-rent'), type:'Fixed'},
+    {name:'Management & Back Office', monthly:v('c-mgmt'), type:'Fixed'},
+    {name:'Software & Systems', monthly:v('c-software'), type:'Fixed'},
+    {name:'Insurance & Admin', monthly:v('c-insurance'), type:'Fixed'},
+    {name:'Other Fixed', monthly:v('c-other-fixed'), type:'Fixed'},
+    {name:'Front Desk Payroll', monthly:v('c-frontdesk'), type:'Variable'},
+    {name:'Housekeeping', monthly:v('c-hsk'), type:'Variable'},
+    {name:'Maintenance', monthly:v('c-maintenance'), type:'Variable'},
+    {name:'Utilities', monthly:v('c-utilities'), type:'Variable'},
+    {name:'OTA Commissions', monthly:v('c-ota'), type:'Variable'},
+    {name:'Breakfast / F&B', monthly:v('c-fb'), type:'Variable'},
+    {name:'Other Variable', monthly:v('c-other-var'), type:'Variable'},
+  ].filter(c=>c.monthly>0);
+
+  const totalFixed = costs.filter(c=>c.type==='Fixed').reduce((s,c)=>s+c.monthly,0);
+  const totalVariable = costs.filter(c=>c.type==='Variable').reduce((s,c)=>s+c.monthly,0);
+  const totalMonthly = totalFixed + totalVariable;
+  const costPerRoom = roomsSold>0 ? totalMonthly/roomsSold : 0;
+  const requiredPrice = margin<1 ? costPerRoom/(1-margin) : 0;
+
+  // Update result bar
+  document.getElementById('res-cost').textContent = fmt(costPerRoom);
+  document.getElementById('res-price').textContent = fmt(requiredPrice);
+  document.getElementById('res-total').textContent = fmt(totalMonthly);
+  document.getElementById('res-rooms').textContent = fmtInt(roomsSold);
+  document.getElementById('fixed-total').textContent = fmt(totalFixed);
+  document.getElementById('variable-total').textContent = fmt(totalVariable);
+
+  // Breakdown table
+  const tbody = document.getElementById('breakdown-body');
+  tbody.innerHTML = costs.map(c=>{
+    const perRoom = roomsSold>0?c.monthly/roomsSold:0;
+    const pct = totalMonthly>0?c.monthly/totalMonthly*100:0;
+    const color = c.type==='Fixed'?'#3A5A9A':'#8A4A1A';
+    const bg = c.type==='Fixed'?'#E8F0FF':'#FFF0E8';
+    return `<tr>
+      <td>${c.name}</td>
+      <td>${fmt(c.monthly)}</td>
+      <td>${fmt(perRoom)}</td>
+      <td>
+        <div>${pct.toFixed(1)}%</div>
+        <div class="pct-bar"><div class="pct-fill" style="width:${Math.min(pct,100)}%;background:${color};"></div></div>
+      </td>
+      <td><span style="font-size:10px;font-family:system-ui;font-weight:600;letter-spacing:1px;padding:2px 8px;border-radius:2px;background:${bg};color:${color};">${c.type.toUpperCase()}</span></td>
+    </tr>`;
+  }).join('') + `<tr>
+    <td>TOTAL</td>
+    <td>${fmt(totalMonthly)}</td>
+    <td>${fmt(costPerRoom)}</td>
+    <td>100%</td>
+    <td></td>
+  </tr>`;
+
+  // Sensitivity table
+  const occs = [0.3,0.4,0.5,0.6,0.65,0.7,0.75,0.8,0.9,1.0];
+  const currentOcc = occ;
+  const maxCost = occs.reduce((max,o)=>{ const rs=rooms*days*o; return Math.max(max, rs>0?totalMonthly/rs:0); },0);
+
+  document.getElementById('sens-body').innerHTML = occs.map(o=>{
+    const rs = rooms*days*o;
+    const cpr = rs>0?totalMonthly/rs:0;
+    const rp = margin<1?cpr/(1-margin):0;
+    const fpr = rs>0?totalFixed/rs:0;
+    const isCurrent = Math.abs(o-currentOcc)<0.01;
+    const vs = rp-requiredPrice;
+    const vsStr = vs===0?'current':vs>0?'+'+fmt(vs):fmt(vs);
+    const barPct = maxCost>0?Math.min((cpr/maxCost)*100,100):0;
+    const barColor = cpr>requiredPrice?'#CC5555':cpr>requiredPrice*0.8?'#D4903A':'#55AA55';
+    return `<tr class="${isCurrent?'current':''}">
+      <td>${Math.round(o*100)}%${isCurrent?' ← current':''}</td>
+      <td>${fmtInt(rs)}</td>
+      <td>${fmt(cpr)}</td>
+      <td>${fmt(rp)}</td>
+      <td style="color:${vs>0?'#CC5555':vs<0?'#55AA55':'#B8962E'};font-weight:700;">${vsStr}</td>
+      <td style="text-align:left;">
+        <div class="mini-bar"><div class="mini-bar-fill" style="width:${barPct}%;background:${barColor};"></div></div>
+        <div style="font-size:11px;color:#8A8070;margin-top:2px;">${fmt(fpr)}</div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function resetToDefaults() {
+  Object.entries(DEFAULTS).forEach(([id,val])=>{
+    const el = document.getElementById(id);
+    if(el) el.value = val;
+  });
+  calc();
+}
+
+calc();
+</script>
+</body>
+</html>

@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Escalation Contact Card -- Hotel Mastery Hub</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Georgia, serif; background: #F8F5F0; min-height: 100vh; color: #1A1A1A; }
+
+  .header {
+    background: #1A1A1A;
+    padding: 0 24px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .header-left { display: flex; align-items: center; gap: 16px; }
+  .header-brand { color: #B8962E; font-size: 10px; letter-spacing: 4px; font-family: system-ui; font-weight: 600; }
+  .header-dot { color: #333; }
+  .header-sub { color: #8A8070; font-size: 10px; letter-spacing: 3px; font-family: system-ui; }
+  .header-btns { display: flex; gap: 8px; }
+
+  .btn-outline {
+    background: transparent;
+    border: 1px solid rgba(184,150,46,0.4);
+    color: #D4AF5A;
+    padding: 6px 16px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    font-family: system-ui;
+  }
+  .btn-gold {
+    background: #B8962E;
+    border: none;
+    color: #1A1A1A;
+    padding: 6px 16px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    font-family: system-ui;
+    font-weight: 700;
+  }
+  .btn-primary {
+    padding: 12px 24px;
+    font-size: 12px;
+    font-family: system-ui;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    border: none;
+    background: #B8962E;
+    color: #1A1A1A;
+  }
+  .btn-primary:hover { background: #D4AF5A; }
+
+  .wrap { max-width: 900px; margin: 0 auto; padding: 32px 20px 60px; }
+
+  .title-row { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 28px; }
+  .gold-bar { width: 4px; background: #B8962E; align-self: stretch; min-height: 52px; flex-shrink: 0; }
+  h1 { font-size: 28px; color: #1A1A1A; font-weight: 700; margin-bottom: 6px; }
+  .subtitle { font-size: 14px; color: #8A8070; font-family: system-ui; font-style: italic; }
+
+  .card { background: #fff; border: 1px solid #E5DDD0; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
+  .card-pad { padding: 20px 24px; }
+
+  label { display: block; font-size: 10px; color: #8A8070; letter-spacing: 2px; font-family: system-ui; font-weight: 600; margin-bottom: 6px; }
+  input[type=text] {
+    width: 100%; padding: 9px 12px; border: 1px solid #E5DDD0;
+    font-size: 13px; font-family: system-ui; background: #FAFAFA;
+    color: #1A1A1A; outline: none;
+  }
+  input[type=text]:focus { border-color: #B8962E; }
+
+  .section-label { font-size: 10px; color: #8A8070; letter-spacing: 3px; font-family: system-ui; font-weight: 600; margin-bottom: 8px; }
+
+  .cat-header {
+    background: #1A1A1A;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .cat-icon { font-size: 16px; }
+  .cat-name { color: #F5F0E8; font-size: 13px; font-weight: 700; }
+  .cat-tag { color: #8A8070; font-size: 10px; font-family: system-ui; letter-spacing: 2px; margin-left: 6px; }
+  .cat-response { color: #B8962E; font-size: 10px; font-family: system-ui; margin-left: auto; }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 16px 20px; }
+  .grid2-full { grid-column: 1 / -1; }
+
+  .rules-header { background: #1A1A1A; padding: 10px 20px; }
+  .rules-header span { color: #B8962E; font-size: 10px; letter-spacing: 3px; font-family: system-ui; font-weight: 600; }
+
+  .rule-row { display: flex; gap: 10px; padding: 12px 20px; border-bottom: 1px solid #F0EBE3; align-items: center; }
+  .rule-row input { font-size: 13px; }
+
+  .remove-btn { background: transparent; border: none; color: #8A8070; cursor: pointer; font-size: 18px; padding: 0 4px; flex-shrink: 0; }
+  .add-rule-btn { background: #F8F5F0; color: #8A8070; border: 1px solid #E5DDD0; padding: 8px 16px; font-size: 11px; font-family: system-ui; font-weight: 700; letter-spacing: 1px; cursor: pointer; margin: 12px 20px; }
+
+  .actions-row { display: flex; justify-content: flex-end; margin-top: 8px; }
+
+  /* PREVIEW */
+  #preview-section { display: none; }
+
+  .preview-header { background: #1A1A1A; padding: 20px 28px; }
+  .preview-brand { font-size: 10px; color: #B8962E; letter-spacing: 4px; font-family: system-ui; font-weight: 600; margin-bottom: 4px; }
+  .preview-title { font-size: 22px; color: #F5F0E8; font-weight: 700; }
+  .preview-posted { font-size: 11px; color: #8A8070; font-family: system-ui; margin-top: 4px; }
+
+  .contacts-grid { display: grid; grid-template-columns: repeat(5, 1fr); border-bottom: 1px solid #E5DDD0; }
+  .contact-cell { padding: 14px 16px; border-right: 1px solid #E5DDD0; }
+  .contact-cell:last-child { border-right: none; }
+  .contact-cat-tag { font-size: 9px; color: #8A8070; letter-spacing: 2px; font-family: system-ui; margin-bottom: 4px; }
+  .contact-cat-name { font-size: 15px; font-weight: 700; color: #1A1A1A; margin-bottom: 8px; }
+  .contact-name { font-size: 12px; color: #1A1A1A; font-family: system-ui; margin-bottom: 2px; }
+  .contact-phone { font-size: 13px; font-weight: 700; color: #B8962E; font-family: system-ui; margin-bottom: 6px; }
+  .contact-backup { font-size: 10px; color: #8A8070; font-family: system-ui; }
+  .contact-divider { margin-top: 8px; padding-top: 6px; border-top: 1px solid #F0EBE3; }
+  .contact-rule { font-size: 9px; color: #8A8070; font-family: system-ui; font-style: italic; }
+  .contact-response { font-size: 9px; color: #B8962E; font-family: system-ui; margin-top: 2px; }
+  .contact-empty { font-size: 11px; color: #CCC; font-family: system-ui; font-style: italic; }
+
+  .rules-preview-header { background: #1A1A1A; padding: 10px 20px; }
+  .rules-preview-header span { font-size: 10px; color: #B8962E; letter-spacing: 3px; font-family: system-ui; font-weight: 600; }
+
+  .rules-cols { display: grid; grid-template-columns: 1fr 3px 1.5fr 3px 0.7fr; background: #1A1A1A; }
+  .rules-col-head { padding: 8px 16px; }
+  .rules-col-head span { font-size: 9px; color: #B8962E; letter-spacing: 2px; font-family: system-ui; font-weight: 600; }
+  .rules-divider-col { background: #B8962E; }
+
+  .rule-preview-row { display: grid; grid-template-columns: 1fr 3px 1.5fr 3px 0.7fr; border-top: 1px solid #F0EBE3; }
+  .rule-preview-row.even { background: #fff; }
+  .rule-preview-row.odd { background: #F8F5F0; }
+  .rule-cell { padding: 10px 16px; }
+  .rule-trigger { font-size: 13px; font-weight: 700; color: #B8962E; font-family: system-ui; }
+  .rule-action { font-size: 13px; font-weight: 700; color: #1A1A1A; font-family: system-ui; }
+  .rule-time { font-size: 12px; color: #8A8070; font-family: system-ui; font-style: italic; }
+
+  .preview-footer {
+    padding: 12px 20px;
+    border-top: 1px solid #E5DDD0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .preview-quote { font-size: 10px; color: #8A8070; font-family: system-ui; font-style: italic; }
+  .preview-brand-small { font-size: 10px; color: #8A8070; font-family: system-ui; }
+
+  .save-row { display: flex; gap: 10px; margin-top: 20px; }
+  .save-note { font-size: 11px; color: #8A8070; font-family: system-ui; margin-top: 10px; text-align: center; }
+
+  .footer-note { text-align: center; margin-top: 40px; color: #8A8070; font-size: 11px; font-family: system-ui; letter-spacing: 2px; }
+
+  @media print {
+    .header, .title-row, .save-row, .save-note, .footer-note, .btn-outline, .btn-gold { display: none !important; }
+    body { background: #fff; }
+    .wrap { padding: 0; }
+    #edit-section { display: none !important; }
+    #preview-section { display: block !important; }
+  }
+
+  @media (max-width: 600px) {
+    .contacts-grid { grid-template-columns: 1fr 1fr; }
+    .grid2 { grid-template-columns: 1fr; }
+    .rules-cols { grid-template-columns: 1fr; }
+    .rule-preview-row { grid-template-columns: 1fr; }
+    .rules-divider-col { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <span class="header-brand">HOTEL MASTERY HUB</span>
+    <span class="header-dot">&middot;</span>
+    <span class="header-sub">ESCALATION CONTACT CARD</span>
+  </div>
+  <div class="header-btns">
+    <button class="btn-outline" id="toggle-btn" onclick="toggleView()">PREVIEW CARD</button>
+    <button class="btn-gold" id="print-btn" onclick="window.print()" style="display:none;">SAVE AS PDF</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- EDIT SECTION -->
+  <div id="edit-section">
+    <div class="title-row">
+      <div class="gold-bar"></div>
+      <div>
+        <h1>Escalation Contact Card Builder</h1>
+        <p class="subtitle">Fill in your supplier details. During stress, people don't think clearly -- systems must think for them.</p>
+      </div>
+    </div>
+
+    <!-- Property info -->
+    <div class="card card-pad" style="margin-bottom:20px;">
+      <div style="margin-bottom:14px;">
+        <label>Property name</label>
+        <input type="text" id="property-name" placeholder="e.g. Hotel Bella Vista" style="max-width:360px;">
+      </div>
+      <div>
+        <label>Card posted at / visible at</label>
+        <input type="text" id="posted-at" placeholder="e.g. Reception desk, back office" style="max-width:360px;">
+      </div>
+    </div>
+
+    <!-- Supplier contacts -->
+    <div class="section-label">SUPPLIER CONTACTS</div>
+
+    <div class="card" style="margin-bottom:12px;">
+      <div class="cat-header">
+        <span class="cat-icon">&#128295;</span>
+        <span class="cat-name">Plumber</span>
+        <span class="cat-tag">-- PLUMBING</span>
+        <span class="cat-response">Default response: &le; 2 hours</span>
+      </div>
+      <div class="grid2">
+        <div><label>Primary contact name</label><input type="text" id="plumbing-name" placeholder="Full name"></div>
+        <div><label>Primary phone number</label><input type="text" id="plumbing-phone" placeholder="+44 ..."></div>
+        <div><label>Backup contact name</label><input type="text" id="plumbing-backup-name" placeholder="If primary is unavailable"></div>
+        <div><label>Backup phone number</label><input type="text" id="plumbing-backup-phone" placeholder="+44 ..."></div>
+        <div class="grid2-full"><label>Notes</label><input type="text" id="plumbing-notes" placeholder="e.g. Call before 20:00, ask for emergency rate"></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:12px;">
+      <div class="cat-header">
+        <span class="cat-icon">&#9889;</span>
+        <span class="cat-name">Electrician</span>
+        <span class="cat-tag">-- ELECTRICAL</span>
+        <span class="cat-response">Default response: &le; 3 hours</span>
+      </div>
+      <div class="grid2">
+        <div><label>Primary contact name</label><input type="text" id="electrical-name" placeholder="Full name"></div>
+        <div><label>Primary phone number</label><input type="text" id="electrical-phone" placeholder="+44 ..."></div>
+        <div><label>Backup contact name</label><input type="text" id="electrical-backup-name" placeholder="If primary is unavailable"></div>
+        <div><label>Backup phone number</label><input type="text" id="electrical-backup-phone" placeholder="+44 ..."></div>
+        <div class="grid2-full"><label>Notes</label><input type="text" id="electrical-notes" placeholder="Notes"></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:12px;">
+      <div class="cat-header">
+        <span class="cat-icon">&#128273;</span>
+        <span class="cat-name">Locksmith</span>
+        <span class="cat-tag">-- ACCESS</span>
+        <span class="cat-response">Default response: Immediate</span>
+      </div>
+      <div class="grid2">
+        <div><label>Primary contact name</label><input type="text" id="locksmith-name" placeholder="Full name"></div>
+        <div><label>Primary phone number</label><input type="text" id="locksmith-phone" placeholder="+44 ..."></div>
+        <div><label>Backup contact name</label><input type="text" id="locksmith-backup-name" placeholder="If primary is unavailable"></div>
+        <div><label>Backup phone number</label><input type="text" id="locksmith-backup-phone" placeholder="+44 ..."></div>
+        <div class="grid2-full"><label>Notes</label><input type="text" id="locksmith-notes" placeholder="Notes"></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:12px;">
+      <div class="cat-header">
+        <span class="cat-icon">&#128246;</span>
+        <span class="cat-name">IT / WiFi</span>
+        <span class="cat-tag">-- TECHNOLOGY</span>
+        <span class="cat-response">Default response: 1st call</span>
+      </div>
+      <div class="grid2">
+        <div><label>Primary contact name</label><input type="text" id="it-name" placeholder="Full name"></div>
+        <div><label>Primary phone number</label><input type="text" id="it-phone" placeholder="+44 ..."></div>
+        <div><label>Backup contact name</label><input type="text" id="it-backup-name" placeholder="If primary is unavailable"></div>
+        <div><label>Backup phone number</label><input type="text" id="it-backup-phone" placeholder="+44 ..."></div>
+        <div class="grid2-full"><label>Notes</label><input type="text" id="it-notes" placeholder="Notes"></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:20px;">
+      <div class="cat-header">
+        <span class="cat-icon">&#128296;</span>
+        <span class="cat-name">Handyman</span>
+        <span class="cat-tag">-- GENERAL</span>
+        <span class="cat-response">Default response: Same day</span>
+      </div>
+      <div class="grid2">
+        <div><label>Primary contact name</label><input type="text" id="handyman-name" placeholder="Full name"></div>
+        <div><label>Primary phone number</label><input type="text" id="handyman-phone" placeholder="+44 ..."></div>
+        <div><label>Backup contact name</label><input type="text" id="handyman-backup-name" placeholder="If primary is unavailable"></div>
+        <div><label>Backup phone number</label><input type="text" id="handyman-backup-phone" placeholder="+44 ..."></div>
+        <div class="grid2-full"><label>Notes</label><input type="text" id="handyman-notes" placeholder="Notes"></div>
+      </div>
+    </div>
+
+    <!-- Escalation rules -->
+    <div class="section-label">ESCALATION RULES</div>
+    <div class="card" style="margin-bottom:20px;">
+      <div class="rules-header"><span>IF THIS HAPPENS &rarr; THEN DO THIS</span></div>
+      <div id="rules-container"></div>
+      <button class="add-rule-btn" onclick="addRule()">+ ADD RULE</button>
+    </div>
+
+    <div class="actions-row">
+      <button class="btn-primary" onclick="toggleView()">PREVIEW MY CONTACT CARD &rarr;</button>
+    </div>
+  </div>
+
+  <!-- PREVIEW SECTION -->
+  <div id="preview-section">
+    <div class="preview-header">
+      <div class="preview-brand">HOTEL MASTERY HUB &middot; MAINTENANCE ESCALATION SYSTEM</div>
+      <div class="preview-title" id="preview-title">Maintenance Contact Card</div>
+      <div class="preview-posted" id="preview-posted"></div>
+    </div>
+
+    <div class="card" style="margin-top:0;border-top:none;">
+      <div style="padding:12px 20px;border-bottom:1px solid #E5DDD0;background:#F5F5F0;">
+        <span style="font-size:10px;color:#8A8070;letter-spacing:3px;font-family:system-ui;font-weight:600;">SUPPLIER CONTACTS -- KEEP THIS VISIBLE AT ALL TIMES</span>
+      </div>
+      <div class="contacts-grid" id="contacts-preview"></div>
+      <div id="rules-preview-wrap"></div>
+      <div class="preview-footer">
+        <span class="preview-quote">During stress, people don't think clearly. Systems must think for them.</span>
+        <span class="preview-brand-small">HOTEL MASTERY HUB</span>
+      </div>
+    </div>
+
+    <div class="save-row">
+      <button class="btn-primary" style="background:#1A1A1A;color:#B8962E;flex:1;" onclick="window.print()">SAVE AS PDF</button>
+      <button class="btn-primary" style="flex:1;" onclick="toggleView()">&#8592; EDIT</button>
+    </div>
+    <p class="save-note">To save as PDF, a PDF printer or "Save as PDF" option must be available on your device.</p>
+  </div>
+
+  <div class="footer-note">HOTEL MASTERY HUB &middot; MAINTENANCE MASTERY TOOLKIT</div>
+</div>
+
+<script>
+const CATEGORIES = [
+  { id: "plumbing",   label: "Plumber",     tag: "PLUMBING",   response: "le 2 hours",  rule: "No hot water, leaks, flooding" },
+  { id: "electrical", label: "Electrician", tag: "ELECTRICAL", response: "le 3 hours",  rule: "Power failure, electrical fault" },
+  { id: "locksmith",  label: "Locksmith",   tag: "ACCESS",     response: "Immediate",   rule: "Lock failure, key card system down" },
+  { id: "it",         label: "IT / WiFi",   tag: "TECHNOLOGY", response: "1st call",    rule: "WiFi down across hotel" },
+  { id: "handyman",   label: "Handyman",    tag: "GENERAL",    response: "Same day",    rule: "Furniture, fixtures, general repairs" },
+];
+
+let rules = [
+  { trigger: "No hot water", action: "", time: "Within 2 hours" },
+  { trigger: "Lock failure / key card down", action: "", time: "Immediate" },
+  { trigger: "WiFi down across hotel", action: "", time: "Within 1 hour" },
+  { trigger: "", action: "", time: "" },
+];
+
+let currentView = "edit";
+
+function renderRules() {
+  const container = document.getElementById('rules-container');
+  container.innerHTML = rules.map((r, idx) => `
+    <div class="rule-row">
+      <input type="text" style="flex:1.2;" placeholder="If this happens..." value="${r.trigger}" oninput="updateRule(${idx},'trigger',this.value)">
+      <input type="text" style="flex:1.5;" placeholder="Then do this / call who" value="${r.action}" oninput="updateRule(${idx},'action',this.value)">
+      <input type="text" style="flex:0.7;" placeholder="Timeframe" value="${r.time}" oninput="updateRule(${idx},'time',this.value)">
+      <button class="remove-btn" onclick="removeRule(${idx})">x</button>
+    </div>
+  `).join('');
+}
+
+function updateRule(idx, field, value) {
+  rules[idx][field] = value;
+}
+
+function addRule() {
+  rules.push({ trigger: "", action: "", time: "" });
+  renderRules();
+}
+
+function removeRule(idx) {
+  rules.splice(idx, 1);
+  renderRules();
+}
+
+function getContact(id) {
+  return {
+    name: document.getElementById(id + '-name')?.value || '',
+    phone: document.getElementById(id + '-phone')?.value || '',
+    backup_name: document.getElementById(id + '-backup-name')?.value || '',
+    backup_phone: document.getElementById(id + '-backup-phone')?.value || '',
+    notes: document.getElementById(id + '-notes')?.value || '',
+  };
+}
+
+function toggleView() {
+  if (currentView === 'edit') {
+    buildPreview();
+    document.getElementById('edit-section').style.display = 'none';
+    document.getElementById('preview-section').style.display = 'block';
+    document.getElementById('toggle-btn').textContent = 'EDIT';
+    document.getElementById('print-btn').style.display = 'block';
+    currentView = 'preview';
+  } else {
+    document.getElementById('edit-section').style.display = 'block';
+    document.getElementById('preview-section').style.display = 'none';
+    document.getElementById('toggle-btn').textContent = 'PREVIEW CARD';
+    document.getElementById('print-btn').style.display = 'none';
+    currentView = 'edit';
+  }
+}
+
+function buildPreview() {
+  const prop = document.getElementById('property-name').value || 'Maintenance Contact Card';
+  const posted = document.getElementById('posted-at').value;
+  document.getElementById('preview-title').textContent = prop;
+  document.getElementById('preview-posted').textContent = posted ? 'Posted at: ' + posted : '';
+
+  const contactsHtml = CATEGORIES.map(cat => {
+    const c = getContact(cat.id);
+    const hasData = c.name || c.phone;
+    return `
+      <div class="contact-cell">
+        <div class="contact-cat-tag">${cat.tag}</div>
+        <div class="contact-cat-name">${cat.label}</div>
+        ${hasData ? `
+          ${c.name ? `<div class="contact-name">${c.name}</div>` : ''}
+          ${c.phone ? `<div class="contact-phone">${c.phone}</div>` : ''}
+          ${c.backup_name ? `<div class="contact-backup">Backup: ${c.backup_name}</div>` : ''}
+          ${c.backup_phone ? `<div class="contact-backup">${c.backup_phone}</div>` : ''}
+          <div class="contact-divider">
+            <div class="contact-rule">${c.notes || cat.rule}</div>
+            <div class="contact-response">Response: ${cat.response}</div>
+          </div>
+        ` : '<div class="contact-empty">Not yet filled in</div>'}
+      </div>
+    `;
+  }).join('');
+  document.getElementById('contacts-preview').innerHTML = contactsHtml;
+
+  const filledRules = rules.filter(r => r.trigger || r.action);
+  if (filledRules.length > 0) {
+    document.getElementById('rules-preview-wrap').innerHTML = `
+      <div class="rules-preview-header"><span>ESCALATION RULES -- NO GUESSING UNDER PRESSURE</span></div>
+      <div class="rules-cols">
+        <div class="rules-col-head"><span>IF THIS HAPPENS</span></div>
+        <div class="rules-divider-col"></div>
+        <div class="rules-col-head"><span>THEN DO THIS</span></div>
+        <div class="rules-divider-col"></div>
+        <div class="rules-col-head"><span>TIMEFRAME</span></div>
+      </div>
+      ${filledRules.map((r, i) => `
+        <div class="rule-preview-row ${i % 2 === 0 ? 'even' : 'odd'}">
+          <div class="rule-cell"><span class="rule-trigger">${r.trigger}</span></div>
+          <div class="rules-divider-col"></div>
+          <div class="rule-cell"><span class="rule-action">${r.action}</span></div>
+          <div class="rules-divider-col"></div>
+          <div class="rule-cell"><span class="rule-time">${r.time}</span></div>
+        </div>
+      `).join('')}
+    `;
+  } else {
+    document.getElementById('rules-preview-wrap').innerHTML = '';
+  }
+}
+
+// Init
+renderRules();
+</script>
+</body>
+</html>

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stay Cost Calculator -- Hotel Mastery Hub</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:Georgia,serif; background:#F8F5F0; min-height:100vh; color:#1A1A1A; }
+.header { background:#1A1A1A; padding:0 24px; height:52px; display:flex; align-items:center; justify-content:space-between; }
+.hb { color:#B8962E; font-size:10px; letter-spacing:4px; font-family:system-ui; font-weight:600; }
+.hs { color:#8A8070; font-size:10px; letter-spacing:3px; font-family:system-ui; margin-left:16px; }
+.btn-outline { background:transparent; border:1px solid rgba(184,150,46,0.4); color:#D4AF5A; padding:6px 16px; font-size:11px; letter-spacing:2px; cursor:pointer; font-family:system-ui; }
+.wrap { max-width:960px; margin:0 auto; padding:28px 20px 60px; }
+.title-row { display:flex; align-items:flex-start; gap:16px; margin-bottom:24px; }
+.gold-bar { width:4px; background:#B8962E; align-self:stretch; min-height:52px; flex-shrink:0; }
+h1 { font-size:28px; color:#1A1A1A; font-weight:700; margin-bottom:6px; }
+.sub { font-size:14px; color:#8A8070; font-family:system-ui; font-style:italic; }
+.info-box { background:#FFF8F0; border-left:4px solid #B8962E; padding:12px 16px; font-size:13px; color:#1A1A1A; font-family:system-ui; line-height:1.6; margin-bottom:24px; }
+.card { background:#fff; border:1px solid #E5DDD0; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:20px; }
+.card-head { padding:12px 18px; display:flex; align-items:center; justify-content:space-between; }
+.card-title { font-size:12px; font-weight:700; color:#F5F0E8; letter-spacing:1px; font-family:system-ui; }
+.card-body { padding:16px 18px; }
+.setup-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+label { display:block; font-size:10px; color:#8A8070; letter-spacing:2px; font-family:system-ui; font-weight:600; margin-bottom:5px; }
+.field { margin-bottom:12px; }
+.field:last-child { margin-bottom:0; }
+.input-row { display:flex; align-items:center; gap:8px; }
+.currency { font-size:14px; color:#8A8070; font-family:system-ui; flex-shrink:0; }
+input[type=number] { flex:1; width:100%; padding:9px 12px; border:1px solid #E5DDD0; font-size:14px; font-family:system-ui; background:#FAFAFA; color:#1A1A1A; outline:none; -moz-appearance:textfield; }
+input[type=number]::-webkit-inner-spin-button { -webkit-appearance:none; }
+input[type=number]:focus { border-color:#B8962E; background:#FFFFF8; }
+input[type=text] { flex:1; width:100%; padding:9px 12px; border:1px solid #E5DDD0; font-size:14px; font-family:system-ui; background:#FAFAFA; color:#1A1A1A; outline:none; }
+input[type=text]:focus { border-color:#B8962E; }
+
+/* ROOM TABS */
+.room-tabs { display:flex; gap:0; margin-bottom:0; border-bottom:2px solid #E5DDD0; }
+.room-tab { padding:10px 20px; font-size:12px; font-family:system-ui; font-weight:700; letter-spacing:1px; cursor:pointer; color:#8A8070; border-bottom:3px solid transparent; margin-bottom:-2px; }
+.room-tab.active { color:#B8962E; border-bottom-color:#B8962E; }
+.room-panel { display:none; padding:20px; }
+.room-panel.active { display:block; }
+.room-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+
+/* RESULTS */
+.results-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:20px; }
+.result-card { background:#1A1A1A; padding:16px 20px; }
+.result-card-label { font-size:9px; color:#8A8070; letter-spacing:3px; font-family:system-ui; font-weight:600; margin-bottom:6px; }
+.result-card-name { font-size:12px; color:#F5F0E8; font-family:system-ui; margin-bottom:8px; }
+.result-card-price { font-size:28px; font-weight:700; color:#B8962E; line-height:1; margin-bottom:4px; }
+.result-card-sub { font-size:11px; color:#8A8070; font-family:system-ui; }
+.result-card-nights { font-size:12px; color:#55AA55; font-family:system-ui; margin-top:6px; font-weight:700; }
+
+/* COMPARISON TABLE */
+.comp-table { width:100%; border-collapse:collapse; }
+.comp-table th { padding:9px 14px; font-size:10px; color:#8A8070; letter-spacing:2px; font-family:system-ui; font-weight:600; background:#F8F5F0; border-bottom:1px solid #E5DDD0; text-align:right; }
+.comp-table th:first-child { text-align:left; }
+.comp-table td { padding:9px 14px; font-size:13px; font-family:system-ui; border-bottom:1px solid #F0EBE3; text-align:right; }
+.comp-table td:first-child { text-align:left; font-weight:600; color:#1A1A1A; }
+.comp-table tr:last-child td { font-weight:700; color:#1A1A1A; border-top:2px solid #1A1A1A; border-bottom:none; }
+.comp-table tr.price-row td { color:#B8962E; font-weight:700; font-size:14px; }
+
+.laundry-section { background:#F8F5F0; border:1px solid #E5DDD0; padding:16px 20px; margin-bottom:20px; }
+.laundry-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:12px; }
+.laundry-toggle { display:flex; gap:12px; margin-bottom:8px; }
+.toggle-btn { padding:6px 16px; font-size:11px; font-family:system-ui; font-weight:600; letter-spacing:1px; cursor:pointer; border:1px solid #E5DDD0; background:#fff; color:#8A8070; }
+.toggle-btn.active { background:#1A1A1A; color:#B8962E; border-color:#1A1A1A; }
+
+.action-row { display:flex; gap:10px; margin-top:8px; }
+.btn-gold { background:#B8962E; border:none; color:#1A1A1A; padding:13px 24px; font-size:12px; font-family:system-ui; font-weight:700; letter-spacing:1px; cursor:pointer; flex:1; }
+.btn-dark { background:#1A1A1A; border:none; color:#B8962E; padding:13px 24px; font-size:12px; font-family:system-ui; font-weight:700; letter-spacing:1px; cursor:pointer; }
+.save-note { font-size:11px; color:#8A8070; font-family:system-ui; margin-top:10px; text-align:center; }
+.footer-note { text-align:center; margin-top:32px; color:#8A8070; font-size:11px; font-family:system-ui; letter-spacing:2px; }
+@media print { .header,.action-row,.save-note,.footer-note,.room-tabs,.laundry-toggle,.toggle-btn { display:none !important; } body { background:#fff; } .wrap { padding:10px; } .room-panel { display:block !important; } input { border:none; background:transparent; } }
+@media (max-width:700px) { .setup-grid,.results-grid,.laundry-grid { grid-template-columns:1fr 1fr; } .room-grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="header">
+  <div style="display:flex;align-items:center;"><span class="hb">HOTEL MASTERY HUB</span><span class="hs">&middot; FINANCE & PRICING</span></div>
+  <button class="btn-outline" onclick="window.print()">SAVE AS PDF</button>
+</div>
+<div class="wrap">
+  <div class="title-row">
+    <div class="gold-bar"></div>
+    <div>
+      <h1>Stay Cost Calculator</h1>
+      <p class="sub">Calculate the true cost of a full stay per room type — including stayover cleans, linen changes, and laundry.</p>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <strong>How to use:</strong> First enter your hotel setup and base monthly costs. Then configure each room type — length of stay, stayover cleans, linen and towel changes. The calculator shows the true cost and required price per night for each room type.
+  </div>
+
+  <!-- SETUP -->
+  <div class="card">
+    <div class="card-head" style="background:#1A1A1A;"><span class="card-title">HOTEL SETUP</span></div>
+    <div class="card-body">
+      <div class="setup-grid">
+        <div class="field"><label>TOTAL ROOMS</label><input type="number" id="rooms" value="40" oninput="calc()"></div>
+        <div class="field"><label>DAYS IN MONTH</label><input type="number" id="days" value="30" oninput="calc()"></div>
+        <div class="field"><label>OCCUPANCY %</label><div class="input-row"><input type="number" id="occ" value="65" oninput="calc()"><span class="currency">%</span></div></div>
+        <div class="field"><label>TARGET MARGIN %</label><div class="input-row"><input type="number" id="margin" value="20" oninput="calc()"><span class="currency">%</span></div></div>
+        <div class="field"><label>TOTAL MONTHLY COSTS (€)</label><div class="input-row"><span class="currency">&euro;</span><input type="number" id="total-costs" value="24420" oninput="calc()"></div></div>
+        <div class="field"><label>HSK HOURLY RATE (€)</label><div class="input-row"><span class="currency">&euro;</span><input type="number" id="hsk-rate" value="14.40" step="0.01" oninput="calc()"></div></div>
+        <div class="field"><label>STAYOVER CLEAN TIME (min)</label><input type="number" id="stayover-mins" value="20" oninput="calc()"></div>
+        <div class="field"><label>LINEN CHANGE TIME (min)</label><input type="number" id="linen-mins" value="15" oninput="calc()"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LAUNDRY SETUP -->
+  <div class="laundry-section">
+    <div style="font-size:10px;color:#8A8070;letter-spacing:3px;font-family:system-ui;font-weight:600;margin-bottom:10px;">LAUNDRY PRICING METHOD</div>
+    <div class="laundry-toggle">
+      <button class="toggle-btn active" id="btn-piece" onclick="setLaundryMode('piece')">PER PIECE</button>
+      <button class="toggle-btn" id="btn-kg" onclick="setLaundryMode('kg')">PER KG INVOICE</button>
+    </div>
+    <div id="laundry-piece">
+      <div class="laundry-grid">
+        <div class="field"><label>FITTED SHEET (1P)</label><div class="input-row"><span class="currency">&euro;</span><input type="number" id="l-sheet1" value="1.54" step="0.01" oninput="calc()"></div></div>
+        <div class="field"><label>FITTED SHEET (2P)</label><div class="input-row"><span class="currency">&euro;</span><input type="number" id="l-sheet2" value="3.09" step="0.01" oninput="calc()"></div></div>
+        <div class="field"><label>DUVET COVER (1P)</label><div class="input-row"><span class="currency">&euro;</span><input type="number" id="l-duvet1" value="2.12" step="0.01" oninput="calc()"></div></div>
+        <div class="field"><label>DUVET COVER (2P)</label><div class="input-row"><span class="currency">&euro;</span><input type="number" id="l-duvet2" value="4.24" step="0.01" oninput="calc()"></div></div>
+        <div class="field"><label>PILLOWCASE</label><div class="input-row"><span class="currency">&euro;</span><input type="number" id="l-pillow" value="0.61" step="0.01" oninput="calc()"></div></div>
+        <div class="field"><label>BATH TOWEL</label><div class="input-row"><span class="currency">&euro;</span><input type="number" id="l-bath" value="1.59" step="0.01" oninput="calc()"></div></div>
+        <div class="field"><label>HAND TOWEL</label><div class="input-row"><span class="currency">&euro;</span><input type="number" id="l-hand" value="0.74" step="0.01" oninput="calc()"></div></div>
+        <div class="field"><label>BATH MAT</label><div class="input-row"><span class="currency">&euro;</span><input type="number" id="l-mat" value="0.74" step="0.01" oninput="calc()"></div></div>
+      </div>
+    </div>
+    <div id="laundry-kg" style="display:none;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px;">
+        <div class="field"><label>MONTHLY LAUNDRY INVOICE (€)</label><div class="input-row"><span class="currency">&euro;</span><input type="number" id="l-invoice" value="10000" oninput="calc()"></div></div>
+        <div class="field"><label>TOWEL SET WEIGHT (kg)</label><div class="input-row"><input type="number" id="l-towel-kg" value="1.4" step="0.1" oninput="calc()"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROOM TYPES -->
+  <div class="card">
+    <div class="card-head" style="background:#1A3A5C;"><span class="card-title">ROOM TYPE CONFIGURATION</span></div>
+    <div class="room-tabs">
+      <div class="room-tab active" onclick="showRoom(0)">SMALL</div>
+      <div class="room-tab" onclick="showRoom(1)">MEDIUM</div>
+      <div class="room-tab" onclick="showRoom(2)">LARGE</div>
+      <div class="room-tab" onclick="showRoom(3)">FAMILY</div>
+    </div>
+    <div id="room-panels"></div>
+  </div>
+
+  <!-- RESULTS -->
+  <div style="font-size:10px;color:#8A8070;letter-spacing:3px;font-family:system-ui;font-weight:600;margin-bottom:12px;">REQUIRED PRICE PER NIGHT — BY ROOM TYPE</div>
+  <div class="results-grid" id="results-grid"></div>
+
+  <!-- COMPARISON TABLE -->
+  <div class="card">
+    <div class="card-head" style="background:#2A2A2A;"><span class="card-title">FULL COST COMPARISON — ALL ROOM TYPES</span></div>
+    <div style="overflow-x:auto;">
+      <table class="comp-table" id="comp-table">
+        <thead><tr><th>COST COMPONENT</th><th>SMALL</th><th>MEDIUM</th><th>LARGE</th><th>FAMILY</th></tr></thead>
+        <tbody id="comp-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="action-row">
+    <button class="btn-dark" onclick="window.print()">SAVE AS PDF</button>
+    <button class="btn-gold" onclick="calc()">RECALCULATE</button>
+  </div>
+  <p class="save-note">To save as PDF, a PDF printer or "Save as PDF" option must be available on your device.</p>
+  <div class="footer-note">HOTEL MASTERY HUB &middot; FINANCE & PRICING &middot; STAY COST CALCULATOR</div>
+</div>
+
+<script>
+const ROOM_TYPES = [
+  {name:'SMALL', nights:3, stayovers:1, linenChanges:1, towelChanges:2, beds:1, margin:20},
+  {name:'MEDIUM', nights:5, stayovers:2, linenChanges:1, towelChanges:3, beds:2, margin:20},
+  {name:'LARGE', nights:7, stayovers:3, linenChanges:2, towelChanges:4, beds:2, margin:20},
+  {name:'FAMILY', nights:7, stayovers:3, linenChanges:2, towelChanges:5, beds:3, margin:20},
+];
+
+let rooms = JSON.parse(JSON.stringify(ROOM_TYPES));
+let laundryMode = 'piece';
+
+function v(id) { return parseFloat(document.getElementById(id)?.value)||0; }
+function fmt(n) { return '€'+n.toFixed(2); }
+
+function setLaundryMode(mode) {
+  laundryMode = mode;
+  document.getElementById('laundry-piece').style.display = mode==='piece'?'block':'none';
+  document.getElementById('laundry-kg').style.display = mode==='kg'?'block':'none';
+  document.getElementById('btn-piece').classList.toggle('active', mode==='piece');
+  document.getElementById('btn-kg').classList.toggle('active', mode==='kg');
+  calc();
+}
+
+function showRoom(idx) {
+  document.querySelectorAll('.room-tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  document.querySelectorAll('.room-panel').forEach((p,i)=>p.classList.toggle('active',i===idx));
+}
+
+function buildRoomPanels() {
+  const container = document.getElementById('room-panels');
+  container.innerHTML = rooms.map((room,i)=>`
+    <div class="room-panel ${i===0?'active':''}">
+      <div class="room-grid">
+        <div class="field"><label>ROOM NAME</label><input type="text" value="${room.name}" oninput="rooms[${i}].name=this.value;renderResults();"></div>
+        <div class="field"><label>LENGTH OF STAY (nights)</label><input type="number" id="r${i}-nights" value="${room.nights}" min="1" oninput="rooms[${i}].nights=+this.value;calc()"></div>
+        <div class="field"><label>STAYOVER CLEANS (during stay)</label><input type="number" id="r${i}-stayovers" value="${room.stayovers}" min="0" oninput="rooms[${i}].stayovers=+this.value;calc()"></div>
+        <div class="field"><label>LINEN CHANGES (during stay)</label><input type="number" id="r${i}-linen" value="${room.linenChanges}" min="0" oninput="rooms[${i}].linenChanges=+this.value;calc()"></div>
+        <div class="field"><label>TOWEL CHANGES (during stay)</label><input type="number" id="r${i}-towels" value="${room.towelChanges}" min="0" oninput="rooms[${i}].towelChanges=+this.value;calc()"></div>
+        <div class="field"><label>NUMBER OF BEDS</label><input type="number" id="r${i}-beds" value="${room.beds}" min="1" oninput="rooms[${i}].beds=+this.value;calc()"></div>
+        <div class="field"><label>MARGIN % (override)</label><div class="input-row"><input type="number" id="r${i}-margin" value="${room.margin}" min="1" max="99" oninput="rooms[${i}].margin=+this.value;calc()"><span class="currency">%</span></div></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function getLaundryCost(room) {
+  if(laundryMode==='kg') {
+    const invoice = v('l-invoice');
+    const totalRooms = v('rooms')*v('days')*(v('occ')/100);
+    const ratePerRoom = totalRooms>0?invoice/totalRooms:0;
+    const towelKg = v('l-towel-kg');
+    const costPerTowelSet = towelKg*4; // approximate €4/kg
+    return (ratePerRoom * room.nights) + (room.towelChanges * costPerTowelSet);
+  }
+  // Per piece
+  const beds = room.beds||1;
+  const sheet = beds===1?v('l-sheet1'):v('l-sheet2');
+  const duvet = beds===1?v('l-duvet1'):v('l-duvet2');
+  const pillow = v('l-pillow')*beds*2;
+  const bath = v('l-bath')*beds;
+  const hand = v('l-hand')*beds;
+  const mat = v('l-mat');
+  // Initial linen set + extra changes
+  const initialLinen = sheet + duvet + pillow + mat;
+  const initialTowels = bath + hand;
+  const extraLinen = room.linenChanges * (sheet + duvet + pillow);
+  const extraTowels = room.towelChanges * (bath + hand);
+  return initialLinen + initialTowels + extraLinen + extraTowels;
+}
+
+function calc() {
+  const totalCosts = v('total-costs');
+  const roomsSold = v('rooms')*v('days')*(v('occ')/100);
+  const costPerNight = roomsSold>0?totalCosts/roomsSold:0;
+  const hskRate = v('hsk-rate');
+  const stayoverMins = v('stayover-mins');
+  const linenMins = v('linen-mins');
+
+  const results = rooms.map(room=>{
+    const baseCost = costPerNight * room.nights;
+    const stayoverLabor = room.stayovers * (stayoverMins/60) * hskRate;
+    const linenLabor = room.linenChanges * (linenMins/60) * hskRate;
+    const laundryCost = getLaundryCost(room);
+    const totalExtra = stayoverLabor + linenLabor + laundryCost;
+    const totalStay = baseCost + totalExtra;
+    const margin = room.margin/100;
+    const requiredRevenue = margin<1?totalStay/(1-margin):totalStay;
+    const pricePerNight = room.nights>0?requiredRevenue/room.nights:0;
+    return { room, baseCost, stayoverLabor, linenLabor, laundryCost, totalExtra, totalStay, requiredRevenue, pricePerNight };
+  });
+
+  // Results cards
+  document.getElementById('results-grid').innerHTML = results.map(r=>`
+    <div class="result-card">
+      <div class="result-card-label">REQUIRED PRICE / NIGHT</div>
+      <div class="result-card-name">${r.room.name}</div>
+      <div class="result-card-price">${fmt(r.pricePerNight)}</div>
+      <div class="result-card-sub">Total stay cost: ${fmt(r.totalStay)}</div>
+      <div class="result-card-nights">${r.room.nights} nights &middot; ${r.room.margin}% margin</div>
+    </div>
+  `).join('');
+
+  // Comparison table
+  const rows = [
+    {label:'Base cost (all nights)', vals:results.map(r=>fmt(r.baseCost))},
+    {label:'Stayover cleaning labor', vals:results.map(r=>fmt(r.stayoverLabor))},
+    {label:'Linen change labor', vals:results.map(r=>fmt(r.linenLabor))},
+    {label:'Laundry cost', vals:results.map(r=>fmt(r.laundryCost))},
+    {label:'Total extra cleaning', vals:results.map(r=>fmt(r.totalExtra))},
+    {label:'TOTAL STAY COST', vals:results.map(r=>fmt(r.totalStay))},
+  ];
+
+  document.getElementById('comp-body').innerHTML = rows.map((row,i)=>`
+    <tr class="${i===rows.length-1?'price-row':''}">
+      <td>${row.label}</td>
+      ${row.vals.map(v=>`<td>${v}</td>`).join('')}
+    </tr>
+  `).join('') + `
+    <tr class="price-row">
+      <td>REQUIRED PRICE / NIGHT</td>
+      ${results.map(r=>`<td>${fmt(r.pricePerNight)}</td>`).join('')}
+    </tr>
+  `;
+}
+
+buildRoomPanels();
+calc();
+</script>
+</body>
+</html>

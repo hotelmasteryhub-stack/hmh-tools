@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Receptionist Onboarding Builder -- Hotel Mastery Hub</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:Georgia,serif; background:#F8F5F0; min-height:100vh; color:#1A1A1A; }
+.header { background:#1A1A1A; padding:0 20px; height:52px; display:flex; align-items:center; justify-content:space-between; }
+.hb { color:#B8962E; font-size:10px; letter-spacing:4px; font-family:system-ui; font-weight:600; }
+.hs { color:#8A8070; font-size:10px; letter-spacing:3px; font-family:system-ui; margin-left:12px; }
+.mode-btns { display:flex; gap:8px; }
+.btn-mode { padding:6px 14px; font-size:11px; letter-spacing:2px; cursor:pointer; font-family:system-ui; font-weight:600; border:1px solid rgba(184,150,46,0.4); color:#8A8070; background:transparent; }
+.btn-mode.active { background:#B8962E; color:#1A1A1A; border-color:#B8962E; }
+.wrap { max-width:900px; margin:0 auto; padding:24px 16px 60px; }
+.title-bar { background:#1A1A1A; padding:18px 24px; margin-bottom:20px; }
+.title-bar h1 { font-size:22px; color:#F5F0E8; font-weight:700; margin-bottom:4px; }
+.title-bar p { font-size:12px; color:#8A8070; font-family:system-ui; }
+.edit-hint { background:#FFF8F0; border-left:3px solid #B8962E; padding:10px 16px; font-size:12px; color:#8A8070; font-family:system-ui; margin-bottom:16px; }
+.section-block { background:#fff; border:1px solid #E5DDD0; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:16px; }
+.sec-head { padding:10px 16px; }
+.sec-title { font-size:12px; font-weight:700; color:#F5F0E8; letter-spacing:1px; font-family:system-ui; }
+.sec-sub { font-size:11px; color:#8A8070; font-family:system-ui; margin-top:2px; }
+.profile-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:16px; }
+label { display:block; font-size:10px; color:#8A8070; letter-spacing:2px; font-family:system-ui; font-weight:600; margin-bottom:5px; }
+input[type=text] { width:100%; padding:8px 10px; border:1px solid #E5DDD0; font-size:13px; font-family:system-ui; background:#FAFAFA; color:#1A1A1A; outline:none; }
+input[type=text]:focus { border-color:#B8962E; }
+textarea { width:100%; padding:7px 10px; border:1px solid #E5DDD0; font-size:12px; font-family:system-ui; background:#FAFAFA; color:#1A1A1A; outline:none; resize:vertical; min-height:48px; line-height:1.5; }
+textarea:focus { border-color:#B8962E; }
+.access-item-edit { display:flex; gap:8px; padding:8px 16px; border-bottom:1px solid #F0EBE3; align-items:flex-start; }
+.access-item-edit:last-child { border-bottom:none; }
+.access-inputs { flex:1; display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.del-btn { background:transparent; border:none; color:#CCC; cursor:pointer; font-size:16px; flex-shrink:0; padding:4px; }
+.del-btn:hover { color:#CC5555; }
+.add-item-row { display:flex; gap:8px; padding:10px 16px; border-top:1px solid #F0EBE3; }
+.add-input { flex:1; padding:7px 10px; border:1px solid #E5DDD0; font-size:12px; font-family:system-ui; background:#FAFAFA; outline:none; }
+.add-btn { background:#B8962E; border:none; color:#1A1A1A; padding:7px 14px; font-size:11px; font-family:system-ui; font-weight:700; cursor:pointer; }
+.access-use-row { display:grid; grid-template-columns:2fr 80px 100px 100px 100px; gap:0; border-bottom:1px solid #F0EBE3; align-items:start; }
+.access-use-row:last-child { border-bottom:none; }
+.aur-cell { padding:8px 10px; border-right:1px solid #F0EBE3; font-size:12px; font-family:system-ui; }
+.aur-cell:last-child { border-right:none; }
+.aur-head { display:grid; grid-template-columns:2fr 80px 100px 100px 100px; background:#F0EBE3; }
+.aur-head span { padding:7px 10px; font-size:10px; color:#8A8070; letter-spacing:2px; font-family:system-ui; font-weight:600; border-right:1px solid #E5DDD0; }
+.aur-head span:last-child { border-right:none; }
+.status-sel { border:1px solid #E5DDD0; padding:4px 6px; font-size:11px; font-family:system-ui; background:#FAFAFA; outline:none; color:#1A1A1A; width:100%; }
+.access-cat-bar { background:#2A2A2A; padding:6px 16px; }
+.access-cat-bar span { font-size:10px; color:#8A8070; letter-spacing:2px; font-family:system-ui; font-weight:600; }
+.cat-bar { background:#2A2A2A; padding:8px 16px; display:flex; justify-content:space-between; align-items:center; }
+.cat-bar-title { font-size:10px; color:#B8962E; letter-spacing:3px; font-family:system-ui; font-weight:600; }
+.cat-edit-title { background:transparent; border:none; border-bottom:1px solid #555; color:#B8962E; font-size:10px; letter-spacing:3px; font-family:system-ui; font-weight:600; outline:none; flex:1; }
+.del-cat-btn { background:transparent; border:1px solid #555; color:#8A8070; cursor:pointer; font-size:10px; font-family:system-ui; padding:3px 8px; flex-shrink:0; margin-left:12px; }
+.task-edit-row { display:flex; gap:8px; padding:8px 16px; border-bottom:1px solid #F0EBE3; align-items:flex-start; }
+.task-edit-row:last-child { border-bottom:none; }
+.task-edit-inputs { flex:1; display:flex; flex-direction:column; gap:6px; }
+.task-edit-title-input { width:100%; padding:6px 10px; border:none; border-bottom:1px solid #E5DDD0; font-size:13px; font-weight:700; font-family:system-ui; background:transparent; color:#1A1A1A; outline:none; }
+.task-edit-desc-input { width:100%; padding:6px 10px; border:1px solid #E5DDD0; font-size:12px; font-family:system-ui; background:#FAFAFA; color:#1A1A1A; outline:none; resize:vertical; min-height:44px; }
+.task-use-header { display:grid; grid-template-columns:2fr 1.5fr 90px 110px 90px; background:#F0EBE3; }
+.task-use-header span { padding:7px 12px; font-size:10px; color:#8A8070; letter-spacing:2px; font-family:system-ui; font-weight:600; border-right:1px solid #E5DDD0; }
+.task-use-header span:last-child { border-right:none; }
+.task-use-row { display:grid; grid-template-columns:2fr 1.5fr 90px 110px 90px; border-bottom:1px solid #F0EBE3; }
+.task-use-row:last-child { border-bottom:none; }
+.tur-cell { padding:8px 12px; border-right:1px solid #F0EBE3; font-size:12px; font-family:system-ui; }
+.tur-cell:last-child { border-right:none; }
+.task-title-use { font-size:13px; font-weight:700; color:#1A1A1A; margin-bottom:3px; }
+.task-desc-use { font-size:11px; color:#8A8070; line-height:1.4; }
+.stage-sel { border:1px solid #E5DDD0; padding:5px 6px; font-size:11px; font-family:system-ui; background:#FAFAFA; outline:none; width:100%; color:#1A1A1A; }
+.progress-strip { display:flex; align-items:center; gap:12px; padding:10px 16px; background:#F8F5F0; border-bottom:1px solid #E5DDD0; }
+.progress-track { flex:1; height:5px; background:#E5DDD0; border-radius:3px; }
+.progress-fill { height:5px; border-radius:3px; transition:width 0.3s; }
+.signoff-grid { display:grid; grid-template-columns:1fr 1fr 1fr; }
+.signoff-cell { padding:14px 16px; border-right:1px solid #E5DDD0; }
+.signoff-cell:last-child { border-right:none; }
+.signoff-label { font-size:10px; color:#B8962E; letter-spacing:2px; font-family:system-ui; font-weight:600; margin-bottom:8px; }
+.add-cat-btn { background:#F8F5F0; border:1px dashed #E5DDD0; color:#8A8070; padding:10px; font-size:11px; font-family:system-ui; cursor:pointer; width:100%; text-align:center; margin-top:8px; }
+.add-cat-btn:hover { border-color:#B8962E; color:#B8962E; }
+.action-row { display:flex; gap:10px; margin-top:20px; }
+.btn-gold { background:#B8962E; border:none; color:#1A1A1A; padding:13px 24px; font-size:12px; font-family:system-ui; font-weight:700; letter-spacing:1px; cursor:pointer; flex:1; }
+.btn-dark { background:#1A1A1A; border:none; color:#B8962E; padding:13px 24px; font-size:12px; font-family:system-ui; font-weight:700; letter-spacing:1px; cursor:pointer; }
+.save-note { font-size:11px; color:#8A8070; font-family:system-ui; margin-top:10px; text-align:center; }
+.footer-note { text-align:center; margin-top:28px; color:#8A8070; font-size:11px; font-family:system-ui; letter-spacing:2px; }
+@media print { .header,.mode-btns,.edit-hint,.action-row,.save-note,.footer-note,.add-item-row,.add-cat-btn,.del-btn,.del-cat-btn,.add-btn { display:none !important; } body { background:#fff; } .wrap { padding:8px; } input,textarea,select { border:none; background:transparent; } }
+@media (max-width:600px) { .profile-grid { grid-template-columns:1fr; } .access-inputs { grid-template-columns:1fr; } .task-use-header,.task-use-row,.aur-head,.access-use-row { grid-template-columns:1fr; } .signoff-grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="header">
+  <div style="display:flex;align-items:center;"><span class="hb">HOTEL MASTERY HUB</span><span class="hs">&middot; RECEPTIONIST ONBOARDING</span></div>
+  <div class="mode-btns">
+    <button class="btn-mode active" id="btn-edit" onclick="setMode('edit')">EDIT</button>
+    <button class="btn-mode" id="btn-use" onclick="setMode('use')">USE</button>
+  </div>
+</div>
+<div class="wrap">
+  <div class="title-bar">
+    <h1>Receptionist Onboarding & Training Tracker</h1>
+    <p>Customise for your hotel in EDIT mode. Switch to USE mode to track the trainee's progress.</p>
+  </div>
+
+  <div class="edit-hint" id="edit-hint">
+    <strong>EDIT mode:</strong> Add, remove or rewrite any task or access item to match your hotel. When ready, switch to <strong>USE</strong> mode to track the trainee.
+  </div>
+
+  <!-- PROFILE -->
+  <div class="section-block">
+    <div class="sec-head" style="background:#1A1A1A;"><div class="sec-title">A &middot; TRAINEE PROFILE</div></div>
+    <div class="profile-grid">
+      <div><label>TRAINEE FULL NAME</label><input type="text" placeholder="Full name"></div>
+      <div><label>START DATE</label><input type="text" id="start-date"></div>
+      <div><label>LINE MANAGER / SUPERVISOR</label><input type="text" placeholder="Name"></div>
+      <div><label>BUDDY — MORNING SHIFT</label><input type="text" placeholder="Name"></div>
+      <div><label>BUDDY — EVENING SHIFT</label><input type="text" placeholder="Name"></div>
+      <div><label>BUDDY — NIGHT / OTHER</label><input type="text" placeholder="Name"></div>
+      <div><label>PROPERTY NAME</label><input type="text" placeholder="Hotel name"></div>
+      <div><label>PROBATION REVIEW DATE</label><input type="text" placeholder="Date"></div>
+    </div>
+  </div>
+
+  <!-- ACCESS -->
+  <div class="section-block">
+    <div class="sec-head" style="background:#1A3A5C;"><div class="sec-title">B &middot; ACCESS CHECKLIST</div><div class="sec-sub">Submit every request on Day 1. Access takes time. Do not wait.</div></div>
+    <div id="access-container"></div>
+  </div>
+
+  <!-- TASKS -->
+  <div class="section-block">
+    <div class="sec-head" style="background:#1E4620;"><div class="sec-title">C &middot; TRAINING TASKS</div><div class="sec-sub">Stages: 1 = Observation &nbsp;&middot;&nbsp; 2 = Guided &nbsp;&middot;&nbsp; 3 = Independent &nbsp;&middot;&nbsp; &#10003; = Signed off</div></div>
+    <div class="progress-strip" id="progress-strip" style="display:none;">
+      <span style="font-size:11px;color:#8A8070;font-family:system-ui;letter-spacing:1px;" id="prog-text">0 tasks signed off</span>
+      <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%;background:#B8962E;"></div></div>
+    </div>
+    <div id="tasks-container"></div>
+    <button class="add-cat-btn" id="add-cat-btn" onclick="addCategory()">+ ADD CATEGORY</button>
+  </div>
+
+  <!-- SIGNOFF -->
+  <div class="section-block">
+    <div class="sec-head" style="background:#4A235A;"><div class="sec-title">D &middot; FINAL SIGN-OFF</div></div>
+    <div class="signoff-grid">
+      <div class="signoff-cell"><div class="signoff-label">ALL ACCESS GRANTED</div><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><input type="checkbox"><span style="font-size:12px;font-family:system-ui;">Confirmed</span></div><label>Manager</label><input type="text" placeholder="Name & date"></div>
+      <div class="signoff-cell"><div class="signoff-label">ALL TASKS SIGNED OFF</div><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><input type="checkbox"><span style="font-size:12px;font-family:system-ui;">Every task completed</span></div><label>Buddy / Supervisor</label><input type="text" placeholder="Name & date"></div>
+      <div class="signoff-cell"><div class="signoff-label">TRAINEE CONFIRMED READY</div><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><input type="checkbox"><span style="font-size:12px;font-family:system-ui;">Can work independently</span></div><label>Trainee Signature</label><input type="text" placeholder="Name & date"></div>
+    </div>
+  </div>
+
+  <div class="action-row">
+    <button class="btn-dark" onclick="window.print()">SAVE AS PDF</button>
+    <button class="btn-gold" onclick="resetStages()">RESET PROGRESS</button>
+  </div>
+  <p class="save-note">To save as PDF, a PDF printer or "Save as PDF" option must be available on your device.</p>
+  <div class="footer-note">HOTEL MASTERY HUB &middot; RECEPTIONIST ONBOARDING</div>
+</div>
+
+<script>
+let mode = 'edit';
+let stages = {};
+
+let accessItems = [
+  {cat:'SYSTEMS & SOFTWARE', items:[
+    {task:'PMS — full access', how:'Manager creates login. Test check-in and check-out on Day 1.'},
+    {task:'Channel manager', how:'Manager sets up. Test availability update.'},
+    {task:'Booking.com extranet', how:'Manager adds as property user. Email invite sent.'},
+    {task:'Hotel email account', how:'IT or manager creates. Test before first shift.'},
+    {task:'Staff communication group', how:'Manager adds. WhatsApp / Slack / other.'},
+  ]},
+  {cat:'PAYMENTS & FINANCE', items:[
+    {task:'Card payment terminal', how:'Manager trains and sets PIN. Test before solo shift.'},
+    {task:'Cash till / float access', how:'Manager authorises. Cash handling explained and signed.'},
+  ]},
+  {cat:'PHYSICAL ACCESS', items:[
+    {task:'Reception desk key / lock code', how:'Manager provides on Day 1. Test before first shift.'},
+    {task:'Key card programming system', how:'Buddy trains on Day 1. Practice before solo shift.'},
+    {task:'Staff room / locker', how:'Locker assigned by manager.'},
+  ]},
+];
+
+let categories = [
+  {id:'cat1', title:'CHECK-IN', tasks:[
+    {title:'Opening checks before first check-in', desc:'Check arrivals list. Know VIPs, special requests, early arrivals.'},
+    {title:'Locating a reservation in the PMS', desc:'Search by name, booking reference, arrival date. Check dates, room type, rate, notes.'},
+    {title:'Verifying guest identity and collecting ID', desc:'Which ID is accepted. How it is recorded. What to do if missing or expired.'},
+    {title:'Processing payment at check-in', desc:'Pre-authorisation amount. Card not present. Cash deposit. Failed payment procedure.'},
+    {title:'Allocating a room and programming a key card', desc:'How to choose the right room. How to programme the key card.'},
+    {title:'Guest welcome and briefing', desc:'WiFi, breakfast time, checkout time, parking, key return. Same every guest.'},
+    {title:'Handling early arrivals — room not ready', desc:'Offer luggage storage. Give honest time estimate. Know what you can offer without manager approval.'},
+  ]},
+  {id:'cat2', title:'CHECK-OUT', tasks:[
+    {title:'Preparing for departures', desc:'Review departure list. Flag late checkouts. Notify housekeeping of departure times.'},
+    {title:'Retrieving and reviewing the guest bill', desc:'Pull up the folio. Know every charge type. Be ready to explain any item.'},
+    {title:'Processing payment at checkout', desc:'Charge balance. Release pre-auth. Handle cash. Invoice for company billing.'},
+    {title:'Handling a bill dispute', desc:'Listen fully. Check PMS records. Correct if wrong. Escalate if correct but disputed.'},
+    {title:'Collecting key cards', desc:'Ask for all keys. Deactivate cards. Note unreturned cards and log.'},
+    {title:'Review request at departure', desc:'When and how to ask. Which platform. What to say if guest had a complaint.'},
+  ]},
+  {id:'cat3', title:'RESERVATIONS & BOOKINGS', tasks:[
+    {title:'Taking a direct booking', desc:'Capture all required information. Quote the correct rate. Confirm in writing. Add to PMS.'},
+    {title:'Modifying an existing reservation', desc:'Date change, room type change, name change. Know when a rate change applies.'},
+    {title:'Cancelling a reservation', desc:'Cancellation policy. Refund process. Logging. Releasing room in PMS and channel manager.'},
+    {title:'No-show procedure', desc:'When to charge. How to process. How to log. What to do if guest contacts you afterwards.'},
+  ]},
+  {id:'cat4', title:'GUEST SERVICES & COMPLAINTS', tasks:[
+    {title:'Handling guest requests', desc:'Extra towels, pillows, adapters, taxi bookings, local information.'},
+    {title:'Handling a guest complaint', desc:'Listen, acknowledge, apologise, offer resolution within your authority.'},
+    {title:'Escalating a complaint to manager', desc:'Know when to escalate. What information to pass on. Guest should not repeat themselves.'},
+  ]},
+  {id:'cat5', title:'SHIFT PROCEDURES', tasks:[
+    {title:'Opening the reception — morning', desc:'Check handover notes. Review arrivals and departures. Prepare float.'},
+    {title:'Shift handover', desc:'What information must be communicated. Where it is written. What the next shift needs to know.'},
+    {title:'End of shift closing', desc:'Balance cash float. Complete outstanding logs. Leave notes for next shift. Secure reception.'},
+  ]},
+];
+
+let catCounter = 10;
+
+document.getElementById('start-date').value = new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+
+function setMode(m) {
+  mode = m;
+  document.getElementById('btn-edit').classList.toggle('active', m==='edit');
+  document.getElementById('btn-use').classList.toggle('active', m==='use');
+  document.getElementById('edit-hint').style.display = m==='edit'?'block':'none';
+  document.getElementById('add-cat-btn').style.display = m==='edit'?'block':'none';
+  document.getElementById('progress-strip').style.display = m==='use'?'flex':'none';
+  render();
+}
+
+function addCategory() {
+  catCounter++;
+  categories.push({id:'cat'+catCounter, title:'NEW CATEGORY', tasks:[{title:'New task', desc:'Describe what the trainee needs to learn.'}]});
+  render();
+}
+
+function deleteCategory(id) { categories = categories.filter(c=>c.id!==id); render(); }
+function addTask(catId) { const cat = categories.find(c=>c.id===catId); if(cat) { cat.tasks.push({title:'New task', desc:''}); render(); } }
+function deleteTask(catId, idx) { const cat = categories.find(c=>c.id===catId); if(cat) { cat.tasks.splice(idx,1); render(); } }
+function updateCatTitle(id, val) { const cat = categories.find(c=>c.id===id); if(cat) cat.title = val; }
+function updateTask(catId, idx, field, val) { const cat = categories.find(c=>c.id===catId); if(cat) cat.tasks[idx][field] = val; }
+function setStage(key, val) { stages[key] = val; updateProgress(); }
+
+function updateProgress() {
+  const total = categories.reduce((s,c)=>s+c.tasks.length,0);
+  const done = Object.values(stages).filter(v=>v==='✓').length;
+  const pct = total>0?Math.round((done/total)*100):0;
+  const fill = document.getElementById('prog-fill');
+  const txt = document.getElementById('prog-text');
+  if(fill) { fill.style.width=pct+'%'; fill.style.background=pct===100?'#55AA55':'#B8962E'; }
+  if(txt) txt.textContent = `${done} of ${total} tasks signed off`;
+}
+
+function resetStages() { if(!confirm('Reset all progress?')) return; stages={}; render(); }
+
+function render() {
+  const ac = document.getElementById('access-container');
+  if(mode==='edit') {
+    ac.innerHTML = accessItems.map((group, gi)=>`
+      <div class="access-cat-bar"><span>${group.cat}</span></div>
+      ${group.items.map((item,i)=>`
+        <div class="access-item-edit">
+          <div class="access-inputs">
+            <input type="text" value="${item.task}" oninput="accessItems[${gi}].items[${i}].task=this.value" placeholder="Access item">
+            <input type="text" value="${item.how}" oninput="accessItems[${gi}].items[${i}].how=this.value" placeholder="How to request">
+          </div>
+          <button class="del-btn" onclick="accessItems[${gi}].items.splice(${i},1);render()">x</button>
+        </div>
+      `).join('')}
+      <div class="add-item-row">
+        <input class="add-input" type="text" id="new-at-${gi}" placeholder="New access item...">
+        <input class="add-input" type="text" id="new-ah-${gi}" placeholder="How to request...">
+        <button class="add-btn" onclick="const t=document.getElementById('new-at-${gi}').value.trim();const h=document.getElementById('new-ah-${gi}').value.trim();if(t){accessItems[${gi}].items.push({task:t,how:h});render();}">+ ADD</button>
+      </div>
+    `).join('');
+  } else {
+    ac.innerHTML = accessItems.map(group=>`
+      <div class="access-cat-bar"><span>${group.cat}</span></div>
+      <div class="aur-head"><span>ACCESS ITEM</span><span>REQ?</span><span>REQUESTED</span><span>GRANTED</span><span>STATUS</span></div>
+      ${group.items.map(item=>`
+        <div class="access-use-row">
+          <div class="aur-cell"><div style="font-weight:600;margin-bottom:2px;">${item.task}</div><div style="font-size:11px;color:#8A8070;font-style:italic;">${item.how}</div></div>
+          <div class="aur-cell"><input type="checkbox"></div>
+          <div class="aur-cell"><input type="text" placeholder="Date" style="border:none;border-bottom:1px solid #E5DDD0;background:transparent;font-size:12px;font-family:system-ui;width:100%;outline:none;padding:2px 0;"></div>
+          <div class="aur-cell"><input type="text" placeholder="Date" style="border:none;border-bottom:1px solid #E5DDD0;background:transparent;font-size:12px;font-family:system-ui;width:100%;outline:none;padding:2px 0;"></div>
+          <div class="aur-cell"><select class="status-sel"><option>Pending</option><option>Requested</option><option>Granted</option><option>N/A</option></select></div>
+        </div>
+      `).join('')}
+    `).join('');
+  }
+
+  const tc = document.getElementById('tasks-container');
+  tc.innerHTML = categories.map(cat=>`
+    <div>
+      <div class="cat-bar">
+        ${mode==='edit'
+          ? `<input class="cat-edit-title" type="text" value="${cat.title}" oninput="updateCatTitle('${cat.id}',this.value)"><button class="del-cat-btn" onclick="deleteCategory('${cat.id}')">x Remove</button>`
+          : `<span class="cat-bar-title">${cat.title}</span>`}
+      </div>
+      ${mode==='use'?`<div class="task-use-header"><span>TASK</span><span>HOTEL NOTES</span><span>STAGE</span><span>BUDDY SIGN-OFF</span><span>DATE</span></div>`:''}
+      ${cat.tasks.map((task,i)=>{
+        const key=cat.id+'-'+i;
+        const stage=stages[key]||'';
+        if(mode==='edit') return `
+          <div class="task-edit-row">
+            <div class="task-edit-inputs">
+              <input class="task-edit-title-input" type="text" value="${task.title}" oninput="updateTask('${cat.id}',${i},'title',this.value)" placeholder="Task title">
+              <textarea class="task-edit-desc-input" oninput="updateTask('${cat.id}',${i},'desc',this.value)" placeholder="What the trainee needs to learn...">${task.desc}</textarea>
+            </div>
+            <button class="del-btn" onclick="deleteTask('${cat.id}',${i})">x</button>
+          </div>`;
+        return `
+          <div class="task-use-row">
+            <div class="tur-cell"><div class="task-title-use">${task.title}</div><div class="task-desc-use">${task.desc}</div></div>
+            <div class="tur-cell"><textarea placeholder="Your hotel standard..." style="min-height:44px;border:1px solid #E5DDD0;"></textarea></div>
+            <div class="tur-cell"><select class="stage-sel" onchange="setStage('${key}',this.value)"><option value="">-</option><option value="1" ${stage==='1'?'selected':''}>1 - Observation</option><option value="2" ${stage==='2'?'selected':''}>2 - Guided</option><option value="3" ${stage==='3'?'selected':''}>3 - Independent</option><option value="✓" ${stage==='✓'?'selected':''}>&#10003; Signed off</option></select></div>
+            <div class="tur-cell"><input type="text" placeholder="Buddy name" style="border:none;border-bottom:1px solid #E5DDD0;background:transparent;font-size:12px;font-family:system-ui;width:100%;outline:none;padding:4px 0;"></div>
+            <div class="tur-cell"><input type="text" placeholder="Date" style="border:none;border-bottom:1px solid #E5DDD0;background:transparent;font-size:12px;font-family:system-ui;width:100%;outline:none;padding:4px 0;"></div>
+          </div>`;
+      }).join('')}
+      ${mode==='edit'?`<div class="add-item-row"><input class="add-input" type="text" id="new-task-${cat.id}" placeholder="Add a task..."><button class="add-btn" onclick="addTask('${cat.id}')">+ ADD</button></div>`:''}
+    </div>
+  `).join('');
+
+  if(mode==='use') updateProgress();
+}
+
+render();
+</script>
+</body>
+</html>

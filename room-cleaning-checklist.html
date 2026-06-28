@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Room Cleaning Task Checklist -- Hotel Mastery Hub</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:Georgia,serif; background:#F8F5F0; min-height:100vh; color:#1A1A1A; }
+.header { background:#1A1A1A; padding:0 24px; height:52px; display:flex; align-items:center; justify-content:space-between; }
+.hb { color:#B8962E; font-size:10px; letter-spacing:4px; font-family:system-ui; font-weight:600; }
+.hs { color:#8A8070; font-size:10px; letter-spacing:3px; font-family:system-ui; margin-left:16px; }
+.mode-btns { display:flex; gap:8px; }
+.btn-mode { padding:6px 14px; font-size:11px; letter-spacing:2px; cursor:pointer; font-family:system-ui; font-weight:600; border:1px solid rgba(184,150,46,0.4); color:#8A8070; background:transparent; }
+.btn-mode.active { background:#B8962E; color:#1A1A1A; border-color:#B8962E; }
+
+.wrap { max-width:900px; margin:0 auto; padding:24px 20px 60px; }
+
+.title-bar { background:#1A1A1A; padding:20px 28px; display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0; }
+.title-left { flex:1; }
+.room-label { font-size:9px; color:#8A8070; letter-spacing:3px; font-family:system-ui; margin-bottom:6px; }
+.editable-title { font-size:24px; color:#F5F0E8; font-weight:700; outline:none; border-bottom:1px solid transparent; display:block; width:100%; background:transparent; font-family:Georgia,serif; }
+.editable-title:focus { border-bottom-color:#B8962E; }
+.editable-sub { font-size:12px; color:#8A8070; font-family:system-ui; margin-top:4px; outline:none; display:block; background:transparent; border-bottom:1px solid transparent; }
+.editable-sub:focus { border-bottom-color:#555; }
+.target-box { text-align:right; flex-shrink:0; margin-left:20px; }
+.target-label { font-size:9px; color:#8A8070; letter-spacing:3px; font-family:system-ui; margin-bottom:2px; }
+.target-input { width:64px; font-size:38px; font-weight:700; color:#B8962E; background:transparent; border:none; border-bottom:2px solid #B8962E; text-align:right; outline:none; font-family:Georgia,serif; }
+.target-unit { font-size:11px; color:#8A8070; font-family:system-ui; margin-top:2px; }
+
+.progress-strip { background:#111; padding:10px 28px; display:flex; align-items:center; gap:16px; border-bottom:2px solid #B8962E; }
+.progress-text { font-size:11px; color:#8A8070; font-family:system-ui; letter-spacing:2px; white-space:nowrap; }
+.progress-track { flex:1; height:4px; background:#2A2A2A; border-radius:2px; }
+.progress-fill { height:4px; border-radius:2px; transition:width 0.3s; }
+.progress-pct { font-size:13px; font-weight:700; font-family:system-ui; white-space:nowrap; }
+
+.rule-bar { background:#F0EBE3; padding:8px 20px; font-size:12px; color:#8A8070; font-family:system-ui; font-style:italic; margin-bottom:20px; border-left:3px solid #B8962E; }
+
+.sections-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.section-card { background:#fff; border:1px solid #E5DDD0; box-shadow:0 2px 8px rgba(0,0,0,0.06); }
+.section-card.full-width { grid-column:1/-1; }
+.sec-header { padding:12px 18px; display:flex; justify-content:space-between; align-items:center; }
+.sec-title-edit { font-size:14px; font-weight:700; color:#F5F0E8; background:transparent; border:none; outline:none; border-bottom:1px solid transparent; font-family:Georgia,serif; width:100%; }
+.sec-title-edit:focus { border-bottom-color:#B8962E; }
+.sec-hint { font-size:11px; color:#8A8070; font-family:system-ui; font-style:italic; padding:8px 18px 0; outline:none; }
+.item-list { padding:8px 18px 12px; }
+
+/* USE MODE items */
+.item-row { display:flex; align-items:flex-start; gap:12px; padding:9px 0; border-bottom:1px solid #F0EBE3; cursor:pointer; }
+.item-row:last-child { border-bottom:none; }
+.item-cb { width:20px; height:20px; border:2px solid #CCC; background:transparent; flex-shrink:0; margin-top:1px; display:flex; align-items:center; justify-content:center; }
+.item-cb.done { border-color:#55AA55; background:#55AA55; }
+.item-text { font-size:13px; font-family:system-ui; line-height:1.4; flex:1; }
+.item-text.done { color:#8A8070; text-decoration:line-through; }
+.item-note { font-size:11px; color:#CC5555; font-family:system-ui; font-style:italic; margin-top:2px; }
+
+/* EDIT MODE items */
+.edit-item-row { display:flex; align-items:center; gap:8px; padding:6px 0; border-bottom:1px solid #F0EBE3; }
+.edit-item-row:last-child { border-bottom:none; }
+.drag-handle { color:#CCC; font-size:14px; cursor:grab; flex-shrink:0; padding:0 4px; }
+.item-edit-input { flex:1; font-size:13px; font-family:system-ui; border:none; outline:none; background:transparent; color:#1A1A1A; padding:4px 0; border-bottom:1px solid transparent; }
+.item-edit-input:focus { border-bottom-color:#B8962E; }
+.del-btn { background:transparent; border:none; color:#CCC; cursor:pointer; font-size:16px; padding:0 4px; flex-shrink:0; }
+.del-btn:hover { color:#CC5555; }
+.add-item-row { display:flex; gap:8px; padding:10px 0 4px; }
+.add-item-input { flex:1; font-size:13px; font-family:system-ui; border:none; border-bottom:1px solid #E5DDD0; outline:none; background:transparent; padding:6px 0; color:#1A1A1A; }
+.add-item-input:focus { border-bottom-color:#B8962E; }
+.add-item-btn { background:#B8962E; border:none; color:#1A1A1A; padding:6px 14px; font-size:11px; font-family:system-ui; font-weight:700; cursor:pointer; flex-shrink:0; }
+
+.action-row { display:flex; gap:10px; margin-top:24px; }
+.btn-gold { background:#B8962E; border:none; color:#1A1A1A; padding:13px 24px; font-size:12px; font-family:system-ui; font-weight:700; letter-spacing:1px; cursor:pointer; flex:1; }
+.btn-dark { background:#1A1A1A; border:none; color:#B8962E; padding:13px 24px; font-size:12px; font-family:system-ui; font-weight:700; letter-spacing:1px; cursor:pointer; flex:1; }
+.btn-reset { background:#fff; border:1px solid #E5DDD0; color:#8A8070; padding:13px 24px; font-size:12px; font-family:system-ui; font-weight:700; letter-spacing:1px; cursor:pointer; flex:1; }
+
+.complete-banner { background:#F0FFF0; border:1px solid rgba(85,170,85,0.4); padding:20px; text-align:center; margin-bottom:16px; }
+.edit-hint { background:#FFF8F0; border-left:3px solid #B8962E; padding:10px 16px; font-size:12px; color:#8A8070; font-family:system-ui; margin-bottom:16px; }
+.save-note { font-size:11px; color:#8A8070; font-family:system-ui; margin-top:10px; text-align:center; }
+.footer-note { text-align:center; margin-top:32px; color:#8A8070; font-size:11px; font-family:system-ui; letter-spacing:2px; }
+
+@media print {
+  .header,.mode-btns,.action-row,.save-note,.footer-note,.edit-hint,.add-item-row,.del-btn,.drag-handle { display:none !important; }
+  body { background:#fff; }
+  .wrap { padding:10px; }
+  .sections-grid { grid-template-columns:1fr 1fr; }
+  .item-cb { border:2px solid #999 !important; background:transparent !important; }
+  .item-cb.done { background:#55AA55 !important; }
+}
+@media (max-width:600px) { .sections-grid { grid-template-columns:1fr; } .section-card.full-width { grid-column:1; } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div style="display:flex;align-items:center;">
+    <span class="hb">HOTEL MASTERY HUB</span>
+    <span class="hs">&middot; HOUSEKEEPING</span>
+  </div>
+  <div class="mode-btns">
+    <button class="btn-mode active" id="btn-edit" onclick="setMode('edit')">EDIT</button>
+    <button class="btn-mode" id="btn-use" onclick="setMode('use')">USE</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="title-bar">
+    <div class="title-left">
+      <div class="room-label">HOUSEKEEPING SOP &middot; TAP ANY TEXT TO EDIT</div>
+      <input class="editable-title" id="main-title" type="text" value="Room Cleaning - Task Checklist">
+      <input class="editable-sub" id="main-sub" type="text" value="Same order, every room, every time.">
+    </div>
+    <div class="target-box">
+      <div class="target-label">TARGET TIME</div>
+      <input class="target-input" type="number" id="target-time" value="20" min="1" max="180">
+      <div class="target-unit">minutes</div>
+    </div>
+  </div>
+
+  <div class="progress-strip" id="progress-strip" style="display:none;">
+    <span class="progress-text">PROGRESS</span>
+    <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%;background:#B8962E;"></div></div>
+    <span class="progress-pct" id="prog-pct" style="color:#B8962E;">0%</span>
+  </div>
+
+  <div class="rule-bar">Bathroom first - spray and let products work while you make the bed. Floor is always last. Never go back into a finished area.</div>
+
+  <div class="edit-hint" id="edit-hint">
+    <strong>Edit mode:</strong> Tap any task to edit it. Use the x button to delete. Add your own tasks at the bottom of each section. When ready, switch to <strong>USE</strong> mode to use as a checklist.
+  </div>
+
+  <div class="sections-grid" id="sections-grid"></div>
+
+  <div id="complete-banner" style="display:none;" class="complete-banner">
+    <div style="font-size:26px;margin-bottom:6px;">&#10003;</div>
+    <div style="font-size:17px;font-weight:700;color:#55AA55;margin-bottom:4px;">Room Complete</div>
+    <div style="font-size:13px;color:#8A8070;font-family:system-ui;">All checks done. Mark room clean in your system.</div>
+  </div>
+
+  <div class="action-row">
+    <button class="btn-reset" onclick="resetChecks()">RESET CHECKS</button>
+    <button class="btn-dark" onclick="window.print()">SAVE AS PDF</button>
+  </div>
+  <p class="save-note">To save as PDF, a PDF printer or "Save as PDF" option must be available on your device.</p>
+  <div class="footer-note">HOTEL MASTERY HUB &middot; HOUSEKEEPING SOP</div>
+</div>
+
+<script>
+let mode = 'edit';
+let checked = {};
+
+let sections = [
+  {
+    id:'prep', title:'1 - Preparation', color:'#5D4037', fullWidth:false,
+    hint:'Enter the room and assess before touching anything.',
+    items:['Knock 3x - announce "Housekeeping". Enter only when safe.','Open curtains and window. Turn on all lights.','Quick scan from door - note damage or guest items before touching anything.']
+  },
+  {
+    id:'strip', title:'2 - Strip & Remove', color:'#4A5568', fullWidth:false,
+    hint:'Clear the room before cleaning begins.',
+    items:['Remove duvet cover, fitted sheet, 2 pillowcases. Into linen bag.','Remove used towels from bathroom.','Empty bin next to desk. Replace liner.','Check drawers and under bed for guest belongings. Report Lost & Found immediately.']
+  },
+  {
+    id:'bathroom', title:'3 - Bathroom', color:'#1A5276', fullWidth:true,
+    hint:'Apply chemical first, leave to work while you continue. Come back to scrub and rinse.',
+    items:['Apply first: toilet cleaner under rim, bathroom spray on shower glass and tiles. Leave to work.','Mirror - glass cleaner, dry cloth.','Sink & tap - spray, scrub, rinse, dry chrome.','Hairdryer - wipe body and nozzle. Test on/off.','Hand soap dispenser - wipe outside, check level.','Shower - scrub glass top to bottom, squeegee dry. Scrub tiles and floor. Rinse. Check shampoo level.','Toilet - scrub bowl under rim, seat both sides, lid, base, exterior. Flush.','Floor - mop far corner to door. Check drainage.','Restock toilet paper. Hang fresh towels.']
+  },
+  {
+    id:'dust', title:'4 - Dust & Wipe - Clockwise', color:'#1E5631', fullWidth:false,
+    hint:'Start at entrance. Move clockwise. Always top first, then down.',
+    items:['Entrance mirror - glass cleaner, dry cloth.','Door and handle inside and out - wipe down.','Wall lamp above bed - dust shade, wipe base, test switch.','Side table + lamp - wipe top and sides, dust shade, check plug.','Window sill and frame - dust and wipe.','Curtains - straighten, check mechanism.','Desk - wipe full surface. Chair - wipe seat and back.','Kettle - wipe outside, empty old water.','2 cups + 2 teaspoons - wash or wipe, dry, replace in position.','Mini fridge - wipe outside and handle. Open: clean inside, empty, leave ajar.','Clothes rack - wipe rail. 2 hangers present and straight.']
+  },
+  {
+    id:'beds', title:'5 - Bed Making', color:'#2C3E7A', fullWidth:false,
+    hint:null,
+    items:['Inspect mattress - report any stains or damage.','Fitted sheet - pull tight, all four corners tucked firm.','Duvet into clean cover - shake evenly, centre on bed.','2 pillows into clean cases - place symmetrically against headboard.','Smooth duvet - no wrinkles. Step back and view from door.']
+  },
+  {
+    id:'floor', title:'6 - Floor - Far Corner to Door', color:'#4A235A', fullWidth:false,
+    hint:null,
+    items:['Vacuum or sweep - full floor, under desk, all corners, under bed.','Mop from far corner toward door.','Close window.']
+  },
+  {
+    id:'check', title:'7 - Final Setup & Check', color:'#1E6B3A', fullWidth:true,
+    hint:null,
+    items:['Bin - liner in, clean, in position.','Desk: kettle, cups, teaspoons in correct position. Guest info folder neat.','From door: bed tight, bathroom clean, room smells fresh.','All lights off. Mark room clean in system.']
+  },
+];
+
+function setMode(m) {
+  mode = m;
+  document.getElementById('btn-edit').classList.toggle('active', m==='edit');
+  document.getElementById('btn-use').classList.toggle('active', m==='use');
+  document.getElementById('edit-hint').style.display = m==='edit'?'block':'none';
+  document.getElementById('progress-strip').style.display = m==='use'?'flex':'none';
+  document.getElementById('complete-banner').style.display = 'none';
+  render();
+}
+
+function updateProgress() {
+  const total = sections.reduce((s,sec)=>s+sec.items.length,0);
+  const done = Object.values(checked).filter(Boolean).length;
+  const pct = total>0?Math.round((done/total)*100):0;
+  const fill = document.getElementById('prog-fill');
+  const pctEl = document.getElementById('prog-pct');
+  if(fill) { fill.style.width=pct+'%'; fill.style.background=pct===100?'#55AA55':'#B8962E'; }
+  if(pctEl) { pctEl.textContent=pct+'%'; pctEl.style.color=pct===100?'#55AA55':'#B8962E'; }
+  document.getElementById('complete-banner').style.display = pct===100&&total>0?'block':'none';
+}
+
+function toggleCheck(key) {
+  if(mode!=='use') return;
+  checked[key] = !checked[key];
+  render();
+}
+
+function deleteItem(secId, idx) {
+  const sec = sections.find(s=>s.id===secId);
+  if(sec) { sec.items.splice(idx,1); render(); }
+}
+
+function addItem(secId) {
+  const input = document.getElementById('add-'+secId);
+  if(!input||!input.value.trim()) return;
+  const sec = sections.find(s=>s.id===secId);
+  if(sec) { sec.items.push(input.value.trim()); input.value=''; render(); }
+}
+
+function updateItem(secId, idx, val) {
+  const sec = sections.find(s=>s.id===secId);
+  if(sec) sec.items[idx] = val;
+}
+
+function resetChecks() {
+  checked = {};
+  render();
+}
+
+function render() {
+  const grid = document.getElementById('sections-grid');
+  grid.innerHTML = sections.map(sec => `
+    <div class="section-card ${sec.fullWidth?'full-width':''}">
+      <div class="sec-header" style="background:${sec.color};">
+        <input class="sec-title-edit" type="text" value="${sec.title}" oninput="sections.find(s=>s.id==='${sec.id}').title=this.value" ${mode==='use'?'readonly style="pointer-events:none;"':''}>
+      </div>
+      ${sec.hint?`<div class="sec-hint">${sec.hint}</div>`:''}
+      <div class="item-list">
+        ${mode==='edit' ? `
+          ${sec.items.map((item,i)=>`
+            <div class="edit-item-row">
+              <span class="drag-handle">&#9776;</span>
+              <input class="item-edit-input" type="text" value="${item.replace(/"/g,'&quot;')}" oninput="updateItem('${sec.id}',${i},this.value)">
+              <button class="del-btn" onclick="deleteItem('${sec.id}',${i})">x</button>
+            </div>
+          `).join('')}
+          <div class="add-item-row">
+            <input class="add-item-input" type="text" id="add-${sec.id}" placeholder="Add a task..." onkeydown="if(event.key==='Enter')addItem('${sec.id}')">
+            <button class="add-item-btn" onclick="addItem('${sec.id}')">+ ADD</button>
+          </div>
+        ` : `
+          ${sec.items.map((item,i)=>{
+            const key=sec.id+'-'+i;
+            const done=!!checked[key];
+            return `
+              <div class="item-row" onclick="toggleCheck('${key}')">
+                <div class="item-cb ${done?'done':''}">${done?'<span style="color:#fff;font-size:13px;font-weight:700;">&#10003;</span>':''}</div>
+                <span class="item-text ${done?'done':''}">${item}</span>
+              </div>
+            `;
+          }).join('')}
+        `}
+      </div>
+    </div>
+  `).join('');
+
+  if(mode==='use') updateProgress();
+}
+
+render();
+</script>
+</body>
+</html>
