@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Urgency Triage Tool - Hotel Mastery Hub</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: Georgia, serif;
+    background: #F8F5F0;
+    min-height: 100vh;
+    color: #1A1A1A;
+  }
+
+  .header {
+    background: #1A1A1A;
+    padding: 0 24px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .header-brand { color: #B8962E; font-size: 10px; letter-spacing: 4px; font-family: system-ui; font-weight: 600; }
+  .header-dot { color: #333; }
+  .header-sub { color: #8A8070; font-size: 10px; letter-spacing: 3px; font-family: system-ui; }
+
+  .wrap { max-width: 660px; margin: 0 auto; padding: 40px 20px 60px; }
+
+  .title-row { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 32px; }
+  .gold-bar { width: 4px; background: #B8962E; align-self: stretch; min-height: 52px; flex-shrink: 0; }
+  h1 { font-size: 28px; color: #1A1A1A; font-weight: 700; margin-bottom: 6px; }
+  .subtitle { font-size: 14px; color: #8A8070; font-family: system-ui; font-style: italic; }
+
+  .card {
+    background: #fff;
+    border: 1px solid #E5DDD0;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    margin-bottom: 16px;
+  }
+
+  label { display: block; font-size: 10px; color: #8A8070; letter-spacing: 2px; font-family: system-ui; font-weight: 600; margin-bottom: 10px; }
+
+  textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #E5DDD0;
+    font-size: 15px;
+    font-family: system-ui;
+    background: #FAFAFA;
+    color: #1A1A1A;
+    min-height: 100px;
+    resize: vertical;
+    outline: none;
+    line-height: 1.5;
+  }
+  textarea:focus { border-color: #B8962E; }
+  .field-hint { font-size: 12px; color: #8A8070; font-family: system-ui; margin-top: 8px; }
+
+  .btn-primary {
+    width: 100%;
+    padding: 16px;
+    font-size: 13px;
+    font-family: system-ui;
+    font-weight: 700;
+    letter-spacing: 2px;
+    border: none;
+    cursor: pointer;
+    background: #B8962E;
+    color: #1A1A1A;
+    transition: background 0.2s;
+  }
+  .btn-primary:disabled { background: #E5DDD0; color: #8A8070; cursor: not-allowed; }
+  .btn-primary:not(:disabled):hover { background: #D4AF5A; }
+
+  .levels-header {
+    background: #1A1A1A;
+    padding: 10px 18px;
+  }
+  .levels-header span { color: #B8962E; font-size: 10px; letter-spacing: 3px; font-family: system-ui; font-weight: 600; }
+
+  .level-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 18px;
+    border-top: 1px solid #F0EBE3;
+  }
+  .level-badge { font-size: 13px; font-weight: 700; font-family: system-ui; letter-spacing: 1px; width: 24px; flex-shrink: 0; }
+  .level-title { font-size: 14px; font-weight: 700; color: #1A1A1A; }
+  .level-desc { font-size: 12px; color: #8A8070; font-family: system-ui; margin-top: 2px; }
+
+  /* Questions */
+  .issue-recap {
+    background: #fff;
+    border: 1px solid #E5DDD0;
+    padding: 14px 20px;
+    margin-bottom: 24px;
+    border-left: 4px solid #B8962E;
+  }
+  .recap-label { font-size: 11px; color: #8A8070; font-family: system-ui; letter-spacing: 1px; margin-bottom: 4px; }
+  .recap-text { font-size: 14px; color: #1A1A1A; font-family: system-ui; }
+
+  .progress { display: flex; gap: 8px; margin-bottom: 28px; justify-content: center; }
+  .progress-dot { height: 10px; border-radius: 5px; transition: all 0.3s; }
+
+  .question-card { margin-bottom: 20px; transition: opacity 0.3s; }
+  .question-card.faded { opacity: 0.45; }
+  .question-inner { background: #fff; border: 1px solid #E5DDD0; }
+  .question-card:not(.faded) .question-inner { box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+
+  .q-top { padding: 20px 24px 0; }
+  .q-num { font-size: 11px; color: #B8962E; font-family: system-ui; letter-spacing: 2px; font-weight: 600; margin-bottom: 8px; }
+  .q-text { font-size: 18px; font-weight: 700; color: #1A1A1A; margin-bottom: 8px; line-height: 1.3; }
+  .q-hint { font-size: 12px; color: #8A8070; font-family: system-ui; margin-bottom: 20px; font-style: italic; }
+
+  .options { border-top: 1px solid #F0EBE3; }
+  .option {
+    padding: 14px 24px;
+    border-bottom: 1px solid #F0EBE3;
+    cursor: pointer;
+    background: #fff;
+    border-left: 4px solid transparent;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: background 0.15s;
+  }
+  .option:hover { background: #FFFDF5; }
+  .option.selected { background: #FFFDF5; border-left-color: #B8962E; }
+  .option.faded-opt { cursor: default; }
+
+  .radio {
+    width: 18px; height: 18px;
+    border: 2px solid #CCC;
+    border-radius: 50%;
+    background: transparent;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .option.selected .radio { border-color: #B8962E; background: #B8962E; }
+  .opt-label { font-size: 14px; color: #1A1A1A; font-family: system-ui; }
+
+  /* Result */
+  .result-card { margin-bottom: 20px; }
+  .result-header { padding: 18px 24px; }
+  .result-level-label { font-size: 11px; color: rgba(255,255,255,0.7); font-family: system-ui; letter-spacing: 3px; margin-bottom: 4px; }
+  .result-level-name { font-size: 26px; font-weight: 700; color: #fff; }
+  .result-body { padding: 20px 24px; }
+  .result-action { font-size: 16px; font-weight: 700; margin-bottom: 20px; font-family: system-ui; }
+  .steps-label { font-size: 11px; color: #8A8070; letter-spacing: 2px; font-family: system-ui; font-weight: 600; margin-bottom: 12px; }
+  .step-row { display: flex; gap: 14px; margin-bottom: 12px; align-items: flex-start; }
+  .step-num {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+    font-family: system-ui;
+    color: #fff;
+  }
+  .step-text { font-size: 14px; color: #1A1A1A; font-family: system-ui; line-height: 1.5; padding-top: 2px; }
+
+  .log-reminder {
+    background: #fff;
+    border: 1px solid #E5DDD0;
+    padding: 16px 20px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+  .log-icon { font-size: 20px; }
+  .log-title { font-size: 13px; font-weight: 700; color: #1A1A1A; font-family: system-ui; }
+  .log-desc { font-size: 12px; color: #8A8070; font-family: system-ui; margin-top: 2px; }
+
+  .footer-note {
+    text-align: center;
+    margin-top: 40px;
+    color: #8A8070;
+    font-size: 11px;
+    font-family: system-ui;
+    letter-spacing: 2px;
+  }
+
+  /* Sections hidden by default */
+  #section-describe, #section-questions, #section-result { display: none; }
+
+  @media print {
+    .header, .title-row, .footer-note, .btn-primary { display: none !important; }
+    body { background: #fff; }
+    .wrap { padding: 10px; }
+    .result-card, .issue-recap, .log-reminder { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="header-brand">HOTEL MASTERY HUB</span>
+  <span class="header-dot">&middot;</span>
+  <span class="header-sub">URGENCY TRIAGE TOOL</span>
+</div>
+
+<div class="wrap">
+
+  <div class="title-row">
+    <div class="gold-bar"></div>
+    <div>
+      <h1>Urgency Triage Tool</h1>
+      <p class="subtitle">Describe the issue. Answer three questions. Get the right response level.</p>
+    </div>
+  </div>
+
+  <!-- DESCRIBE -->
+  <div id="section-describe">
+    <div class="card" style="padding: 24px;">
+      <label>Describe the maintenance issue</label>
+      <textarea id="issue-input" placeholder="e.g. The shower in Room 204 is dripping constantly and the pressure seems low."></textarea>
+      <p class="field-hint">Be specific - location, what's wrong, when you noticed it.</p>
+    </div>
+
+    <button class="btn-primary" id="start-btn" onclick="startTriage()" disabled>START TRIAGE &rarr;</button>
+
+    <div class="card" style="margin-top: 28px;">
+      <div class="levels-header"><span>THE THREE RESPONSE LEVELS</span></div>
+      <div class="level-row" style="background:#F0FFF0;">
+        <div class="level-badge" style="color:#55AA55;">L1</div>
+        <div><div class="level-title">Small Issue</div><div class="level-desc">Log & plan. Handle at the next maintenance window.</div></div>
+      </div>
+      <div class="level-row" style="background:#FFF8F0;">
+        <div class="level-badge" style="color:#D4903A;">L2</div>
+        <div><div class="level-title">Operational Issue</div><div class="level-desc">Fix within 24 hours. Assign before end of shift.</div></div>
+      </div>
+      <div class="level-row" style="background:#FFF0F0;">
+        <div class="level-badge" style="color:#CC5555;">L3</div>
+        <div><div class="level-title">Guest-Impact Issue</div><div class="level-desc">Stop everything. Fix now. Guest experience cannot wait.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUESTIONS -->
+  <div id="section-questions">
+    <div class="issue-recap">
+      <div class="recap-label">ISSUE BEING ASSESSED</div>
+      <div class="recap-text" id="recap-text"></div>
+    </div>
+    <div class="progress" id="progress"></div>
+    <div id="questions-container"></div>
+  </div>
+
+  <!-- RESULT -->
+  <div id="section-result">
+    <div class="issue-recap">
+      <div class="recap-label">ISSUE ASSESSED</div>
+      <div class="recap-text" id="result-recap"></div>
+    </div>
+    <div class="result-card" id="result-card">
+      <div class="result-header" id="result-header">
+        <div class="result-level-label">RESPONSE LEVEL</div>
+        <div class="result-level-name" id="result-level-name"></div>
+      </div>
+      <div class="result-body" id="result-body">
+        <div class="result-action" id="result-action"></div>
+        <div class="steps-label">WHAT TO DO NOW</div>
+        <div id="result-steps"></div>
+      </div>
+    </div>
+    <div class="log-reminder">
+      <div class="log-icon">📋#x1F4CB;</div>
+      <div>
+        <div class="log-title">Remember to log this issue</div>
+        <div class="log-desc">If it's not written down, it doesn't exist. Use your Maintenance Log to record it.</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn-primary" style="background:#1A1A1A;color:#B8962E;flex:1;" onclick="window.print()">SAVE AS PDF</button>
+      <button class="btn-primary" style="flex:1;" onclick="reset()">TRIAGE ANOTHER ISSUE</button>
+    </div>
+    <p style="font-size:11px;color:#8A8070;font-family:system-ui;margin-top:10px;text-align:center;">To save as PDF, a PDF printer or "Save as PDF" option must be available on your device.</p>
+  </div>
+
+  <div class="footer-note">HOTEL MASTERY HUB &nbsp;&middot;&nbsp; MAINTENANCE MASTERY TOOLKIT</div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    id: "guest",
+    text: "Is a guest currently affected by this issue right now?",
+    hint: "Affected means: cannot use their room, is waiting, has complained, or will notice immediately.",
+    options: [
+      { label: "Yes - a guest is affected right now", value: "yes", weight: 10 },
+      { label: "Not yet, but they will be at next check-in", value: "soon", weight: 6 },
+      { label: "No - no guest is currently affected", value: "no", weight: 0 },
+    ],
+  },
+  {
+    id: "function",
+    text: "Does this affect a room's core function?",
+    hint: "Core functions: hot water, heating/cooling, working lock, toilet, electricity, WiFi.",
+    options: [
+      { label: "Yes - a core function is broken or unavailable", value: "yes", weight: 8 },
+      { label: "Partly - it works but not properly", value: "partial", weight: 4 },
+      { label: "No - it's cosmetic or minor", value: "no", weight: 0 },
+    ],
+  },
+  {
+    id: "spread",
+    text: "Could this get worse quickly or affect more rooms/guests?",
+    hint: "Examples: a slow leak that could damage the floor below, a key system fault affecting multiple doors.",
+    options: [
+      { label: "Yes - it could spread or worsen fast", value: "yes", weight: 5 },
+      { label: "Possibly - it's worth monitoring", value: "maybe", weight: 2 },
+      { label: "No - it's stable and contained", value: "no", weight: 0 },
+    ],
+  },
+];
+
+const LEVELS = {
+  high: {
+    label: "L3 - Guest-Impact Issue", color: "#CC5555", bg: "#FFF0F0",
+    action: "&rarr; Stop everything. Fix now. Guest experience cannot wait.",
+    steps: [
+      "Go to the issue immediately.",
+      "Inform the guest directly if they are present.",
+      "Call your responsible supplier now - do not wait.",
+      "If the room cannot be used: move the guest or upgrade.",
+      "Log the issue with full details before end of shift.",
+      "Inform your manager.",
+    ],
+  },
+  mid: {
+    label: "L2 - Operational Issue", color: "#D4903A", bg: "#FFF8F0",
+    action: "&rarr; Fix within 24 hours. Assign to a responsible person before end of shift.",
+    steps: [
+      "Log the issue now with location and description.",
+      "Assign a responsible person to fix it today.",
+      "If a room is involved - check whether it needs to be held.",
+      "Follow up before end of your shift to confirm it is resolved.",
+      "Update the log once fixed.",
+    ],
+  },
+  low: {
+    label: "L1 - Small Issue", color: "#55AA55", bg: "#F0FFF0",
+    action: "&rarr; Log it. Plan for next maintenance window. Do not interrupt operations.",
+    steps: [
+      "Log the issue with location and a brief description.",
+      "Assign it to the next planned maintenance window.",
+      "No immediate action needed - do not interrupt operations.",
+      "Confirm it is resolved at the next maintenance check.",
+    ],
+  },
+};
+
+let state = { issue: "", answers: {}, currentQ: 0 };
+
+// Enable button when textarea has content
+document.getElementById('issue-input').addEventListener('input', function() {
+  document.getElementById('start-btn').disabled = !this.value.trim();
+});
+
+function show(id) {
+  ['section-describe','section-questions','section-result'].forEach(s => {
+    document.getElementById(s).style.display = 'none';
+  });
+  document.getElementById(id).style.display = 'block';
+}
+
+function startTriage() {
+  state.issue = document.getElementById('issue-input').value.trim();
+  if (!state.issue) return;
+  state.answers = {};
+  state.currentQ = 0;
+  document.getElementById('recap-text').textContent = state.issue;
+  renderQuestions();
+  show('section-questions');
+}
+
+function renderQuestions() {
+  // Progress dots
+  const prog = document.getElementById('progress');
+  prog.innerHTML = QUESTIONS.map((_, i) => {
+    let w = i <= state.currentQ ? '32px' : '10px';
+    let bg = i < state.currentQ ? '#55AA55' : i === state.currentQ ? '#B8962E' : '#E5DDD0';
+    return `<div class="progress-dot" style="width:${w};background:${bg};"></div>`;
+  }).join('');
+
+  // Questions
+  const container = document.getElementById('questions-container');
+  container.innerHTML = QUESTIONS.slice(0, state.currentQ + 1).map((q, qi) => {
+    const isActive = qi === state.currentQ;
+    const answered = state.answers[q.id];
+    return `
+      <div class="question-card ${isActive ? '' : 'faded'}">
+        <div class="question-inner">
+          <div class="q-top">
+            <div class="q-num">QUESTION ${qi + 1} OF ${QUESTIONS.length}</div>
+            <div class="q-text">${q.text}</div>
+            <div class="q-hint">${q.hint}</div>
+          </div>
+          <div class="options">
+            ${q.options.map(opt => `
+              <div class="option ${answered === opt.value ? 'selected' : ''} ${!isActive ? 'faded-opt' : ''}"
+                   onclick="${isActive ? `answer('${q.id}', '${opt.value}')` : ''}">
+                <div class="radio"></div>
+                <span class="opt-label">${opt.label}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function answer(id, value) {
+  state.answers[id] = value;
+  if (state.currentQ < QUESTIONS.length - 1) {
+    setTimeout(() => {
+      state.currentQ++;
+      renderQuestions();
+    }, 300);
+  } else {
+    setTimeout(() => showResult(), 300);
+  }
+}
+
+function showResult() {
+  const score = Object.entries(state.answers).reduce((sum, [id, val]) => {
+    const q = QUESTIONS.find(q => q.id === id);
+    const opt = q.options.find(o => o.value === val);
+    return sum + (opt?.weight || 0);
+  }, 0);
+
+  const result = score >= 10 ? LEVELS.high : score >= 4 ? LEVELS.mid : LEVELS.low;
+
+  document.getElementById('result-recap').textContent = state.issue;
+  document.getElementById('result-header').style.background = result.color;
+  document.getElementById('result-card').style.border = `2px solid ${result.color}44`;
+  document.getElementById('result-card').style.background = result.bg;
+  document.getElementById('result-level-name').textContent = result.label;
+  document.getElementById('result-action').style.color = result.color;
+  document.getElementById('result-action').textContent = result.action;
+  document.getElementById('result-steps').innerHTML = result.steps.map((s, i) => `
+    <div class="step-row">
+      <div class="step-num" style="background:${result.color};">${i+1}</div>
+      <span class="step-text">${s}</span>
+    </div>
+  `).join('');
+
+  show('section-result');
+}
+
+function reset() {
+  state = { issue: "", answers: {}, currentQ: 0 };
+  document.getElementById('issue-input').value = '';
+  document.getElementById('start-btn').disabled = true;
+  show('section-describe');
+}
+
+// Start on describe
+show('section-describe');
+</script>
+</body>
+</html>
