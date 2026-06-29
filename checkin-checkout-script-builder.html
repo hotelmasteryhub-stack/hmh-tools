@@ -87,7 +87,7 @@ textarea:focus { border-color:#B8962E; }
   <div id="section-checkin">
     <div class="insight-box" style="margin-bottom:20px;">
       <div class="insight-label">WHY THIS MATTERS</div>
-      <div class="insight-text">Check-in is experience design, not administration. A consistent 5-step script means every guest gets the same confident, warm welcome - regardless of who is on shift.</div>
+      <div class="insight-text">Check-in is experience design, not administration. A consistent 6-step script means every guest gets the same confident, warm welcome - regardless of who is on shift.</div>
     </div>
 
     <div class="step-card">
@@ -109,14 +109,14 @@ textarea:focus { border-color:#B8962E; }
       <div class="step-header">
         <div class="step-num">2</div>
         <div>
-          <div class="step-title">Confirmation</div>
-          <div class="step-desc">Confirm the reservation, verify details, and check payment. Simple, clear, efficient. No surprises for either side.</div>
+          <div class="step-title">Details Inquiry</div>
+          <div class="step-desc">Before you look at the screen, ask for the guest's name and booking details. This feels personal and gives you what you need to find the reservation.</div>
         </div>
       </div>
       <div class="step-body">
-        <label>YOUR CONFIRMATION LINE</label>
-        <textarea id="ci-2" placeholder="Write how you confirm the booking..." oninput="updatePreview()"></textarea>
-        <div class="example">e.g. "I have a reservation for [Name], checking in tonight for 2 nights - is that correct?"</div>
+        <label>YOUR DETAILS INQUIRY LINE</label>
+        <textarea id="ci-2" placeholder="Write how you ask for their details..." oninput="updatePreview()"></textarea>
+        <div class="example">e.g. "Could I take your name and the name the booking is under? And do you have your ID with you?"</div>
       </div>
     </div>
 
@@ -124,14 +124,14 @@ textarea:focus { border-color:#B8962E; }
       <div class="step-header">
         <div class="step-num">3</div>
         <div>
-          <div class="step-title">Information Delivery</div>
-          <div class="step-desc">Three things maximum. WiFi, breakfast, room access. Never overload the guest with information at this moment.</div>
+          <div class="step-title">Confirmation</div>
+          <div class="step-desc">Confirm the reservation details and payment. Simple, clear, efficient. No surprises for either side.</div>
         </div>
       </div>
       <div class="step-body">
-        <label>YOUR 3 KEY INFORMATION POINTS</label>
-        <textarea id="ci-3" placeholder="Write the 3 things every guest hears at check-in..." oninput="updatePreview()" style="min-height:90px;"></textarea>
-        <div class="example">e.g. "WiFi is [name], password is on your key card. Breakfast is served 7-10am in the dining room. Your room is on the second floor."</div>
+        <label>YOUR CONFIRMATION LINE</label>
+        <textarea id="ci-3" placeholder="Write how you confirm the booking..." oninput="updatePreview()"></textarea>
+        <div class="example">e.g. "I have a reservation for [Name], checking in tonight for 2 nights - is that correct? I will take a card payment now."</div>
       </div>
     </div>
 
@@ -139,14 +139,14 @@ textarea:focus { border-color:#B8962E; }
       <div class="step-header">
         <div class="step-num">4</div>
         <div>
-          <div class="step-title">Setting Expectations</div>
-          <div class="step-desc">Tell the guest what happens next. This reduces uncertainty - the main source of guest stress on arrival.</div>
+          <div class="step-title">Information Delivery</div>
+          <div class="step-desc">Three things maximum. WiFi, breakfast, room access. Never overload the guest with information at this moment.</div>
         </div>
       </div>
       <div class="step-body">
-        <label>YOUR EXPECTATIONS LINE</label>
-        <textarea id="ci-4" placeholder="Tell them what comes next..." oninput="updatePreview()"></textarea>
-        <div class="example">e.g. "Your room is ready on the second floor, room 204. The lift is just behind you."</div>
+        <label>YOUR 3 KEY INFORMATION POINTS</label>
+        <textarea id="ci-4" placeholder="Write the 3 things every guest hears at check-in..." oninput="updatePreview()" style="min-height:90px;"></textarea>
+        <div class="example">e.g. "WiFi is [name], password is on your key card. Breakfast is served 7-10am in the dining room. Checkout is at 11am."</div>
       </div>
     </div>
 
@@ -154,13 +154,28 @@ textarea:focus { border-color:#B8962E; }
       <div class="step-header">
         <div class="step-num">5</div>
         <div>
+          <div class="step-title">Setting Expectations</div>
+          <div class="step-desc">Tell the guest what happens next. This reduces uncertainty - the main source of guest stress on arrival.</div>
+        </div>
+      </div>
+      <div class="step-body">
+        <label>YOUR EXPECTATIONS LINE</label>
+        <textarea id="ci-5" placeholder="Tell them what comes next..." oninput="updatePreview()"></textarea>
+        <div class="example">e.g. "Your room is ready on the second floor, room 204. The lift is just behind you."</div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">6</div>
+        <div>
           <div class="step-title">Closing</div>
-          <div class="step-desc">Guest leaves knowing exactly where to go and feeling comfortable doing so. Warm but efficient.</div>
+          <div class="step-desc">Guest leaves knowing exactly where to go and feeling comfortable. Warm but efficient.</div>
         </div>
       </div>
       <div class="step-body">
         <label>YOUR CLOSING LINE</label>
-        <textarea id="ci-5" placeholder="How do you close the check-in?" oninput="updatePreview()"></textarea>
+        <textarea id="ci-6" placeholder="How do you close the check-in?" oninput="updatePreview()"></textarea>
         <div class="example">e.g. "Enjoy your stay. We are here at reception if you need anything at all."</div>
       </div>
     </div>
@@ -265,12 +280,15 @@ textarea:focus { border-color:#B8962E; }
 </div>
 
 <script>
+const LS_KEY = 'hmh-script-builder';
+
 const CI_STEPS = [
   {id:'ci-1', title:'WELCOME'},
-  {id:'ci-2', title:'CONFIRMATION'},
-  {id:'ci-3', title:'INFORMATION'},
-  {id:'ci-4', title:'EXPECTATIONS'},
-  {id:'ci-5', title:'CLOSING'},
+  {id:'ci-2', title:'DETAILS INQUIRY'},
+  {id:'ci-3', title:'CONFIRMATION'},
+  {id:'ci-4', title:'INFORMATION'},
+  {id:'ci-5', title:'EXPECTATIONS'},
+  {id:'ci-6', title:'CLOSING'},
 ];
 const CO_STEPS = [
   {id:'co-1', title:'SATISFACTION CHECK'},
@@ -281,56 +299,61 @@ const CO_STEPS = [
 
 let activeTab = 'checkin';
 
+function save() {
+  try {
+    const data = {};
+    [...CI_STEPS, ...CO_STEPS].forEach(s => {
+      const el = document.getElementById(s.id);
+      if(el) data[s.id] = el.value;
+    });
+    data._tab = activeTab;
+    localStorage.setItem(LS_KEY, JSON.stringify(data));
+  } catch(e) {}
+}
+
 function switchTab(tab) {
   activeTab = tab;
   document.getElementById('section-checkin').style.display = tab==='checkin'?'block':'none';
   document.getElementById('section-checkout').style.display = tab==='checkout'?'block':'none';
   document.getElementById('tab-checkin').classList.toggle('active', tab==='checkin');
   document.getElementById('tab-checkout').classList.toggle('active', tab==='checkout');
+  save();
 }
 
 function updatePreview() {
-  // Check-in preview
-  const ciSteps = CI_STEPS.map((s,i) => ({...s, val: document.getElementById(s.id)?.value?.trim()||''}));
+  save();
+  const ciSteps = CI_STEPS.map(s => ({...s, val: document.getElementById(s.id)?.value?.trim()||''}));
   const hasCi = ciSteps.some(s=>s.val);
   const ciBody = document.getElementById('checkin-preview-body');
-  if(hasCi) {
-    ciBody.innerHTML = ciSteps.map((s,i) => s.val ? `
-      <div class="preview-step">
-        <div class="preview-num">${i+1}</div>
-        <div>
-          <div class="preview-step-title">${s.title}</div>
-          <div class="preview-step-text">"${s.val}"</div>
-        </div>
-      </div>
-    ` : '').join('');
-  } else {
-    ciBody.innerHTML = '<p style="color:#CCC;font-family:system-ui;font-size:13px;font-style:italic;">Fill in the steps above to see your script here.</p>';
-  }
+  ciBody.innerHTML = hasCi ? ciSteps.map((s,i) => s.val ? `<div class="preview-step"><div class="preview-num">${i+1}</div><div><div class="preview-step-title">${s.title}</div><div class="preview-step-text">"${s.val}"</div></div></div>` : '').join('') : '<p style="color:#CCC;font-family:system-ui;font-size:13px;font-style:italic;">Fill in the steps above to see your script here.</p>';
 
-  // Check-out preview
-  const coSteps = CO_STEPS.map((s,i) => ({...s, val: document.getElementById(s.id)?.value?.trim()||''}));
+  const coSteps = CO_STEPS.map(s => ({...s, val: document.getElementById(s.id)?.value?.trim()||''}));
   const hasCo = coSteps.some(s=>s.val);
   const coBody = document.getElementById('checkout-preview-body');
-  if(hasCo) {
-    coBody.innerHTML = coSteps.map((s,i) => s.val ? `
-      <div class="preview-step">
-        <div class="preview-num">${i+1}</div>
-        <div>
-          <div class="preview-step-title">${s.title}</div>
-          <div class="preview-step-text">"${s.val}"</div>
-        </div>
-      </div>
-    ` : '').join('');
-  } else {
-    coBody.innerHTML = '<p style="color:#CCC;font-family:system-ui;font-size:13px;font-style:italic;">Fill in the steps above to see your script here.</p>';
-  }
+  coBody.innerHTML = hasCo ? coSteps.map((s,i) => s.val ? `<div class="preview-step"><div class="preview-num">${i+1}</div><div><div class="preview-step-title">${s.title}</div><div class="preview-step-text">"${s.val}"</div></div></div>` : '').join('') : '<p style="color:#CCC;font-family:system-ui;font-size:13px;font-style:italic;">Fill in the steps above to see your script here.</p>';
 }
 
 function clearAll() {
   [...CI_STEPS, ...CO_STEPS].forEach(s => { const el = document.getElementById(s.id); if(el) el.value=''; });
+  try { localStorage.removeItem(LS_KEY); } catch(e) {}
   updatePreview();
 }
+
+// Restore saved data
+(function(){
+  try {
+    const saved = localStorage.getItem(LS_KEY);
+    if (!saved) return;
+    const data = JSON.parse(saved);
+    if (!data) return;
+    [...CI_STEPS, ...CO_STEPS].forEach(s => {
+      const el = document.getElementById(s.id);
+      if(el && data[s.id]) el.value = data[s.id];
+    });
+    if (data._tab && data._tab !== 'checkin') switchTab(data._tab);
+    updatePreview();
+  } catch(e) {}
+})();
 </script>
 </body>
 </html>
