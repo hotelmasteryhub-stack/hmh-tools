@@ -268,7 +268,7 @@
       </div>
     </div>
     <div class="log-reminder">
-      <div class="log-icon" style="font-size:20px;"><div class="log-icon">📋#x1F4CB;</div>#128203;</div>
+      <div class="log-icon" style="font-size:20px;">&#128203;</div>
       <div>
         <div class="log-title">Remember to log this issue</div>
         <div class="log-desc">If it's not written down, it doesn't exist. Use your Maintenance Log to record it.</div>
@@ -508,8 +508,8 @@ reset = function() {
   try { localStorage.removeItem(LS_KEY); } catch(e) {}
 };
 
-// Load saved state on start — wait for DOM
-document.addEventListener('DOMContentLoaded', loadState);
+// Load saved state on start
+loadState();
 </script>
 </body>
 </html>
