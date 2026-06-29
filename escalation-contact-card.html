@@ -5,179 +5,86 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Escalation Contact Card -- Hotel Mastery Hub</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: Georgia, serif; background: #F8F5F0; min-height: 100vh; color: #1A1A1A; }
-
-  .header {
-    background: #1A1A1A;
-    padding: 0 24px;
-    height: 52px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .header-left { display: flex; align-items: center; gap: 16px; }
-  .header-brand { color: #B8962E; font-size: 10px; letter-spacing: 4px; font-family: system-ui; font-weight: 600; }
-  .header-dot { color: #333; }
-  .header-sub { color: #8A8070; font-size: 10px; letter-spacing: 3px; font-family: system-ui; }
-  .header-btns { display: flex; gap: 8px; }
-
-  .btn-outline {
-    background: transparent;
-    border: 1px solid rgba(184,150,46,0.4);
-    color: #D4AF5A;
-    padding: 6px 16px;
-    font-size: 11px;
-    letter-spacing: 2px;
-    cursor: pointer;
-    font-family: system-ui;
-  }
-  .btn-gold {
-    background: #B8962E;
-    border: none;
-    color: #1A1A1A;
-    padding: 6px 16px;
-    font-size: 11px;
-    letter-spacing: 2px;
-    cursor: pointer;
-    font-family: system-ui;
-    font-weight: 700;
-  }
-  .btn-primary {
-    padding: 12px 24px;
-    font-size: 12px;
-    font-family: system-ui;
-    font-weight: 700;
-    letter-spacing: 1px;
-    cursor: pointer;
-    border: none;
-    background: #B8962E;
-    color: #1A1A1A;
-  }
-  .btn-primary:hover { background: #D4AF5A; }
-
-  .wrap { max-width: 900px; margin: 0 auto; padding: 32px 20px 60px; }
-
-  .title-row { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 28px; }
-  .gold-bar { width: 4px; background: #B8962E; align-self: stretch; min-height: 52px; flex-shrink: 0; }
-  h1 { font-size: 28px; color: #1A1A1A; font-weight: 700; margin-bottom: 6px; }
-  .subtitle { font-size: 14px; color: #8A8070; font-family: system-ui; font-style: italic; }
-
-  .card { background: #fff; border: 1px solid #E5DDD0; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
-  .card-pad { padding: 20px 24px; }
-
-  label { display: block; font-size: 10px; color: #8A8070; letter-spacing: 2px; font-family: system-ui; font-weight: 600; margin-bottom: 6px; }
-  input[type=text] {
-    width: 100%; padding: 9px 12px; border: 1px solid #E5DDD0;
-    font-size: 13px; font-family: system-ui; background: #FAFAFA;
-    color: #1A1A1A; outline: none;
-  }
-  input[type=text]:focus { border-color: #B8962E; }
-
-  .section-label { font-size: 10px; color: #8A8070; letter-spacing: 3px; font-family: system-ui; font-weight: 600; margin-bottom: 8px; }
-
-  .cat-header {
-    background: #1A1A1A;
-    padding: 10px 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .cat-icon { font-size: 16px; }
-  .cat-name { color: #F5F0E8; font-size: 13px; font-weight: 700; }
-  .cat-tag { color: #8A8070; font-size: 10px; font-family: system-ui; letter-spacing: 2px; margin-left: 6px; }
-  .cat-response { color: #B8962E; font-size: 10px; font-family: system-ui; margin-left: auto; }
-
-  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 16px 20px; }
-  .grid2-full { grid-column: 1 / -1; }
-
-  .rules-header { background: #1A1A1A; padding: 10px 20px; }
-  .rules-header span { color: #B8962E; font-size: 10px; letter-spacing: 3px; font-family: system-ui; font-weight: 600; }
-
-  .rule-row { display: flex; gap: 10px; padding: 12px 20px; border-bottom: 1px solid #F0EBE3; align-items: center; }
-  .rule-row input { font-size: 13px; }
-
-  .remove-btn { background: transparent; border: none; color: #8A8070; cursor: pointer; font-size: 18px; padding: 0 4px; flex-shrink: 0; }
-  .add-rule-btn { background: #F8F5F0; color: #8A8070; border: 1px solid #E5DDD0; padding: 8px 16px; font-size: 11px; font-family: system-ui; font-weight: 700; letter-spacing: 1px; cursor: pointer; margin: 12px 20px; }
-
-  .actions-row { display: flex; justify-content: flex-end; margin-top: 8px; }
-
-  /* PREVIEW */
-  #preview-section { display: none; }
-
-  .preview-header { background: #1A1A1A; padding: 20px 28px; }
-  .preview-brand { font-size: 10px; color: #B8962E; letter-spacing: 4px; font-family: system-ui; font-weight: 600; margin-bottom: 4px; }
-  .preview-title { font-size: 22px; color: #F5F0E8; font-weight: 700; }
-  .preview-posted { font-size: 11px; color: #8A8070; font-family: system-ui; margin-top: 4px; }
-
-  .contacts-grid { display: grid; grid-template-columns: repeat(5, 1fr); border-bottom: 1px solid #E5DDD0; }
-  .contact-cell { padding: 14px 16px; border-right: 1px solid #E5DDD0; }
-  .contact-cell:last-child { border-right: none; }
-  .contact-cat-tag { font-size: 9px; color: #8A8070; letter-spacing: 2px; font-family: system-ui; margin-bottom: 4px; }
-  .contact-cat-name { font-size: 15px; font-weight: 700; color: #1A1A1A; margin-bottom: 8px; }
-  .contact-name { font-size: 12px; color: #1A1A1A; font-family: system-ui; margin-bottom: 2px; }
-  .contact-phone { font-size: 13px; font-weight: 700; color: #B8962E; font-family: system-ui; margin-bottom: 6px; }
-  .contact-backup { font-size: 10px; color: #8A8070; font-family: system-ui; }
-  .contact-divider { margin-top: 8px; padding-top: 6px; border-top: 1px solid #F0EBE3; }
-  .contact-rule { font-size: 9px; color: #8A8070; font-family: system-ui; font-style: italic; }
-  .contact-response { font-size: 9px; color: #B8962E; font-family: system-ui; margin-top: 2px; }
-  .contact-empty { font-size: 11px; color: #CCC; font-family: system-ui; font-style: italic; }
-
-  .rules-preview-header { background: #1A1A1A; padding: 10px 20px; }
-  .rules-preview-header span { font-size: 10px; color: #B8962E; letter-spacing: 3px; font-family: system-ui; font-weight: 600; }
-
-  .rules-cols { display: grid; grid-template-columns: 1fr 3px 1.5fr 3px 0.7fr; background: #1A1A1A; }
-  .rules-col-head { padding: 8px 16px; }
-  .rules-col-head span { font-size: 9px; color: #B8962E; letter-spacing: 2px; font-family: system-ui; font-weight: 600; }
-  .rules-divider-col { background: #B8962E; }
-
-  .rule-preview-row { display: grid; grid-template-columns: 1fr 3px 1.5fr 3px 0.7fr; border-top: 1px solid #F0EBE3; }
-  .rule-preview-row.even { background: #fff; }
-  .rule-preview-row.odd { background: #F8F5F0; }
-  .rule-cell { padding: 10px 16px; }
-  .rule-trigger { font-size: 13px; font-weight: 700; color: #B8962E; font-family: system-ui; }
-  .rule-action { font-size: 13px; font-weight: 700; color: #1A1A1A; font-family: system-ui; }
-  .rule-time { font-size: 12px; color: #8A8070; font-family: system-ui; font-style: italic; }
-
-  .preview-footer {
-    padding: 12px 20px;
-    border-top: 1px solid #E5DDD0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .preview-quote { font-size: 10px; color: #8A8070; font-family: system-ui; font-style: italic; }
-  .preview-brand-small { font-size: 10px; color: #8A8070; font-family: system-ui; }
-
-  .save-row { display: flex; gap: 10px; margin-top: 20px; }
-  .save-note { font-size: 11px; color: #8A8070; font-family: system-ui; margin-top: 10px; text-align: center; }
-
-  .footer-note { text-align: center; margin-top: 40px; color: #8A8070; font-size: 11px; font-family: system-ui; letter-spacing: 2px; }
-
-  @media print {
-    .header, .title-row, .save-row, .save-note, .footer-note, .btn-outline, .btn-gold { display: none !important; }
-    body { background: #fff; }
-    .wrap { padding: 0; }
-    #edit-section { display: none !important; }
-    #preview-section { display: block !important; }
-  }
-
-  @media (max-width: 600px) {
-    .contacts-grid { grid-template-columns: 1fr 1fr; }
-    .grid2 { grid-template-columns: 1fr; }
-    .rules-cols { grid-template-columns: 1fr; }
-    .rule-preview-row { grid-template-columns: 1fr; }
-    .rules-divider-col { display: none; }
-  }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:Georgia,serif; background:#F8F5F0; min-height:100vh; color:#1A1A1A; }
+.header { background:#1A1A1A; padding:0 24px; height:52px; display:flex; align-items:center; justify-content:space-between; }
+.hb { color:#B8962E; font-size:10px; letter-spacing:4px; font-family:system-ui; font-weight:600; }
+.hs { color:#8A8070; font-size:10px; letter-spacing:3px; font-family:system-ui; margin-left:16px; }
+.header-btns { display:flex; gap:8px; }
+.btn-outline { background:transparent; border:1px solid rgba(184,150,46,0.4); color:#D4AF5A; padding:6px 16px; font-size:11px; letter-spacing:2px; cursor:pointer; font-family:system-ui; }
+.btn-gold { background:#B8962E; border:none; color:#1A1A1A; padding:6px 16px; font-size:11px; letter-spacing:2px; cursor:pointer; font-family:system-ui; font-weight:700; }
+.btn-primary { padding:12px 24px; font-size:12px; font-family:system-ui; font-weight:700; letter-spacing:1px; cursor:pointer; border:none; background:#B8962E; color:#1A1A1A; }
+.btn-primary:hover { background:#D4AF5A; }
+.wrap { max-width:960px; margin:0 auto; padding:32px 20px 60px; }
+.title-row { display:flex; align-items:flex-start; gap:16px; margin-bottom:28px; }
+.gold-bar { width:4px; background:#B8962E; align-self:stretch; min-height:52px; flex-shrink:0; }
+h1 { font-size:28px; color:#1A1A1A; font-weight:700; margin-bottom:6px; }
+.subtitle { font-size:14px; color:#8A8070; font-family:system-ui; font-style:italic; }
+.card { background:#fff; border:1px solid #E5DDD0; box-shadow:0 2px 8px rgba(0,0,0,0.08); margin-bottom:20px; }
+.card-pad { padding:20px 24px; }
+label { display:block; font-size:10px; color:#8A8070; letter-spacing:2px; font-family:system-ui; font-weight:600; margin-bottom:6px; }
+input[type=text] { width:100%; padding:9px 12px; border:1px solid #E5DDD0; font-size:13px; font-family:system-ui; background:#FAFAFA; color:#1A1A1A; outline:none; }
+input[type=text]:focus { border-color:#B8962E; }
+.section-label { font-size:10px; color:#8A8070; letter-spacing:3px; font-family:system-ui; font-weight:600; margin-bottom:8px; }
+.cat-header { background:#1A1A1A; padding:10px 20px; display:flex; align-items:center; justify-content:space-between; }
+.cat-name { color:#F5F0E8; font-size:13px; font-weight:700; }
+.cat-tag-label { color:#8A8070; font-size:10px; font-family:system-ui; letter-spacing:2px; }
+.cat-response-label { color:#B8962E; font-size:10px; font-family:system-ui; }
+.del-card-btn { background:transparent; border:1px solid #333; color:#8A8070; cursor:pointer; font-size:10px; font-family:system-ui; padding:3px 8px; }
+.del-card-btn:hover { color:#CC5555; border-color:#CC5555; }
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; padding:16px 20px; }
+.grid2-full { grid-column:1/-1; }
+.rules-header { background:#1A1A1A; padding:10px 20px; }
+.rules-header span { color:#B8962E; font-size:10px; letter-spacing:3px; font-family:system-ui; font-weight:600; }
+.rule-row { display:flex; gap:10px; padding:12px 20px; border-bottom:1px solid #F0EBE3; align-items:center; }
+.remove-btn { background:transparent; border:none; color:#8A8070; cursor:pointer; font-size:18px; padding:0 4px; flex-shrink:0; }
+.add-rule-btn { background:#F8F5F0; color:#8A8070; border:1px solid #E5DDD0; padding:8px 16px; font-size:11px; font-family:system-ui; font-weight:700; letter-spacing:1px; cursor:pointer; margin:12px 20px; }
+.add-card-btn { background:#F8F5F0; border:1px dashed #B8962E; color:#B8962E; padding:14px; font-size:12px; font-family:system-ui; font-weight:700; cursor:pointer; width:100%; text-align:center; margin-bottom:20px; }
+.add-card-btn:hover { background:#FFFDF5; }
+.actions-row { display:flex; justify-content:flex-end; margin-top:8px; }
+#preview-section { display:none; }
+.preview-header { background:#1A1A1A; padding:20px 28px; }
+.preview-brand { font-size:10px; color:#B8962E; letter-spacing:4px; font-family:system-ui; font-weight:600; margin-bottom:4px; }
+.preview-title { font-size:22px; color:#F5F0E8; font-weight:700; }
+.preview-posted { font-size:11px; color:#8A8070; font-family:system-ui; margin-top:4px; }
+.contacts-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); border-bottom:1px solid #E5DDD0; }
+.contact-cell { padding:14px 16px; border-right:1px solid #E5DDD0; }
+.contact-cell:last-child { border-right:none; }
+.contact-cat-tag { font-size:9px; color:#8A8070; letter-spacing:2px; font-family:system-ui; margin-bottom:4px; }
+.contact-cat-name { font-size:15px; font-weight:700; color:#1A1A1A; margin-bottom:8px; }
+.contact-name { font-size:12px; color:#1A1A1A; font-family:system-ui; margin-bottom:2px; }
+.contact-phone { font-size:13px; font-weight:700; color:#B8962E; font-family:system-ui; margin-bottom:6px; }
+.contact-backup { font-size:10px; color:#8A8070; font-family:system-ui; }
+.contact-divider { margin-top:8px; padding-top:6px; border-top:1px solid #F0EBE3; }
+.contact-rule { font-size:9px; color:#8A8070; font-family:system-ui; font-style:italic; }
+.contact-response { font-size:9px; color:#B8962E; font-family:system-ui; margin-top:2px; }
+.contact-empty { font-size:11px; color:#CCC; font-family:system-ui; font-style:italic; }
+.rules-preview-header { background:#1A1A1A; padding:10px 20px; }
+.rules-preview-header span { font-size:10px; color:#B8962E; letter-spacing:3px; font-family:system-ui; font-weight:600; }
+.rules-cols { display:grid; grid-template-columns:1fr 3px 1.5fr 3px 0.7fr; background:#1A1A1A; }
+.rules-col-head { padding:8px 16px; }
+.rules-col-head span { font-size:9px; color:#B8962E; letter-spacing:2px; font-family:system-ui; font-weight:600; }
+.rules-divider-col { background:#B8962E; }
+.rule-preview-row { display:grid; grid-template-columns:1fr 3px 1.5fr 3px 0.7fr; border-top:1px solid #F0EBE3; }
+.rule-preview-row.even { background:#fff; }
+.rule-preview-row.odd { background:#F8F5F0; }
+.rule-cell { padding:10px 16px; }
+.rule-trigger { font-size:13px; font-weight:700; color:#B8962E; font-family:system-ui; }
+.rule-action { font-size:13px; font-weight:700; color:#1A1A1A; font-family:system-ui; }
+.rule-time { font-size:12px; color:#8A8070; font-family:system-ui; font-style:italic; }
+.preview-footer { padding:12px 20px; border-top:1px solid #E5DDD0; display:flex; justify-content:space-between; align-items:center; }
+.save-row { display:flex; gap:10px; margin-top:20px; }
+.save-note { font-size:11px; color:#8A8070; font-family:system-ui; margin-top:10px; text-align:center; }
+.footer-note { text-align:center; margin-top:40px; color:#8A8070; font-size:11px; font-family:system-ui; letter-spacing:2px; }
+@media print { .header,.title-row,.save-row,.save-note,.footer-note,.btn-outline,.btn-gold,.add-card-btn,.del-card-btn { display:none !important; } body { background:#fff; } .wrap { padding:0; } #edit-section { display:none !important; } #preview-section { display:block !important; } }
+@media (max-width:600px) { .contacts-grid { grid-template-columns:1fr 1fr; } .grid2 { grid-template-columns:1fr; } .rules-cols,.rule-preview-row { grid-template-columns:1fr; } .rules-divider-col { display:none; } }
 </style>
 </head>
 <body>
-
 <div class="header">
-  <div class="header-left">
-    <span class="header-brand">HOTEL MASTERY HUB</span>
-    <span class="header-dot">&middot;</span>
-    <span class="header-sub">ESCALATION CONTACT CARD</span>
+  <div style="display:flex;align-items:center;">
+    <span class="hb">HOTEL MASTERY HUB</span>
+    <span class="hs">&middot; ESCALATION CONTACT CARD</span>
   </div>
   <div class="header-btns">
     <button class="btn-outline" id="toggle-btn" onclick="toggleView()">PREVIEW CARD</button>
@@ -186,111 +93,33 @@
 </div>
 
 <div class="wrap">
+  <div class="title-row">
+    <div class="gold-bar"></div>
+    <div>
+      <h1>Escalation Contact Card Builder</h1>
+      <p class="subtitle">Fill in your supplier details. During stress, people don't think clearly — systems must think for them.</p>
+    </div>
+  </div>
 
   <!-- EDIT SECTION -->
   <div id="edit-section">
-    <div class="title-row">
-      <div class="gold-bar"></div>
-      <div>
-        <h1>Escalation Contact Card Builder</h1>
-        <p class="subtitle">Fill in your supplier details. During stress, people don't think clearly -- systems must think for them.</p>
-      </div>
-    </div>
 
     <!-- Property info -->
     <div class="card card-pad" style="margin-bottom:20px;">
       <div style="margin-bottom:14px;">
-        <label>Property name</label>
-        <input type="text" id="property-name" placeholder="e.g. Hotel Bella Vista" style="max-width:360px;">
+        <label>PROPERTY NAME</label>
+        <input type="text" id="property-name" placeholder="e.g. Hotel Bella Vista" style="max-width:360px;" oninput="save()">
       </div>
       <div>
-        <label>Card posted at / visible at</label>
-        <input type="text" id="posted-at" placeholder="e.g. Reception desk, back office" style="max-width:360px;">
+        <label>CARD POSTED AT / VISIBLE AT</label>
+        <input type="text" id="posted-at" placeholder="e.g. Reception desk, back office" style="max-width:360px;" oninput="save()">
       </div>
     </div>
 
-    <!-- Supplier contacts -->
     <div class="section-label">SUPPLIER CONTACTS</div>
+    <div id="cards-container"></div>
 
-    <div class="card" style="margin-bottom:12px;">
-      <div class="cat-header">
-        <span class="cat-icon">&#128295;</span>
-        <span class="cat-name">Plumber</span>
-        <span class="cat-tag">-- PLUMBING</span>
-        <span class="cat-response">Default response: &le; 2 hours</span>
-      </div>
-      <div class="grid2">
-        <div><label>Primary contact name</label><input type="text" id="plumbing-name" placeholder="Full name"></div>
-        <div><label>Primary phone number</label><input type="text" id="plumbing-phone" placeholder="+44 ..."></div>
-        <div><label>Backup contact name</label><input type="text" id="plumbing-backup-name" placeholder="If primary is unavailable"></div>
-        <div><label>Backup phone number</label><input type="text" id="plumbing-backup-phone" placeholder="+44 ..."></div>
-        <div class="grid2-full"><label>Notes</label><input type="text" id="plumbing-notes" placeholder="e.g. Call before 20:00, ask for emergency rate"></div>
-      </div>
-    </div>
-
-    <div class="card" style="margin-bottom:12px;">
-      <div class="cat-header">
-        <span class="cat-icon">&#9889;</span>
-        <span class="cat-name">Electrician</span>
-        <span class="cat-tag">-- ELECTRICAL</span>
-        <span class="cat-response">Default response: &le; 3 hours</span>
-      </div>
-      <div class="grid2">
-        <div><label>Primary contact name</label><input type="text" id="electrical-name" placeholder="Full name"></div>
-        <div><label>Primary phone number</label><input type="text" id="electrical-phone" placeholder="+44 ..."></div>
-        <div><label>Backup contact name</label><input type="text" id="electrical-backup-name" placeholder="If primary is unavailable"></div>
-        <div><label>Backup phone number</label><input type="text" id="electrical-backup-phone" placeholder="+44 ..."></div>
-        <div class="grid2-full"><label>Notes</label><input type="text" id="electrical-notes" placeholder="Notes"></div>
-      </div>
-    </div>
-
-    <div class="card" style="margin-bottom:12px;">
-      <div class="cat-header">
-        <span class="cat-icon">&#128273;</span>
-        <span class="cat-name">Locksmith</span>
-        <span class="cat-tag">-- ACCESS</span>
-        <span class="cat-response">Default response: Immediate</span>
-      </div>
-      <div class="grid2">
-        <div><label>Primary contact name</label><input type="text" id="locksmith-name" placeholder="Full name"></div>
-        <div><label>Primary phone number</label><input type="text" id="locksmith-phone" placeholder="+44 ..."></div>
-        <div><label>Backup contact name</label><input type="text" id="locksmith-backup-name" placeholder="If primary is unavailable"></div>
-        <div><label>Backup phone number</label><input type="text" id="locksmith-backup-phone" placeholder="+44 ..."></div>
-        <div class="grid2-full"><label>Notes</label><input type="text" id="locksmith-notes" placeholder="Notes"></div>
-      </div>
-    </div>
-
-    <div class="card" style="margin-bottom:12px;">
-      <div class="cat-header">
-        <span class="cat-icon">&#128246;</span>
-        <span class="cat-name">IT / WiFi</span>
-        <span class="cat-tag">-- TECHNOLOGY</span>
-        <span class="cat-response">Default response: 1st call</span>
-      </div>
-      <div class="grid2">
-        <div><label>Primary contact name</label><input type="text" id="it-name" placeholder="Full name"></div>
-        <div><label>Primary phone number</label><input type="text" id="it-phone" placeholder="+44 ..."></div>
-        <div><label>Backup contact name</label><input type="text" id="it-backup-name" placeholder="If primary is unavailable"></div>
-        <div><label>Backup phone number</label><input type="text" id="it-backup-phone" placeholder="+44 ..."></div>
-        <div class="grid2-full"><label>Notes</label><input type="text" id="it-notes" placeholder="Notes"></div>
-      </div>
-    </div>
-
-    <div class="card" style="margin-bottom:20px;">
-      <div class="cat-header">
-        <span class="cat-icon">&#128296;</span>
-        <span class="cat-name">Handyman</span>
-        <span class="cat-tag">-- GENERAL</span>
-        <span class="cat-response">Default response: Same day</span>
-      </div>
-      <div class="grid2">
-        <div><label>Primary contact name</label><input type="text" id="handyman-name" placeholder="Full name"></div>
-        <div><label>Primary phone number</label><input type="text" id="handyman-phone" placeholder="+44 ..."></div>
-        <div><label>Backup contact name</label><input type="text" id="handyman-backup-name" placeholder="If primary is unavailable"></div>
-        <div><label>Backup phone number</label><input type="text" id="handyman-backup-phone" placeholder="+44 ..."></div>
-        <div class="grid2-full"><label>Notes</label><input type="text" id="handyman-notes" placeholder="Notes"></div>
-      </div>
-    </div>
+    <button class="add-card-btn" onclick="addCard()">+ ADD YOUR OWN CONTACT CARD</button>
 
     <!-- Escalation rules -->
     <div class="section-label">ESCALATION RULES</div>
@@ -312,7 +141,6 @@
       <div class="preview-title" id="preview-title">Maintenance Contact Card</div>
       <div class="preview-posted" id="preview-posted"></div>
     </div>
-
     <div class="card" style="margin-top:0;border-top:none;">
       <div style="padding:12px 20px;border-bottom:1px solid #E5DDD0;background:#F5F5F0;">
         <span style="font-size:10px;color:#8A8070;letter-spacing:3px;font-family:system-ui;font-weight:600;">SUPPLIER CONTACTS -- KEEP THIS VISIBLE AT ALL TIMES</span>
@@ -320,11 +148,10 @@
       <div class="contacts-grid" id="contacts-preview"></div>
       <div id="rules-preview-wrap"></div>
       <div class="preview-footer">
-        <span class="preview-quote">During stress, people don't think clearly. Systems must think for them.</span>
-        <span class="preview-brand-small">HOTEL MASTERY HUB</span>
+        <span style="font-size:10px;color:#8A8070;font-family:system-ui;font-style:italic;">During stress, people don't think clearly. Systems must think for them.</span>
+        <span style="font-size:10px;color:#8A8070;font-family:system-ui;">HOTEL MASTERY HUB</span>
       </div>
     </div>
-
     <div class="save-row">
       <button class="btn-primary" style="background:#1A1A1A;color:#B8962E;flex:1;" onclick="window.print()">SAVE AS PDF</button>
       <button class="btn-primary" style="flex:1;" onclick="toggleView()">&#8592; EDIT</button>
@@ -336,60 +163,125 @@
 </div>
 
 <script>
-const CATEGORIES = [
-  { id: "plumbing",   label: "Plumber",     tag: "PLUMBING",   response: "le 2 hours",  rule: "No hot water, leaks, flooding" },
-  { id: "electrical", label: "Electrician", tag: "ELECTRICAL", response: "le 3 hours",  rule: "Power failure, electrical fault" },
-  { id: "locksmith",  label: "Locksmith",   tag: "ACCESS",     response: "Immediate",   rule: "Lock failure, key card system down" },
-  { id: "it",         label: "IT / WiFi",   tag: "TECHNOLOGY", response: "1st call",    rule: "WiFi down across hotel" },
-  { id: "handyman",   label: "Handyman",    tag: "GENERAL",    response: "Same day",    rule: "Furniture, fixtures, general repairs" },
+const LS_KEY = 'hmh-escalation-card';
+
+// Default cards
+let cards = [
+  { id:'plumbing',   label:'Plumber',     tag:'PLUMBING',   response:'Within 2 hours', rule:'No hot water, leaks, flooding',          name:'', phone:'', backup_name:'', backup_phone:'', notes:'', custom:false },
+  { id:'electrical', label:'Electrician', tag:'ELECTRICAL', response:'Within 3 hours', rule:'Power failure, electrical fault',          name:'', phone:'', backup_name:'', backup_phone:'', notes:'', custom:false },
+  { id:'locksmith',  label:'Locksmith',   tag:'ACCESS',     response:'Immediate',      rule:'Lock failure, key card system down',       name:'', phone:'', backup_name:'', backup_phone:'', notes:'', custom:false },
+  { id:'it',         label:'IT / WiFi',   tag:'TECHNOLOGY', response:'1st call',       rule:'WiFi down across hotel',                   name:'', phone:'', backup_name:'', backup_phone:'', notes:'', custom:false },
+  { id:'handyman',   label:'Handyman',    tag:'GENERAL',    response:'Same day',       rule:'Furniture, fixtures, general repairs',      name:'', phone:'', backup_name:'', backup_phone:'', notes:'', custom:false },
 ];
 
 let rules = [
-  { trigger: "No hot water", action: "", time: "Within 2 hours" },
-  { trigger: "Lock failure / key card down", action: "", time: "Immediate" },
-  { trigger: "WiFi down across hotel", action: "", time: "Within 1 hour" },
-  { trigger: "", action: "", time: "" },
+  { trigger:'No hot water', action:'', time:'Within 2 hours' },
+  { trigger:'Lock failure / key card down', action:'', time:'Immediate' },
+  { trigger:'WiFi down across hotel', action:'', time:'Within 1 hour' },
+  { trigger:'', action:'', time:'' },
 ];
 
-let currentView = "edit";
+let currentView = 'edit';
+let cardCounter = 10;
+
+function save() {
+  try {
+    // Collect current input values into cards
+    cards.forEach(c => {
+      const n = document.getElementById(c.id+'-name'); if(n) c.name = n.value;
+      const p = document.getElementById(c.id+'-phone'); if(p) c.phone = p.value;
+      const bn = document.getElementById(c.id+'-backup-name'); if(bn) c.backup_name = bn.value;
+      const bp = document.getElementById(c.id+'-backup-phone'); if(bp) c.backup_phone = bp.value;
+      const nt = document.getElementById(c.id+'-notes'); if(nt) c.notes = nt.value;
+      // custom editable fields
+      if(c.custom) {
+        const lb = document.getElementById(c.id+'-label'); if(lb) c.label = lb.value;
+        const tg = document.getElementById(c.id+'-tag'); if(tg) c.tag = tg.value;
+        const re = document.getElementById(c.id+'-response'); if(re) c.response = re.value;
+      }
+    });
+    const propName = document.getElementById('property-name')?.value || '';
+    const postedAt = document.getElementById('posted-at')?.value || '';
+    localStorage.setItem(LS_KEY, JSON.stringify({ cards, rules, propName, postedAt }));
+  } catch(e) {}
+}
+
+function renderCards() {
+  const container = document.getElementById('cards-container');
+  container.innerHTML = cards.map(c => `
+    <div class="card" style="margin-bottom:12px;" id="card-block-${c.id}">
+      <div class="cat-header">
+        <div>
+          ${c.custom
+            ? `<input type="text" id="${c.id}-label" value="${c.label}" placeholder="Contact type e.g. Pest Control" style="background:transparent;border:none;border-bottom:1px solid #555;color:#F5F0E8;font-size:13px;font-weight:700;font-family:Georgia,serif;outline:none;width:180px;" oninput="save()">`
+            : `<span class="cat-name">${c.label}</span>`
+          }
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          ${c.custom
+            ? `<input type="text" id="${c.id}-response" value="${c.response}" placeholder="Response time" style="background:transparent;border:none;border-bottom:1px solid #555;color:#B8962E;font-size:10px;font-family:system-ui;outline:none;width:120px;text-align:right;" oninput="save()">`
+            : `<span class="cat-response-label">${c.response}</span>`
+          }
+          ${c.custom ? `<button class="del-card-btn" onclick="deleteCard('${c.id}')">x Remove</button>` : ''}
+        </div>
+      </div>
+      <div class="grid2">
+        ${c.custom ? `
+          <div class="grid2-full" style="padding-bottom:0;">
+            <label>CATEGORY TAG</label>
+            <input type="text" id="${c.id}-tag" value="${c.tag}" placeholder="e.g. PEST CONTROL" style="max-width:200px;" oninput="save()">
+          </div>
+        ` : ''}
+        <div><label>PRIMARY CONTACT NAME</label><input type="text" id="${c.id}-name" value="${c.name}" placeholder="Full name" oninput="save()"></div>
+        <div><label>PRIMARY PHONE NUMBER</label><input type="text" id="${c.id}-phone" value="${c.phone}" placeholder="+44 ..." oninput="save()"></div>
+        <div><label>BACKUP CONTACT NAME</label><input type="text" id="${c.id}-backup-name" value="${c.backup_name}" placeholder="If primary is unavailable" oninput="save()"></div>
+        <div><label>BACKUP PHONE NUMBER</label><input type="text" id="${c.id}-backup-phone" value="${c.backup_phone}" placeholder="+44 ..." oninput="save()"></div>
+        <div class="grid2-full"><label>NOTES / WHEN TO CALL</label><input type="text" id="${c.id}-notes" value="${c.notes}" placeholder="${c.rule||'Add notes...'}" oninput="save()"></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function addCard() {
+  cardCounter++;
+  const id = 'custom'+cardCounter;
+  cards.push({ id, label:'New Contact', tag:'CUSTOM', response:'', rule:'', name:'', phone:'', backup_name:'', backup_phone:'', notes:'', custom:true });
+  renderCards();
+  // Scroll to new card
+  setTimeout(()=>{ const el = document.getElementById('card-block-'+id); if(el) el.scrollIntoView({behavior:'smooth',block:'center'}); }, 100);
+}
+
+function deleteCard(id) {
+  cards = cards.filter(c => c.id !== id);
+  renderCards();
+  save();
+}
 
 function renderRules() {
-  const container = document.getElementById('rules-container');
-  container.innerHTML = rules.map((r, idx) => `
+  document.getElementById('rules-container').innerHTML = rules.map((r,idx) => `
     <div class="rule-row">
-      <input type="text" style="flex:1.2;" placeholder="If this happens..." value="${r.trigger}" oninput="updateRule(${idx},'trigger',this.value)">
-      <input type="text" style="flex:1.5;" placeholder="Then do this / call who" value="${r.action}" oninput="updateRule(${idx},'action',this.value)">
-      <input type="text" style="flex:0.7;" placeholder="Timeframe" value="${r.time}" oninput="updateRule(${idx},'time',this.value)">
+      <input type="text" style="flex:1.2;" placeholder="If this happens..." value="${r.trigger}" oninput="rules[${idx}].trigger=this.value;save()">
+      <input type="text" style="flex:1.5;" placeholder="Then do this / call who" value="${r.action}" oninput="rules[${idx}].action=this.value;save()">
+      <input type="text" style="flex:0.7;" placeholder="Timeframe" value="${r.time}" oninput="rules[${idx}].time=this.value;save()">
       <button class="remove-btn" onclick="removeRule(${idx})">x</button>
     </div>
   `).join('');
 }
 
-function updateRule(idx, field, value) {
-  rules[idx][field] = value;
-}
-
 function addRule() {
-  rules.push({ trigger: "", action: "", time: "" });
+  rules.push({ trigger:'', action:'', time:'' });
   renderRules();
+  save();
 }
 
 function removeRule(idx) {
-  rules.splice(idx, 1);
+  rules.splice(idx,1);
   renderRules();
-}
-
-function getContact(id) {
-  return {
-    name: document.getElementById(id + '-name')?.value || '',
-    phone: document.getElementById(id + '-phone')?.value || '',
-    backup_name: document.getElementById(id + '-backup-name')?.value || '',
-    backup_phone: document.getElementById(id + '-backup-phone')?.value || '',
-    notes: document.getElementById(id + '-notes')?.value || '',
-  };
+  save();
 }
 
 function toggleView() {
+  save();
   if (currentView === 'edit') {
     buildPreview();
     document.getElementById('edit-section').style.display = 'none';
@@ -407,61 +299,68 @@ function toggleView() {
 }
 
 function buildPreview() {
-  const prop = document.getElementById('property-name').value || 'Maintenance Contact Card';
-  const posted = document.getElementById('posted-at').value;
+  const prop = document.getElementById('property-name')?.value || 'Maintenance Contact Card';
+  const posted = document.getElementById('posted-at')?.value || '';
   document.getElementById('preview-title').textContent = prop;
-  document.getElementById('preview-posted').textContent = posted ? 'Posted at: ' + posted : '';
+  document.getElementById('preview-posted').textContent = posted ? 'Posted at: '+posted : '';
 
-  const contactsHtml = CATEGORIES.map(cat => {
-    const c = getContact(cat.id);
+  document.getElementById('contacts-preview').innerHTML = cards.map(c => {
     const hasData = c.name || c.phone;
     return `
       <div class="contact-cell">
-        <div class="contact-cat-tag">${cat.tag}</div>
-        <div class="contact-cat-name">${cat.label}</div>
+        <div class="contact-cat-tag">${c.tag}</div>
+        <div class="contact-cat-name">${c.label}</div>
         ${hasData ? `
-          ${c.name ? `<div class="contact-name">${c.name}</div>` : ''}
-          ${c.phone ? `<div class="contact-phone">${c.phone}</div>` : ''}
-          ${c.backup_name ? `<div class="contact-backup">Backup: ${c.backup_name}</div>` : ''}
-          ${c.backup_phone ? `<div class="contact-backup">${c.backup_phone}</div>` : ''}
+          ${c.name?`<div class="contact-name">${c.name}</div>`:''}
+          ${c.phone?`<div class="contact-phone">${c.phone}</div>`:''}
+          ${c.backup_name?`<div class="contact-backup">Backup: ${c.backup_name}</div>`:''}
+          ${c.backup_phone?`<div class="contact-backup">${c.backup_phone}</div>`:''}
           <div class="contact-divider">
-            <div class="contact-rule">${c.notes || cat.rule}</div>
-            <div class="contact-response">Response: ${cat.response}</div>
+            <div class="contact-rule">${c.notes||c.rule}</div>
+            ${c.response?`<div class="contact-response">Response: ${c.response}</div>`:''}
           </div>
         ` : '<div class="contact-empty">Not yet filled in</div>'}
       </div>
     `;
   }).join('');
-  document.getElementById('contacts-preview').innerHTML = contactsHtml;
 
-  const filledRules = rules.filter(r => r.trigger || r.action);
-  if (filledRules.length > 0) {
-    document.getElementById('rules-preview-wrap').innerHTML = `
-      <div class="rules-preview-header"><span>ESCALATION RULES -- NO GUESSING UNDER PRESSURE</span></div>
-      <div class="rules-cols">
-        <div class="rules-col-head"><span>IF THIS HAPPENS</span></div>
+  const filledRules = rules.filter(r=>r.trigger||r.action);
+  document.getElementById('rules-preview-wrap').innerHTML = filledRules.length > 0 ? `
+    <div class="rules-preview-header"><span>ESCALATION RULES -- NO GUESSING UNDER PRESSURE</span></div>
+    <div class="rules-cols">
+      <div class="rules-col-head"><span>IF THIS HAPPENS</span></div>
+      <div class="rules-divider-col"></div>
+      <div class="rules-col-head"><span>THEN DO THIS</span></div>
+      <div class="rules-divider-col"></div>
+      <div class="rules-col-head"><span>TIMEFRAME</span></div>
+    </div>
+    ${filledRules.map((r,i)=>`
+      <div class="rule-preview-row ${i%2===0?'even':'odd'}">
+        <div class="rule-cell"><span class="rule-trigger">${r.trigger}</span></div>
         <div class="rules-divider-col"></div>
-        <div class="rules-col-head"><span>THEN DO THIS</span></div>
+        <div class="rule-cell"><span class="rule-action">${r.action}</span></div>
         <div class="rules-divider-col"></div>
-        <div class="rules-col-head"><span>TIMEFRAME</span></div>
+        <div class="rule-cell"><span class="rule-time">${r.time}</span></div>
       </div>
-      ${filledRules.map((r, i) => `
-        <div class="rule-preview-row ${i % 2 === 0 ? 'even' : 'odd'}">
-          <div class="rule-cell"><span class="rule-trigger">${r.trigger}</span></div>
-          <div class="rules-divider-col"></div>
-          <div class="rule-cell"><span class="rule-action">${r.action}</span></div>
-          <div class="rules-divider-col"></div>
-          <div class="rule-cell"><span class="rule-time">${r.time}</span></div>
-        </div>
-      `).join('')}
-    `;
-  } else {
-    document.getElementById('rules-preview-wrap').innerHTML = '';
-  }
+    `).join('')}
+  ` : '';
 }
 
-// Init
-renderRules();
+// Restore saved state
+(function(){
+  try {
+    const saved = localStorage.getItem(LS_KEY);
+    if (!saved) { renderCards(); renderRules(); return; }
+    const data = JSON.parse(saved);
+    if (!data) { renderCards(); renderRules(); return; }
+    if (data.cards) cards = data.cards;
+    if (data.rules) rules = data.rules;
+    renderCards();
+    renderRules();
+    if (data.propName) document.getElementById('property-name').value = data.propName;
+    if (data.postedAt) document.getElementById('posted-at').value = data.postedAt;
+  } catch(e) { renderCards(); renderRules(); }
+})();
 </script>
 </body>
 </html>
