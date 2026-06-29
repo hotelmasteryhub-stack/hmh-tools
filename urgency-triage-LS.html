@@ -470,29 +470,19 @@ function saveState() {
 function loadState() {
   try {
     const saved = localStorage.getItem(LS_KEY);
-    if (!saved) return;
+    if (!saved) { show('section-describe'); return; }
     const s = JSON.parse(saved);
-    if (!s) return;
+    if (!s || !s.issue) { show('section-describe'); return; }
     state = s;
-    if (state.issue) {
-      document.getElementById('issue-input').value = state.issue;
-      document.getElementById('start-btn').disabled = false;
-    }
-    if (state.issue && Object.keys(state.answers).length > 0) {
-      // Check if result was shown
-      const score = Object.entries(state.answers).reduce((sum, [id, val]) => {
-        const q = QUESTIONS.find(q => q.id === id);
-        const opt = q?.options.find(o => o.value === val);
-        return sum + (opt?.weight || 0);
-      }, 0);
-      const allAnswered = QUESTIONS.every(q => state.answers[q.id]);
-      if (allAnswered) {
-        showResult();
-      } else {
-        document.getElementById('recap-text').textContent = state.issue;
-        renderQuestions();
-        show('section-questions');
-      }
+    document.getElementById('issue-input').value = state.issue;
+    document.getElementById('start-btn').disabled = false;
+    const allAnswered = QUESTIONS.every(q => state.answers[q.id]);
+    if (allAnswered) {
+      showResult();
+    } else if (Object.keys(state.answers).length > 0) {
+      document.getElementById('recap-text').textContent = state.issue;
+      renderQuestions();
+      show('section-questions');
     } else {
       show('section-describe');
     }
@@ -518,8 +508,8 @@ reset = function() {
   try { localStorage.removeItem(LS_KEY); } catch(e) {}
 };
 
-// Load saved state on start
-loadState();
+// Load saved state on start — wait for DOM
+document.addEventListener('DOMContentLoaded', loadState);
 </script>
 </body>
 </html>
