@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Housekeeper Onboarding Builder -- Hotel Mastery Hub</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:Georgia,serif; background:#F8F5F0; min-height:100vh; color:#1A1A1A; }
+.header { background:#1A1A1A; padding:0 20px; height:52px; display:flex; align-items:center; justify-content:space-between; }
+.hb { color:#B8962E; font-size:10px; letter-spacing:4px; font-family:system-ui; font-weight:600; }
+.hs { color:#8A8070; font-size:10px; letter-spacing:3px; font-family:system-ui; margin-left:12px; }
+.mode-btns { display:flex; gap:8px; }
+.btn-mode { padding:6px 14px; font-size:11px; letter-spacing:2px; cursor:pointer; font-family:system-ui; font-weight:600; border:1px solid rgba(184,150,46,0.4); color:#8A8070; background:transparent; }
+.btn-mode.active { background:#B8962E; color:#1A1A1A; border-color:#B8962E; }
+.wrap { max-width:900px; margin:0 auto; padding:24px 16px 60px; }
+.title-bar { background:#1A1A1A; padding:18px 24px; margin-bottom:20px; }
+.title-bar h1 { font-size:22px; color:#F5F0E8; font-weight:700; margin-bottom:4px; }
+.title-bar p { font-size:12px; color:#8A8070; font-family:system-ui; }
+.edit-hint { background:#FFF8F0; border-left:3px solid #B8962E; padding:10px 16px; font-size:12px; color:#8A8070; font-family:system-ui; margin-bottom:16px; }
+.section-block { background:#fff; border:1px solid #E5DDD0; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:16px; }
+.sec-head { padding:10px 16px; }
+.sec-title { font-size:12px; font-weight:700; color:#F5F0E8; letter-spacing:1px; font-family:system-ui; }
+.sec-sub { font-size:11px; color:#8A8070; font-family:system-ui; margin-top:2px; }
+.profile-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:16px; }
+label { display:block; font-size:10px; color:#8A8070; letter-spacing:2px; font-family:system-ui; font-weight:600; margin-bottom:5px; }
+input[type=text] { width:100%; padding:8px 10px; border:1px solid #E5DDD0; font-size:13px; font-family:system-ui; background:#FAFAFA; color:#1A1A1A; outline:none; }
+input[type=text]:focus { border-color:#B8962E; }
+textarea { width:100%; padding:7px 10px; border:1px solid #E5DDD0; font-size:12px; font-family:system-ui; background:#FAFAFA; color:#1A1A1A; outline:none; resize:vertical; min-height:48px; line-height:1.5; }
+textarea:focus { border-color:#B8962E; }
+/* ACCESS */
+.access-item-edit { display:flex; gap:8px; padding:8px 16px; border-bottom:1px solid #F0EBE3; align-items:flex-start; }
+.access-item-edit:last-child { border-bottom:none; }
+.access-inputs { flex:1; display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.del-btn { background:transparent; border:none; color:#CCC; cursor:pointer; font-size:16px; flex-shrink:0; padding:4px; }
+.del-btn:hover { color:#CC5555; }
+.add-item-row { display:flex; gap:8px; padding:10px 16px; border-top:1px solid #F0EBE3; }
+.add-input { flex:1; padding:7px 10px; border:1px solid #E5DDD0; font-size:12px; font-family:system-ui; background:#FAFAFA; outline:none; }
+.add-btn { background:#B8962E; border:none; color:#1A1A1A; padding:7px 14px; font-size:11px; font-family:system-ui; font-weight:700; cursor:pointer; }
+/* ACCESS USE MODE */
+.access-use-row { display:grid; grid-template-columns:2fr 80px 100px 100px 100px; gap:0; border-bottom:1px solid #F0EBE3; align-items:start; }
+.access-use-row:last-child { border-bottom:none; }
+.aur-cell { padding:8px 10px; border-right:1px solid #F0EBE3; font-size:12px; font-family:system-ui; }
+.aur-cell:last-child { border-right:none; }
+.aur-head { display:grid; grid-template-columns:2fr 80px 100px 100px 100px; background:#F0EBE3; }
+.aur-head span { padding:7px 10px; font-size:10px; color:#8A8070; letter-spacing:2px; font-family:system-ui; font-weight:600; border-right:1px solid #E5DDD0; }
+.aur-head span:last-child { border-right:none; }
+.status-sel { border:1px solid #E5DDD0; padding:4px 6px; font-size:11px; font-family:system-ui; background:#FAFAFA; outline:none; color:#1A1A1A; width:100%; }
+/* TASKS */
+.cat-bar { background:#2A2A2A; padding:8px 16px; display:flex; justify-content:space-between; align-items:center; }
+.cat-bar-title { font-size:10px; color:#B8962E; letter-spacing:3px; font-family:system-ui; font-weight:600; }
+.cat-edit-title { background:transparent; border:none; border-bottom:1px solid #555; color:#B8962E; font-size:10px; letter-spacing:3px; font-family:system-ui; font-weight:600; outline:none; flex:1; }
+.del-cat-btn { background:transparent; border:1px solid #555; color:#8A8070; cursor:pointer; font-size:10px; font-family:system-ui; padding:3px 8px; flex-shrink:0; margin-left:12px; }
+/* TASK EDIT ROW */
+.task-edit-row { display:flex; gap:8px; padding:8px 16px; border-bottom:1px solid #F0EBE3; align-items:flex-start; }
+.task-edit-row:last-child { border-bottom:none; }
+.task-edit-inputs { flex:1; display:flex; flex-direction:column; gap:6px; }
+.task-edit-title-input { width:100%; padding:6px 10px; border:none; border-bottom:1px solid #E5DDD0; font-size:13px; font-weight:700; font-family:system-ui; background:transparent; color:#1A1A1A; outline:none; }
+.task-edit-desc-input { width:100%; padding:6px 10px; border:1px solid #E5DDD0; font-size:12px; font-family:system-ui; background:#FAFAFA; color:#1A1A1A; outline:none; resize:vertical; min-height:44px; }
+/* TASK USE ROW */
+.task-use-header { display:grid; grid-template-columns:2fr 1.5fr 90px 110px 90px; background:#F0EBE3; }
+.task-use-header span { padding:7px 12px; font-size:10px; color:#8A8070; letter-spacing:2px; font-family:system-ui; font-weight:600; border-right:1px solid #E5DDD0; }
+.task-use-header span:last-child { border-right:none; }
+.task-use-row { display:grid; grid-template-columns:2fr 1.5fr 90px 110px 90px; border-bottom:1px solid #F0EBE3; }
+.task-use-row:last-child { border-bottom:none; }
+.tur-cell { padding:8px 12px; border-right:1px solid #F0EBE3; font-size:12px; font-family:system-ui; }
+.tur-cell:last-child { border-right:none; }
+.task-title-use { font-size:13px; font-weight:700; color:#1A1A1A; margin-bottom:3px; }
+.task-desc-use { font-size:11px; color:#8A8070; line-height:1.4; }
+.stage-sel { border:1px solid #E5DDD0; padding:5px 6px; font-size:11px; font-family:system-ui; background:#FAFAFA; outline:none; width:100%; color:#1A1A1A; }
+/* PROGRESS */
+.progress-strip { display:flex; align-items:center; gap:12px; padding:10px 16px; background:#F8F5F0; border-bottom:1px solid #E5DDD0; }
+.progress-track { flex:1; height:5px; background:#E5DDD0; border-radius:3px; }
+.progress-fill { height:5px; border-radius:3px; transition:width 0.3s; }
+/* SIGNOFF */
+.signoff-grid { display:grid; grid-template-columns:1fr 1fr 1fr; }
+.signoff-cell { padding:14px 16px; border-right:1px solid #E5DDD0; }
+.signoff-cell:last-child { border-right:none; }
+.signoff-label { font-size:10px; color:#B8962E; letter-spacing:2px; font-family:system-ui; font-weight:600; margin-bottom:8px; }
+.add-cat-btn { background:#F8F5F0; border:1px dashed #E5DDD0; color:#8A8070; padding:10px; font-size:11px; font-family:system-ui; cursor:pointer; width:100%; text-align:center; margin-top:8px; }
+.add-cat-btn:hover { border-color:#B8962E; color:#B8962E; }
+.action-row { display:flex; gap:10px; margin-top:20px; }
+.btn-gold { background:#B8962E; border:none; color:#1A1A1A; padding:13px 24px; font-size:12px; font-family:system-ui; font-weight:700; letter-spacing:1px; cursor:pointer; flex:1; }
+.btn-dark { background:#1A1A1A; border:none; color:#B8962E; padding:13px 24px; font-size:12px; font-family:system-ui; font-weight:700; letter-spacing:1px; cursor:pointer; }
+.save-note { font-size:11px; color:#8A8070; font-family:system-ui; margin-top:10px; text-align:center; }
+.footer-note { text-align:center; margin-top:28px; color:#8A8070; font-size:11px; font-family:system-ui; letter-spacing:2px; }
+@media print { .header,.mode-btns,.edit-hint,.action-row,.save-note,.footer-note,.add-item-row,.add-cat-btn,.del-btn,.del-cat-btn,.add-btn { display:none !important; } body { background:#fff; } .wrap { padding:8px; } input,textarea,select { border:none; background:transparent; } }
+@media (max-width:600px) { .profile-grid { grid-template-columns:1fr; } .access-inputs { grid-template-columns:1fr; } .task-use-header,.task-use-row,.aur-head,.access-use-row { grid-template-columns:1fr; } .signoff-grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="header">
+  <div style="display:flex;align-items:center;"><span class="hb">HOTEL MASTERY HUB</span><span class="hs">&middot; HSK ONBOARDING</span></div>
+  <div class="mode-btns">
+    <button class="btn-mode" id="btn-guide" onclick="setMode('guide')">HOW TO USE</button>
+    <button class="btn-mode active" id="btn-edit" onclick="setMode('edit')">EDIT</button>
+    <button class="btn-mode" id="btn-use" onclick="setMode('use')">USE</button>
+    <button class="btn-mode" onclick="exportCSV()" style="color:#D4AF5A;border-color:rgba(184,150,46,0.4);">CSV</button>
+    <button class="btn-mode" onclick="emailOnboarding()" style="color:#D4AF5A;border-color:rgba(184,150,46,0.4);">&#9993;</button>
+    <button class="btn-mode" onclick="window.print()" style="background:#B8962E;color:#1A1A1A;border-color:#B8962E;">PDF</button>
+  </div>
+</div>
+<div class="wrap">
+
+  <!-- HOW TO USE -->
+  <div id="section-guide" style="display:none;">
+    <div style="background:#1A1A1A;padding:20px 24px;margin-bottom:20px;">
+      <div style="font-size:10px;color:#B8962E;letter-spacing:4px;font-family:system-ui;font-weight:600;margin-bottom:6px;">HOW TO USE THIS TOOL</div>
+      <div style="font-size:18px;color:#F5F0E8;font-weight:700;margin-bottom:4px;">Housekeeper Onboarding Builder</div>
+      <div style="font-size:12px;color:#8A8070;font-family:system-ui;">Hotel Mastery Hub &middot; Housekeeping</div>
+    </div>
+    <div class="section-block"><div class="sec-head" style="background:#1A1A1A;"><span class="sec-title">WHAT THIS TOOL DOES</span></div>
+      <div style="padding:16px 18px;font-size:14px;font-family:system-ui;line-height:1.8;color:#1A1A1A;">
+        <p style="margin-bottom:10px;">This tool helps you build a structured onboarding programme for every new housekeeper. It covers access they need, what they need to learn, and tracks their progress from observation to independent work.</p>
+        <p>It works in two modes — Edit and Use. Build it once for your hotel, then use it for every new starter.</p>
+      </div>
+    </div>
+    <div class="section-block"><div class="sec-head" style="background:#1A3A5C;"><span class="sec-title">TWO MODES</span></div>
+      <div style="padding:0;">
+        <div style="padding:14px 18px;border-bottom:1px solid #F0EBE3;"><div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:4px;">EDIT mode</div><div style="font-size:13px;color:#8A8070;font-family:system-ui;line-height:1.6;">Customise everything for your hotel. Add, remove, or rewrite tasks to match your standards. Edit the access checklist. Add new task categories. This is your template — set it up once and reuse it for every new starter.</div></div>
+        <div style="padding:14px 18px;"><div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:4px;">USE mode</div><div style="font-size:13px;color:#8A8070;font-family:system-ui;line-height:1.6;">Track the trainee's progress. Set the stage per task — Observation, Guided, Independent, or Signed off. Add buddy sign-off and date. Progress bar updates automatically. When all tasks are signed off, the document is ready for final sign-off.</div></div>
+      </div>
+    </div>
+    <div class="section-block"><div class="sec-head" style="background:#1E4620;"><span class="sec-title">HOW TO GET STARTED</span></div>
+      <div style="padding:0;">
+        ${[
+          ['1','Go to EDIT mode','Work through each section. Edit task descriptions to match your hotel\'s exact standards. Delete tasks that don\'t apply. Add tasks that are missing.'],
+          ['2','Fill in the Access Checklist','Add how access is requested at your hotel. Some items may not apply — mark them N/A.'],
+          ['3','Assign a buddy','Enter the buddy name in the trainee profile before the new starter arrives. Brief the buddy on how the tool works.'],
+          ['4','Switch to USE mode','When the new starter arrives, switch to Use mode. Work through tasks together. Set the stage for each one as training progresses.'],
+          ['5','Complete sign-off','When all tasks are signed off, fill in Section D and save as PDF for your records.'],
+        ].map(([n,t,d])=>`<div style="display:flex;gap:0;border-bottom:1px solid #F0EBE3;padding:14px 18px;align-items:flex-start;"><div style="width:26px;height:26px;background:#B8962E;color:#1A1A1A;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;font-family:system-ui;flex-shrink:0;margin-right:14px;">${n}</div><div><div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">${t}</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">${d}</div></div></div>`).join('')}
+      </div>
+    </div>
+    <div class="section-block"><div class="sec-head" style="background:#2A2A2A;"><span class="sec-title">EXPORT OPTIONS</span></div>
+      <div style="padding:0;">
+        <div style="padding:14px 18px;border-bottom:1px solid #F0EBE3;"><div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:4px;">PDF</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Prints the onboarding document — trainee profile, access checklist, all tasks with progress, and sign-off section. Use for printed records or to share with the buddy.</div></div>
+        <div style="padding:14px 18px;border-bottom:1px solid #F0EBE3;"><div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:4px;">CSV</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Downloads all tasks with their current stage and sign-off status. Useful for keeping a spreadsheet record of completed onboardings per staff member.</div></div>
+        <div style="padding:14px 18px;"><div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:4px;">&#9993; EMAIL</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Sends a plain text progress summary — trainee name, how many tasks are signed off, and which ones are still pending. Good for updating a manager remotely.</div></div>
+      </div>
+    </div>
+    <div style="background:#1A1A1A;padding:14px 20px;margin-bottom:20px;">
+      <div style="font-size:10px;color:#B8962E;letter-spacing:3px;font-family:system-ui;font-weight:600;margin-bottom:6px;">ONE RULE</div>
+      <p style="font-size:13px;color:#F5F0E8;font-family:system-ui;line-height:1.7;">A task is only signed off when the trainee can do it independently — not just when they have been shown it. There is a difference. This document exists to track that difference.</p>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:16px;">
+      <button class="btn-gold" onclick="setMode('edit')">GO TO EDIT MODE &rarr;</button>
+    </div>
+    <div class="footer-note">HOTEL MASTERY HUB &middot; HOUSEKEEPER ONBOARDING</div>
+  </div>
+
+  <!-- MAIN ONBOARDING CONTENT -->
+  <div id="section-main">
+  <div class="title-bar">
+    <h1>Housekeeper Onboarding & Training Tracker</h1>
+    <p>Customise for your hotel in EDIT mode. Switch to USE mode to track the trainee's progress.</p>
+  </div>
+
+  <div class="edit-hint" id="edit-hint">
+    <strong>EDIT mode:</strong> Add, remove or rewrite any task or access item to match your hotel. When ready, switch to <strong>USE</strong> mode to track the trainee.
+  </div>
+
+  <!-- PROFILE -->
+  <div class="section-block">
+    <div class="sec-head" style="background:#1A1A1A;"><div class="sec-title">A &middot; TRAINEE PROFILE</div></div>
+    <div class="profile-grid">
+      <div><label>TRAINEE FULL NAME</label><input type="text" placeholder="Full name"></div>
+      <div><label>START DATE</label><input type="text" id="start-date"></div>
+      <div><label>LINE MANAGER / SUPERVISOR</label><input type="text" placeholder="Name"></div>
+      <div><label>ONBOARDING BUDDY</label><input type="text" placeholder="Name"></div>
+      <div><label>PROPERTY NAME</label><input type="text" placeholder="Hotel name"></div>
+      <div><label>PROBATION REVIEW DATE</label><input type="text" placeholder="Date"></div>
+    </div>
+  </div>
+
+  <!-- ACCESS -->
+  <div class="section-block" id="access-block">
+    <div class="sec-head" style="background:#1A3A5C;"><div class="sec-title">B &middot; ACCESS CHECKLIST</div><div class="sec-sub">Submit on Day 1. Access takes time. Do not wait.</div></div>
+    <div id="access-container"></div>
+  </div>
+
+  <!-- TASKS -->
+  <div class="section-block">
+    <div class="sec-head" style="background:#1E4620;"><div class="sec-title">C &middot; TRAINING TASKS</div><div class="sec-sub">Stages: 1 = Observation &nbsp;&middot;&nbsp; 2 = Guided &nbsp;&middot;&nbsp; 3 = Independent &nbsp;&middot;&nbsp; &#10003; = Signed off</div></div>
+    <div class="progress-strip" id="progress-strip" style="display:none;">
+      <span style="font-size:11px;color:#8A8070;font-family:system-ui;letter-spacing:1px;" id="prog-text">0 tasks signed off</span>
+      <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%;background:#B8962E;"></div></div>
+    </div>
+    <div id="tasks-container"></div>
+    <button class="add-cat-btn" id="add-cat-btn" onclick="addCategory()">+ ADD CATEGORY</button>
+  </div>
+
+  <!-- SIGNOFF -->
+  <div class="section-block">
+    <div class="sec-head" style="background:#4A235A;"><div class="sec-title">D &middot; FINAL SIGN-OFF</div></div>
+    <div class="signoff-grid">
+      <div class="signoff-cell"><div class="signoff-label">ALL ACCESS GRANTED</div><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><input type="checkbox"><span style="font-size:12px;font-family:system-ui;">Confirmed</span></div><label>Manager</label><input type="text" placeholder="Name & date"></div>
+      <div class="signoff-cell"><div class="signoff-label">ALL TASKS SIGNED OFF</div><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><input type="checkbox"><span style="font-size:12px;font-family:system-ui;">Every task completed</span></div><label>Buddy / Supervisor</label><input type="text" placeholder="Name & date"></div>
+      <div class="signoff-cell"><div class="signoff-label">TRAINEE CONFIRMED READY</div><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><input type="checkbox"><span style="font-size:12px;font-family:system-ui;">Can work independently</span></div><label>Trainee Signature</label><input type="text" placeholder="Name & date"></div>
+    </div>
+  </div>
+
+  <div class="action-row">
+    <button class="btn-dark" onclick="window.print()">SAVE AS PDF</button>
+    <button class="btn-gold" onclick="resetStages()">RESET PROGRESS</button>
+  </div>
+  <p class="save-note">To save as PDF, a PDF printer or "Save as PDF" option must be available on your device.</p>
+  <div class="footer-note">HOTEL MASTERY HUB &middot; HOUSEKEEPER ONBOARDING</div>
+</div><!-- end section-main -->
+</div><!-- end wrap -->
+
+<script>
+const LS_KEY = 'hmh-onboarding-hsk';
+let mode = 'edit';
+let stages = {};
+
+let accessItems = [
+  {task:'PMS — housekeeping view', how:'Manager creates login. Role: room status updates only.'},
+  {task:'Staff communication group', how:'Manager adds. WhatsApp / Slack / notice board.'},
+  {task:'Shift schedule / rota', how:'Manager shares. App, calendar, or notice board.'},
+  {task:'Linen room / store key or code', how:'Issued by manager on Day 1. Sign for receipt.'},
+  {task:'Master / floor key', how:'Issued by manager. Log signed. Return at end of shift.'},
+  {task:'Cleaning equipment storage', how:'Shown by buddy on Day 1.'},
+  {task:'Lost property storage location', how:'Shown by supervisor. Understand logging procedure.'},
+  {task:'Staff room / locker', how:'Locker number assigned by manager.'},
+];
+
+let categories = [
+  {id:'cat1', title:'ROOM PREPARATION & ENTRY', tasks:[
+    {title:'Pre-shift briefing', desc:'Receive room list and priorities. Understand checkout vs stayover. Know target completion time.'},
+    {title:'Trolley preparation', desc:'Stock trolley with correct quantities of linen, towels, amenities and cleaning products.'},
+    {title:'Entering a guest room correctly', desc:'Knock and announce twice. Check DND sign. Never enter without confirming room is vacant.'},
+    {title:'Checkout vs stayover room', desc:'Checkout = full clean. Stayover = refresh and respect guest belongings.'},
+  ]},
+  {id:'cat2', title:'CHECKOUT ROOM CLEAN', tasks:[
+    {title:'Stripping the room', desc:'Remove all used linen and towels. Check under pillows and mattress.'},
+    {title:'Checking for left belongings', desc:'Check all drawers, wardrobe, bathroom, under beds and behind doors.'},
+    {title:'Cleaning surfaces and furniture', desc:'Wipe all surfaces, handles, switches, remote controls. Check for damage.'},
+    {title:'Making the bed to standard', desc:'Correct linen placement and presentation. Consistent every room.'},
+    {title:'Restocking amenities', desc:'Replace all amenities to correct quantities and placement.'},
+    {title:'Final room check before release', desc:'Stand at the door. Check lights, smell, bed, bathroom, floor, windows.'},
+  ]},
+  {id:'cat3', title:'BATHROOM CLEANING', tasks:[
+    {title:'Toilet — full sequence', desc:'Under rim, seat, lid, base, floor. Correct product. No streaks or residue.'},
+    {title:'Sink and vanity', desc:'Tap, basin, plug hole, mirror, shelf. Check limescale. Replace amenities.'},
+    {title:'Shower or bath', desc:'Tiles, screen, tray, taps, showerhead. Check seals. Report damage.'},
+    {title:'Bathroom restock and presentation', desc:'Towels folded to standard. Amenities correct. Mirror spotless.'},
+  ]},
+  {id:'cat4', title:'STAYOVER SERVICE', tasks:[
+    {title:'Respecting guest belongings', desc:'Never move personal items. Dust around them. Do not open bags or cases.'},
+    {title:'Refresh without full clean', desc:'Empty bins, replace used towels, tidy surface, wipe bathroom, vacuum.'},
+    {title:'DND rooms', desc:'Do not enter. Note on room list. Inform supervisor if DND after agreed time.'},
+  ]},
+  {id:'cat5', title:'REPORTING & PROCEDURES', tasks:[
+    {title:'Maintenance reporting', desc:'Dripping taps, broken fittings, damaged furniture, faulty lights, worn seals.'},
+    {title:'Lost property', desc:'Log it. Store it securely. Never keep or discard items.'},
+    {title:'End of shift procedure', desc:'Clean and restock trolley. Return keys. Report outstanding issues.'},
+  ]},
+];
+
+let catCounter = 10;
+
+document.getElementById('start-date').value = new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+
+function setMode(m) {
+  mode = m;
+  document.getElementById('btn-edit').classList.toggle('active', m==='edit');
+  document.getElementById('btn-use').classList.toggle('active', m==='use');
+  document.getElementById('edit-hint').style.display = m==='edit'?'block':'none';
+  document.getElementById('add-cat-btn').style.display = m==='edit'?'block':'none';
+  document.getElementById('progress-strip').style.display = m==='use'?'flex':'none';
+  render();
+}
+
+function addCategory() {
+  catCounter++;
+  categories.push({id:'cat'+catCounter, title:'NEW CATEGORY', tasks:[{title:'New task', desc:'Describe what the trainee needs to learn.'}]});
+  render();
+}
+
+function deleteCategory(id) {
+  categories = categories.filter(c=>c.id!==id);
+  render();
+}
+
+function addTask(catId) {
+  const cat = categories.find(c=>c.id===catId);
+  if(cat) { cat.tasks.push({title:'New task', desc:'Describe what the trainee needs to learn.'}); render(); }
+}
+
+function deleteTask(catId, idx) {
+  const cat = categories.find(c=>c.id===catId);
+  if(cat) { cat.tasks.splice(idx,1); render(); }
+}
+
+function addAccessItem() {
+  const t = document.getElementById('new-access-task').value.trim();
+  const h = document.getElementById('new-access-how').value.trim();
+  if(!t) return;
+  accessItems.push({task:t, how:h});
+  document.getElementById('new-access-task').value='';
+  document.getElementById('new-access-how').value='';
+  render();
+}
+
+function deleteAccessItem(idx) {
+  accessItems.splice(idx,1);
+  render();
+}
+
+function updateCatTitle(id, val) {
+  const cat = categories.find(c=>c.id===id);
+  if(cat) cat.title = val;
+}
+
+function updateTask(catId, idx, field, val) {
+  const cat = categories.find(c=>c.id===catId);
+  if(cat) cat.tasks[idx][field] = val;
+}
+
+function updateAccess(idx, field, val) {
+  accessItems[idx][field] = val;
+}
+
+function setStage(key, val) {
+  stages[key] = val;
+  updateProgress();
+}
+
+function updateProgress() {
+  const total = categories.reduce((s,c)=>s+c.tasks.length,0);
+  const done = Object.values(stages).filter(v=>v==='✓').length;
+  const pct = total>0?Math.round((done/total)*100):0;
+  const fill = document.getElementById('prog-fill');
+  const txt = document.getElementById('prog-text');
+  if(fill) { fill.style.width=pct+'%'; fill.style.background=pct===100?'#55AA55':'#B8962E'; }
+  if(txt) txt.textContent = `${done} of ${total} tasks signed off`;
+}
+
+function save() {
+  try { localStorage.setItem(LS_KEY, JSON.stringify({ stages, accessItems, categories, catCounter })); } catch(e) {}
+}
+
+function exportCSV() {
+  const esc = val => { const s=String(val||''); return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; };
+  let csv = 'CATEGORY,TASK,DESCRIPTION,STAGE\r\n';
+  categories.forEach(cat => {
+    cat.tasks.forEach((task,i) => {
+      csv += [cat.title, task.title, task.desc, stages[cat.id+'-'+i]||'Not started'].map(esc).join(',') + '\r\n';
+    });
+  });
+  const blob = new Blob(['\ufeff'+csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download='hsk-onboarding-'+new Date().toISOString().slice(0,10)+'.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+function emailOnboarding() {
+  const total = categories.reduce((s,c)=>s+c.tasks.length,0);
+  const done = Object.values(stages).filter(v=>v==='✓').length;
+  const pending = categories.flatMap(cat=>cat.tasks.map((task,i)=>({...task,key:cat.id+'-'+i,cat:cat.title}))).filter(t=>stages[t.key]!=='✓');
+  let body = `HOUSEKEEPER ONBOARDING PROGRESS\nDate: ${new Date().toLocaleDateString('en-GB')}\nProgress: ${done} of ${total} tasks signed off\n\n`;
+  if(pending.length>0){ body+=`TASKS STILL PENDING:\n`; pending.slice(0,15).forEach(t=>{body+=`• [${t.cat}] ${t.title} — ${stages[t.key]||'Not started'}\n`;}); }
+  else { body+=`All tasks signed off. Ready for final sign-off.\n`; }
+  body+=`\n--\nHotel Mastery Hub — Housekeeper Onboarding`;
+  window.location.href=`mailto:?subject=${encodeURIComponent('HSK Onboarding Progress')}&body=${encodeURIComponent(body)}`;
+}
+
+function setMode(m) {
+  mode = m;
+  document.getElementById('section-guide').style.display = m==='guide' ? 'block' : 'none';
+  document.getElementById('section-main').style.display = m==='guide' ? 'none' : 'block';
+  document.getElementById('btn-guide').classList.toggle('active', m==='guide');
+  document.getElementById('btn-edit').classList.toggle('active', m==='edit');
+  document.getElementById('btn-use').classList.toggle('active', m==='use');
+  document.getElementById('edit-hint').style.display = m==='edit'?'block':'none';
+  document.getElementById('add-cat-btn').style.display = m==='edit'?'block':'none';
+  document.getElementById('progress-strip').style.display = m==='use'?'flex':'none';
+  render();
+}
+
+function resetStages() {
+  if(!confirm('Reset all progress?')) return;
+  stages={}; save(); render();
+}
+
+function render() {
+  // ACCESS
+  const ac = document.getElementById('access-container');
+  if(mode==='edit') {
+    ac.innerHTML = accessItems.map((item,i)=>`
+      <div class="access-item-edit">
+        <div class="access-inputs">
+          <input type="text" placeholder="Access item" value="${item.task}" oninput="updateAccess(${i},'task',this.value)">
+          <input type="text" placeholder="How to request" value="${item.how}" oninput="updateAccess(${i},'how',this.value)">
+        </div>
+        <button class="del-btn" onclick="deleteAccessItem(${i})">x</button>
+      </div>
+    `).join('') + `
+      <div class="add-item-row">
+        <input class="add-input" type="text" id="new-access-task" placeholder="New access item...">
+        <input class="add-input" type="text" id="new-access-how" placeholder="How to request...">
+        <button class="add-btn" onclick="addAccessItem()">+ ADD</button>
+      </div>
+    `;
+  } else {
+    ac.innerHTML = `
+      <div class="aur-head"><span>ACCESS ITEM</span><span>REQ?</span><span>REQUESTED</span><span>GRANTED</span><span>STATUS</span></div>
+      ${accessItems.map(item=>`
+        <div class="access-use-row">
+          <div class="aur-cell"><div style="font-weight:600;margin-bottom:2px;">${item.task}</div><div style="font-size:11px;color:#8A8070;font-style:italic;">${item.how}</div></div>
+          <div class="aur-cell"><input type="checkbox"></div>
+          <div class="aur-cell"><input type="text" placeholder="Date" style="border:none;border-bottom:1px solid #E5DDD0;background:transparent;font-size:12px;font-family:system-ui;width:100%;outline:none;padding:2px 0;"></div>
+          <div class="aur-cell"><input type="text" placeholder="Date" style="border:none;border-bottom:1px solid #E5DDD0;background:transparent;font-size:12px;font-family:system-ui;width:100%;outline:none;padding:2px 0;"></div>
+          <div class="aur-cell"><select class="status-sel"><option>Pending</option><option>Requested</option><option>Granted</option><option>N/A</option></select></div>
+        </div>
+      `).join('')}
+    `;
+  }
+
+  // TASKS
+  const tc = document.getElementById('tasks-container');
+  tc.innerHTML = categories.map(cat=>`
+    <div>
+      <div class="cat-bar">
+        ${mode==='edit'
+          ? `<input class="cat-edit-title" type="text" value="${cat.title}" oninput="updateCatTitle('${cat.id}',this.value)"><button class="del-cat-btn" onclick="deleteCategory('${cat.id}')">x Remove</button>`
+          : `<span class="cat-bar-title">${cat.title}</span>`
+        }
+      </div>
+      ${mode==='use' ? `<div class="task-use-header"><span>TASK</span><span>HOTEL NOTES</span><span>STAGE</span><span>BUDDY SIGN-OFF</span><span>DATE</span></div>` : ''}
+      ${cat.tasks.map((task,i)=>{
+        const key = cat.id+'-'+i;
+        const stage = stages[key]||'';
+        if(mode==='edit') return `
+          <div class="task-edit-row">
+            <div class="task-edit-inputs">
+              <input class="task-edit-title-input" type="text" value="${task.title}" oninput="updateTask('${cat.id}',${i},'title',this.value)" placeholder="Task title">
+              <textarea class="task-edit-desc-input" oninput="updateTask('${cat.id}',${i},'desc',this.value)" placeholder="What the trainee needs to learn...">${task.desc}</textarea>
+            </div>
+            <button class="del-btn" onclick="deleteTask('${cat.id}',${i})">x</button>
+          </div>
+        `;
+        return `
+          <div class="task-use-row">
+            <div class="tur-cell"><div class="task-title-use">${task.title}</div><div class="task-desc-use">${task.desc}</div></div>
+            <div class="tur-cell"><textarea placeholder="Your hotel standard..." style="min-height:44px;border:1px solid #E5DDD0;"></textarea></div>
+            <div class="tur-cell"><select class="stage-sel" onchange="setStage('${key}',this.value)"><option value="">-</option><option value="1" ${stage==='1'?'selected':''}>1 - Observation</option><option value="2" ${stage==='2'?'selected':''}>2 - Guided</option><option value="3" ${stage==='3'?'selected':''}>3 - Independent</option><option value="✓" ${stage==='✓'?'selected':''}>&#10003; Signed off</option></select></div>
+            <div class="tur-cell"><input type="text" placeholder="Buddy name" style="border:none;border-bottom:1px solid #E5DDD0;background:transparent;font-size:12px;font-family:system-ui;width:100%;outline:none;padding:4px 0;"></div>
+            <div class="tur-cell"><input type="text" placeholder="Date" style="border:none;border-bottom:1px solid #E5DDD0;background:transparent;font-size:12px;font-family:system-ui;width:100%;outline:none;padding:4px 0;"></div>
+          </div>
+        `;
+      }).join('')}
+      ${mode==='edit' ? `<div class="add-item-row"><input class="add-input" type="text" id="new-task-${cat.id}" placeholder="Add a task..."><button class="add-btn" onclick="addTask('${cat.id}')">+ ADD</button></div>` : ''}
+    </div>
+  `).join('');
+
+  if(mode==='use') updateProgress();
+}
+
+function setStage(key, val) { stages[key] = val; save(); updateProgress(); }
+function addTask(catId) { const cat = categories.find(c=>c.id===catId); if(cat) { cat.tasks.push({title:'New task', desc:''}); save(); render(); } }
+function deleteTask(catId, idx) { const cat = categories.find(c=>c.id===catId); if(cat) { cat.tasks.splice(idx,1); save(); render(); } }
+function updateTask(catId, idx, field, val) { const cat = categories.find(c=>c.id===catId); if(cat) { cat.tasks[idx][field]=val; save(); } }
+function addCategory() { catCounter++; categories.push({id:'cat'+catCounter, title:'NEW CATEGORY', tasks:[{title:'New task', desc:''}]}); save(); render(); }
+function deleteCategory(id) { categories = categories.filter(c=>c.id!==id); save(); render(); }
+function updateCatTitle(id, val) { const cat = categories.find(c=>c.id===id); if(cat) { cat.title=val; save(); } }
+function updateAccess(idx, field, val) { accessItems[idx][field]=val; save(); }
+function addAccessItem() {
+  const t=document.getElementById('new-access-task').value.trim();
+  const h=document.getElementById('new-access-how').value.trim();
+  if(!t) return;
+  accessItems.push({task:t, how:h});
+  document.getElementById('new-access-task').value='';
+  document.getElementById('new-access-how').value='';
+  save(); render();
+}
+function deleteAccessItem(idx) { accessItems.splice(idx,1); save(); render(); }
+
+// Restore
+(function(){
+  try {
+    const saved = localStorage.getItem(LS_KEY);
+    if(saved) {
+      const d = JSON.parse(saved);
+      if(d.stages) stages = d.stages;
+      if(d.accessItems) accessItems = d.accessItems;
+      if(d.categories) categories = d.categories;
+      if(d.catCounter) catCounter = d.catCounter;
+    }
+  } catch(e) {}
+  document.getElementById('start-date').value = new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+  render();
+})();
+</script>
+</body>
+</html>
