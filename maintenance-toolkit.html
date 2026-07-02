@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maintenance Toolkit -- Hotel Mastery Hub</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:Georgia,serif; background:#F8F5F0; min-height:100vh; color:#1A1A1A; }
+
+/* HEADER */
+.header { background:#1A1A1A; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+.hb { color:#B8962E; font-size:10px; letter-spacing:4px; font-family:system-ui; font-weight:600; }
+.hs { color:#8A8070; font-size:10px; letter-spacing:3px; font-family:system-ui; margin-left:10px; }
+.header-actions { display:flex; gap:6px; }
+.btn-hdr { padding:5px 12px; font-size:10px; letter-spacing:1px; cursor:pointer; font-family:system-ui; font-weight:600; border:1px solid rgba(184,150,46,0.4); color:#D4AF5A; background:transparent; }
+.btn-hdr.gold { background:#B8962E; color:#1A1A1A; border-color:#B8962E; }
+
+/* TABS */
+.tabs { background:#111; display:flex; overflow-x:auto; border-bottom:2px solid #2A2A2A; }
+.tab { padding:12px 18px; font-size:11px; letter-spacing:2px; font-family:system-ui; font-weight:600; color:#8A8070; cursor:pointer; white-space:nowrap; border-bottom:3px solid transparent; margin-bottom:-2px; flex-shrink:0; }
+.tab:hover { color:#F5F0E8; }
+.tab.active { color:#B8962E; border-bottom-color:#B8962E; }
+.tab-badge { display:inline-block; background:#CC5555; color:#fff; border-radius:10px; font-size:9px; padding:1px 6px; margin-left:4px; font-family:system-ui; }
+
+/* WRAP */
+.wrap { max-width:1060px; margin:0 auto; padding:24px 16px 60px; }
+.section { display:none; }
+.section.active { display:block; }
+
+/* CARDS */
+.card { background:#fff; border:1px solid #E5DDD0; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:16px; }
+.card-head { padding:10px 18px; display:flex; align-items:center; justify-content:space-between; }
+.card-title { font-size:11px; font-weight:700; color:#F5F0E8; letter-spacing:1px; font-family:system-ui; }
+.card-body { padding:16px 18px; }
+
+/* INPUTS */
+label { display:block; font-size:10px; color:#8A8070; letter-spacing:2px; font-family:system-ui; font-weight:600; margin-bottom:5px; }
+input[type=text], input[type=number], select { width:100%; padding:8px 10px; border:1px solid #E5DDD0; font-size:13px; font-family:system-ui; background:#FAFAFA; color:#1A1A1A; outline:none; }
+input[type=text]:focus, input[type=number]:focus, select:focus { border-color:#B8962E; }
+textarea { width:100%; padding:8px 10px; border:1px solid #E5DDD0; font-size:12px; font-family:system-ui; background:#FAFAFA; color:#1A1A1A; outline:none; resize:vertical; min-height:52px; line-height:1.5; }
+textarea:focus { border-color:#B8962E; }
+.field { margin-bottom:12px; }
+.field:last-child { margin-bottom:0; }
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+.grid4 { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:12px; }
+
+/* BUTTONS */
+.btn-gold { background:#B8962E; border:none; color:#1A1A1A; padding:10px 20px; font-size:11px; font-family:system-ui; font-weight:700; letter-spacing:1px; cursor:pointer; }
+.btn-gold:hover { background:#D4AF5A; }
+.btn-dark { background:#1A1A1A; border:none; color:#B8962E; padding:10px 20px; font-size:11px; font-family:system-ui; font-weight:700; letter-spacing:1px; cursor:pointer; }
+.btn-sec { background:#fff; border:1px solid #E5DDD0; color:#8A8070; padding:8px 16px; font-size:11px; font-family:system-ui; font-weight:600; cursor:pointer; }
+.btn-sec:hover { border-color:#B8962E; color:#B8962E; }
+.btn-danger { background:transparent; border:1px solid #CC5555; color:#CC5555; padding:6px 12px; font-size:10px; font-family:system-ui; cursor:pointer; }
+.add-btn { background:#F8F5F0; border:1px dashed #E5DDD0; color:#8A8070; padding:10px; font-size:11px; font-family:system-ui; cursor:pointer; width:100%; text-align:center; }
+.add-btn:hover { border-color:#B8962E; color:#B8962E; }
+.del-btn { background:transparent; border:none; color:#CCC; cursor:pointer; font-size:16px; padding:2px 6px; }
+.del-btn:hover { color:#CC5555; }
+.action-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:16px; }
+
+/* DASHBOARD STATS */
+.stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:20px; }
+.stat-card { background:#1A1A1A; padding:16px 18px; }
+.stat-label { font-size:9px; color:#8A8070; letter-spacing:3px; font-family:system-ui; font-weight:600; margin-bottom:6px; }
+.stat-value { font-size:28px; font-weight:700; line-height:1; margin-bottom:4px; }
+.stat-sub { font-size:11px; color:#8A8070; font-family:system-ui; }
+.alarm-strip { background:#CC5555; padding:10px 18px; margin-bottom:16px; display:flex; align-items:center; gap:10px; }
+.alarm-strip-text { font-size:13px; color:#fff; font-family:system-ui; font-weight:600; }
+.quick-links { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:20px; }
+.quick-link { background:#fff; border:1px solid #E5DDD0; padding:14px 16px; cursor:pointer; text-align:center; }
+.quick-link:hover { border-color:#B8962E; background:#FFFDF5; }
+.ql-icon { font-size:22px; margin-bottom:6px; }
+.ql-label { font-size:11px; font-family:system-ui; font-weight:600; color:#1A1A1A; letter-spacing:1px; }
+.ql-sub { font-size:10px; color:#8A8070; font-family:system-ui; margin-top:2px; }
+
+/* ISSUE LOG */
+.issue-form { background:#fff; border:1px solid #E5DDD0; padding:20px; margin-bottom:16px; display:none; box-shadow:0 4px 16px rgba(0,0,0,0.1); }
+.issue-form.open { display:block; }
+.level-selector { display:flex; gap:8px; margin-bottom:4px; }
+.level-btn { flex:1; padding:10px 8px; font-size:11px; font-family:system-ui; font-weight:700; cursor:pointer; border:2px solid #E5DDD0; background:#fff; letter-spacing:1px; }
+.level-btn.l1.active { background:#F0FFF0; border-color:#55AA55; color:#55AA55; }
+.level-btn.l2.active { background:#FFF8F0; border-color:#D4903A; color:#D4903A; }
+.level-btn.l3.active { background:#FFF0F0; border-color:#CC5555; color:#CC5555; }
+.level-hint { font-size:11px; color:#8A8070; font-family:system-ui; font-style:italic; }
+.issue-row { background:#fff; border:1px solid #E5DDD0; margin-bottom:8px; }
+.issue-row-head { padding:10px 14px; display:flex; align-items:center; gap:10px; border-bottom:1px solid #F0EBE3; }
+.issue-badge { font-size:10px; font-weight:700; font-family:system-ui; padding:3px 10px; border-radius:2px; flex-shrink:0; }
+.issue-what { font-size:13px; font-weight:700; color:#1A1A1A; flex:1; }
+.issue-date { font-size:11px; color:#8A8070; font-family:system-ui; flex-shrink:0; }
+.issue-details { padding:8px 14px; display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
+.issue-detail-item { font-size:11px; font-family:system-ui; color:#8A8070; }
+.issue-detail-item strong { color:#1A1A1A; display:block; font-size:12px; }
+.issue-actions { padding:8px 14px; border-top:1px solid #F0EBE3; display:flex; gap:8px; }
+.resolve-btn { font-size:10px; font-family:system-ui; font-weight:700; padding:5px 12px; cursor:pointer; border:none; }
+.filter-bar { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
+.filter-btn { padding:5px 12px; font-size:11px; font-family:system-ui; font-weight:600; cursor:pointer; border:1px solid #E5DDD0; background:#fff; color:#8A8070; }
+.filter-btn.active { background:#1A1A1A; color:#B8962E; border-color:#1A1A1A; }
+.empty-state { text-align:center; padding:40px 20px; color:#8A8070; font-family:system-ui; }
+.empty-icon { font-size:36px; margin-bottom:10px; }
+
+/* CHECKLIST */
+.freq-tabs { display:flex; gap:6px; margin-bottom:16px; }
+.freq-tab { padding:7px 16px; font-size:11px; font-family:system-ui; font-weight:600; cursor:pointer; border:1px solid #E5DDD0; background:#fff; color:#8A8070; letter-spacing:1px; }
+.freq-tab.active { background:#1A1A1A; color:#B8962E; border-color:#1A1A1A; }
+.check-area-head { background:#2A2A2A; padding:8px 16px; display:flex; justify-content:space-between; align-items:center; }
+.check-area-title { font-size:11px; color:#B8962E; letter-spacing:2px; font-family:system-ui; font-weight:600; }
+.check-item-row { display:flex; align-items:center; gap:10px; padding:8px 16px; border-bottom:1px solid #F0EBE3; cursor:pointer; }
+.check-item-row:hover { background:#FFFDF5; }
+.chk { width:20px; height:20px; border:2px solid #CCC; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+.chk.done { border-color:#55AA55; background:#55AA55; }
+.check-text { flex:1; font-size:13px; font-family:system-ui; color:#1A1A1A; }
+.check-text.done { text-decoration:line-through; color:#8A8070; }
+.check-edit-input { flex:1; border:none; border-bottom:1px solid #E5DDD0; font-size:13px; font-family:system-ui; padding:4px 0; outline:none; background:transparent; }
+.prog-bar { height:5px; background:#E5DDD0; border-radius:3px; margin-bottom:16px; }
+.prog-fill { height:5px; border-radius:3px; transition:width 0.3s; }
+.mode-toggle { display:flex; gap:6px; margin-bottom:12px; }
+
+/* SOP BUILDER */
+.sop-layout { display:grid; grid-template-columns:200px 1fr; gap:16px; }
+.sop-sidebar { background:#111; padding:12px; }
+.sop-item { padding:10px 12px; cursor:pointer; border-left:3px solid transparent; margin-bottom:4px; }
+.sop-item:hover { background:#1A1A1A; }
+.sop-item.active { background:#1A1A1A; border-left-color:#B8962E; }
+.sop-item-name { font-size:12px; font-family:system-ui; font-weight:600; color:#F5F0E8; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.sop-item.active .sop-item-name { color:#B8962E; }
+.sop-item-steps { font-size:10px; color:#8A8070; font-family:system-ui; margin-top:2px; }
+.sop-content { background:#fff; border:1px solid #E5DDD0; }
+.sop-meta { background:#1A1A1A; padding:16px 20px; }
+.sop-title-input { font-size:20px; font-weight:700; color:#F5F0E8; background:transparent; border:none; border-bottom:2px solid #2A2A2A; outline:none; width:100%; font-family:Georgia,serif; padding:4px 0; margin-bottom:10px; }
+.sop-title-input:focus { border-bottom-color:#B8962E; }
+.sop-meta-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+.sop-meta-input { font-size:12px; color:#F5F0E8; background:transparent; border:none; border-bottom:1px solid #2A2A2A; outline:none; width:100%; font-family:system-ui; padding:4px 0; }
+.sop-meta-input::placeholder { color:#555; }
+.sop-meta-input:focus { border-bottom-color:#B8962E; }
+.sop-meta-label { font-size:9px; color:#8A8070; letter-spacing:2px; font-family:system-ui; font-weight:600; margin-bottom:4px; }
+.step-table-head { display:grid; grid-template-columns:36px 2fr 120px 70px 2fr 36px; background:#F8F5F0; border-bottom:1px solid #E5DDD0; }
+.step-table-head span { padding:7px 8px; font-size:9px; color:#8A8070; letter-spacing:1px; font-family:system-ui; font-weight:600; border-right:1px solid #E5DDD0; }
+.step-table-head span:last-child { border-right:none; }
+.step-row { display:grid; grid-template-columns:36px 2fr 120px 70px 2fr 36px; border-bottom:1px solid #F0EBE3; background:#fff; }
+.step-row:nth-child(even) { background:#FAFAFA; }
+.step-num { padding:8px 6px; font-size:12px; font-weight:700; color:#B8962E; font-family:system-ui; border-right:1px solid #E5DDD0; display:flex; align-items:flex-start; justify-content:center; padding-top:10px; }
+.step-cell { padding:4px 6px; border-right:1px solid #E5DDD0; }
+.step-cell:last-child { border-right:none; display:flex; align-items:flex-start; padding-top:8px; justify-content:center; }
+.step-ta { width:100%; border:none; background:transparent; font-size:12px; font-family:system-ui; color:#1A1A1A; outline:none; resize:none; min-height:48px; line-height:1.5; padding:4px 2px; }
+.step-ta.decision { color:#5D4037; background:#FFF8F5; padding:4px 6px; border:1px solid #F0D0C0; border-radius:2px; min-height:48px; }
+.step-ta.decision:focus { border-color:#B8962E; }
+.step-inp { width:100%; border:none; border-bottom:1px solid #E5DDD0; background:transparent; font-size:12px; font-family:system-ui; outline:none; padding:6px 2px; }
+
+/* CONTACTS */
+.contact-card { background:#fff; border:1px solid #E5DDD0; margin-bottom:10px; }
+.contact-head { background:#1A1A1A; padding:8px 14px; display:flex; justify-content:space-between; align-items:center; }
+.contact-cat { font-size:10px; color:#B8962E; letter-spacing:2px; font-family:system-ui; font-weight:600; }
+.contact-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:12px 14px; }
+.contact-grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; padding:12px 14px; }
+
+/* SUPPLIER LIST */
+.supplier-table { width:100%; border-collapse:collapse; }
+.supplier-table th { padding:8px 10px; font-size:9px; color:#8A8070; letter-spacing:2px; font-family:system-ui; font-weight:600; background:#F8F5F0; border-bottom:1px solid #E5DDD0; text-align:left; }
+.supplier-table td { padding:6px 8px; border-bottom:1px solid #F0EBE3; }
+.supplier-table input { border:none; background:transparent; font-size:12px; font-family:system-ui; width:100%; outline:none; padding:3px 0; border-bottom:1px solid transparent; }
+.supplier-table input:focus { border-bottom-color:#B8962E; }
+.supplier-table select { border:none; background:transparent; font-size:12px; font-family:system-ui; width:100%; outline:none; padding:3px 0; }
+
+/* AUDIT */
+.audit-section-tabs { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:20px; }
+.audit-tab { padding:7px 14px; font-size:10px; font-family:system-ui; font-weight:600; letter-spacing:1px; cursor:pointer; border:1px solid #E5DDD0; background:#fff; color:#8A8070; }
+.audit-tab.active { background:#1A1A1A; color:#B8962E; border-color:#1A1A1A; }
+.audit-tab.done { background:#F0FFF0; color:#55AA55; border-color:#55AA55; }
+.audit-q { background:#fff; border:1px solid #E5DDD0; margin-bottom:12px; }
+.audit-q-top { padding:16px 20px 0; }
+.audit-q-num { font-size:10px; color:#B8962E; font-family:system-ui; letter-spacing:2px; font-weight:600; margin-bottom:6px; }
+.audit-q-text { font-size:15px; font-weight:700; color:#1A1A1A; margin-bottom:16px; line-height:1.3; }
+.audit-opts { border-top:1px solid #F0EBE3; }
+.audit-opt { padding:12px 20px; border-bottom:1px solid #F0EBE3; cursor:pointer; display:flex; align-items:center; gap:10px; border-left:4px solid transparent; }
+.audit-opt:hover { background:#FFFDF5; }
+.audit-opt.selected { background:#FFFDF5; border-left-color:#B8962E; }
+.audit-radio { width:16px; height:16px; border:2px solid #CCC; border-radius:50%; flex-shrink:0; }
+.audit-opt.selected .audit-radio { border-color:#B8962E; background:#B8962E; }
+.score-bar { height:8px; background:#E5DDD0; border-radius:4px; margin:8px 0; }
+.score-fill { height:8px; border-radius:4px; }
+.result-link-btn { display:inline-block; padding:6px 14px; font-size:10px; font-family:system-ui; font-weight:700; letter-spacing:1px; cursor:pointer; border:none; margin-top:6px; }
+
+/* PRINT */
+@media print {
+  .header,.tabs,.header-actions,.action-row,.add-btn,.del-btn,.btn-gold,.btn-dark,.btn-sec,.btn-danger,.issue-form,.filter-bar,.mode-toggle,.freq-tabs,.sop-sidebar,.audit-section-tabs,.resolve-btn,.level-selector,.quick-links { display:none !important; }
+  .section { display:block !important; }
+  .sop-layout { grid-template-columns:1fr; }
+  body { background:#fff; }
+  .wrap { padding:8px; }
+  input,textarea,select { border:none !important; background:transparent !important; }
+}
+@media (max-width:700px) {
+  .stats-grid { grid-template-columns:1fr 1fr; }
+  .quick-links { grid-template-columns:1fr 1fr; }
+  .grid2,.grid3,.grid4 { grid-template-columns:1fr; }
+  .sop-layout { grid-template-columns:1fr; }
+  .step-table-head,.step-row { grid-template-columns:1fr; }
+  .issue-details { grid-template-columns:1fr; }
+  .sop-meta-row { grid-template-columns:1fr; }
+  .contact-grid,.contact-grid-3 { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div style="display:flex;align-items:center;">
+    <span class="hb">HOTEL MASTERY HUB</span>
+    <span class="hs">&middot; MAINTENANCE TOOLKIT</span>
+  </div>
+  <div class="header-actions">
+    <button class="btn-hdr" onclick="exportCSV()">CSV</button>
+    <button class="btn-hdr" onclick="emailSummary()">&#9993;</button>
+    <button class="btn-hdr gold" onclick="printAll()">PDF</button>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" id="tab-guide" onclick="setTab('guide')">HOW TO USE</div>
+  <div class="tab" id="tab-dashboard" onclick="setTab('dashboard')">&#9679; DASHBOARD</div>
+  <div class="tab" id="tab-log" onclick="setTab('log')">ISSUE LOG <span class="tab-badge" id="badge-log">0</span></div>
+  <div class="tab" id="tab-checklists" onclick="setTab('checklists')">CHECKLISTS</div>
+  <div class="tab" id="tab-sops" onclick="setTab('sops')">SOP BUILDER</div>
+  <div class="tab" id="tab-contacts" onclick="setTab('contacts')">CONTACTS & SUPPLIERS</div>
+  <div class="tab" id="tab-audit" onclick="setTab('audit')">AUDIT</div>
+</div>
+
+<div class="wrap">
+
+<!-- ═══ HOW TO USE ═══ -->
+<div class="section active" id="section-guide">
+  <div style="background:#1A1A1A;padding:20px 28px;margin-bottom:20px;">
+    <div style="font-size:10px;color:#B8962E;letter-spacing:4px;font-family:system-ui;font-weight:600;margin-bottom:6px;">HOW TO USE THIS TOOL</div>
+    <div style="font-size:18px;color:#F5F0E8;font-weight:700;margin-bottom:4px;">Maintenance Toolkit — Quick Start Guide</div>
+    <div style="font-size:12px;color:#8A8070;font-family:system-ui;">Hotel Mastery Hub &middot; Maintenance Mastery Toolkit</div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#1A1A1A;"><span class="card-title">WHAT THIS TOOLKIT DOES</span></div>
+    <div class="card-body">
+      <p style="font-size:14px;font-family:system-ui;line-height:1.8;color:#1A1A1A;margin-bottom:12px;">This toolkit gives you everything you need to run maintenance in a small hotel — in one place. Log issues, run checklists, write procedures, manage suppliers, and assess how your system is working. You don't need to use all of it on day one. Start with what you need most.</p>
+      <p style="font-size:14px;font-family:system-ui;line-height:1.8;color:#1A1A1A;">Everything saves automatically in your browser. Your data is there every time you open the link.</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#1A3A5C;"><span class="card-title">THE SIX TOOLS — WHAT EACH ONE IS FOR</span></div>
+    <div class="card-body" style="padding:0;">
+      <div style="display:flex;gap:0;border-bottom:1px solid #F0EBE3;padding:16px 20px;align-items:flex-start;">
+        <div style="width:32px;height:32px;background:#B8962E;color:#1A1A1A;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;font-family:system-ui;flex-shrink:0;margin-right:16px;">&#9679;</div>
+        <div><div style="font-size:14px;font-weight:700;color:#1A1A1A;margin-bottom:4px;">Dashboard</div><div style="font-size:13px;color:#8A8070;font-family:system-ui;line-height:1.6;">Your daily overview. Open issues, L3 alerts, checklist progress, and last audit score. Start here every shift. If there is a red alarm strip at the top — that is your first priority.</div></div>
+      </div>
+      <div style="display:flex;gap:0;border-bottom:1px solid #F0EBE3;padding:16px 20px;align-items:flex-start;">
+        <div style="width:32px;height:32px;background:#D4903A;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;font-family:system-ui;flex-shrink:0;margin-right:16px;">&#43;</div>
+        <div><div style="font-size:14px;font-weight:700;color:#1A1A1A;margin-bottom:4px;">Issue Log</div><div style="font-size:13px;color:#8A8070;font-family:system-ui;line-height:1.6;">Log every maintenance issue the moment it is found. Choose the urgency level — L1 (plan it), L2 (fix today), L3 (act now). Filter by status. Mark resolved. Never let an issue disappear into someone's memory.</div></div>
+      </div>
+      <div style="display:flex;gap:0;border-bottom:1px solid #F0EBE3;padding:16px 20px;align-items:flex-start;">
+        <div style="width:32px;height:32px;background:#55AA55;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;font-family:system-ui;flex-shrink:0;margin-right:16px;">&#9745;</div>
+        <div><div style="font-size:14px;font-weight:700;color:#1A1A1A;margin-bottom:4px;">Checklists</div><div style="font-size:13px;color:#8A8070;font-family:system-ui;line-height:1.6;">Daily, weekly, and monthly checks. Switch to Edit mode to customise the items for your property. Switch to Use mode to tick them off during the shift. Checklist progress shows on the Dashboard.</div></div>
+      </div>
+      <div style="display:flex;gap:0;border-bottom:1px solid #F0EBE3;padding:16px 20px;align-items:flex-start;">
+        <div style="width:32px;height:32px;background:#8A8070;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;font-family:system-ui;flex-shrink:0;margin-right:16px;">&#128196;</div>
+        <div><div style="font-size:14px;font-weight:700;color:#1A1A1A;margin-bottom:4px;">SOP Builder</div><div style="font-size:13px;color:#8A8070;font-family:system-ui;line-height:1.6;">Write your maintenance procedures once. Five pre-built SOPs are included — reporting issues, L3 emergencies, planned maintenance, supplier call-outs, and room damage assessment. Edit them to match your hotel. Add your own.</div></div>
+      </div>
+      <div style="display:flex;gap:0;border-bottom:1px solid #F0EBE3;padding:16px 20px;align-items:flex-start;">
+        <div style="width:32px;height:32px;background:#B8962E;color:#1A1A1A;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;font-family:system-ui;flex-shrink:0;margin-right:16px;">&#128222;</div>
+        <div><div style="font-size:14px;font-weight:700;color:#1A1A1A;margin-bottom:4px;">Contacts &amp; Suppliers</div><div style="font-size:13px;color:#8A8070;font-family:system-ui;line-height:1.6;">Two sections. The Escalation Contact Card — who to call for each emergency, with backup numbers. The Supplier List — all your maintenance suppliers in one place with contact details and contract renewal dates. Fill this in before you need it.</div></div>
+      </div>
+      <div style="display:flex;gap:0;padding:16px 20px;align-items:flex-start;">
+        <div style="width:32px;height:32px;background:#55AA55;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;font-family:system-ui;flex-shrink:0;margin-right:16px;">&#10003;</div>
+        <div><div style="font-size:14px;font-weight:700;color:#1A1A1A;margin-bottom:4px;">Audit</div><div style="font-size:13px;color:#8A8070;font-family:system-ui;line-height:1.6;">A 15-question health check across five areas: detection, logging, supplier management, team response, and prevention. Run it once now to see where the gaps are. Each result links directly to the tool that fixes it.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#1E4620;"><span class="card-title">HOW TO GET STARTED — IN ORDER</span></div>
+    <div class="card-body" style="padding:0;">
+      <div style="display:flex;gap:0;border-bottom:1px solid #F0EBE3;padding:16px 20px;align-items:flex-start;">
+        <div style="width:28px;height:28px;background:#B8962E;color:#1A1A1A;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;font-family:system-ui;flex-shrink:0;margin-right:16px;">1</div>
+        <div><div style="font-size:14px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Fill in your hotel information</div><div style="font-size:13px;color:#8A8070;font-family:system-ui;line-height:1.6;">On the Dashboard tab, enter your hotel name, maintenance manager, and number of rooms.</div></div>
+      </div>
+      <div style="display:flex;gap:0;border-bottom:1px solid #F0EBE3;padding:16px 20px;align-items:flex-start;">
+        <div style="width:28px;height:28px;background:#B8962E;color:#1A1A1A;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;font-family:system-ui;flex-shrink:0;margin-right:16px;">2</div>
+        <div><div style="font-size:14px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Fill in your Contacts &amp; Suppliers</div><div style="font-size:13px;color:#8A8070;font-family:system-ui;line-height:1.6;">Go to the Contacts tab. Add the name and number for each supplier category. Add backup contacts. This is the most important setup step — do it before anything else fails.</div></div>
+      </div>
+      <div style="display:flex;gap:0;border-bottom:1px solid #F0EBE3;padding:16px 20px;align-items:flex-start;">
+        <div style="width:28px;height:28px;background:#B8962E;color:#1A1A1A;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;font-family:system-ui;flex-shrink:0;margin-right:16px;">3</div>
+        <div><div style="font-size:14px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Customise your Checklists</div><div style="font-size:13px;color:#8A8070;font-family:system-ui;line-height:1.6;">Go to Checklists, switch to Edit mode, and adjust the items for your property. Add areas that are relevant — pool, garden, kitchen, technical room.</div></div>
+      </div>
+      <div style="display:flex;gap:0;border-bottom:1px solid #F0EBE3;padding:16px 20px;align-items:flex-start;">
+        <div style="width:28px;height:28px;background:#B8962E;color:#1A1A1A;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;font-family:system-ui;flex-shrink:0;margin-right:16px;">4</div>
+        <div><div style="font-size:14px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Review and edit your SOPs</div><div style="font-size:13px;color:#8A8070;font-family:system-ui;line-height:1.6;">Go to SOP Builder. The five pre-built SOPs are a starting point. Edit them to reflect how your hotel actually operates. Add SOPs for anything specific to your property.</div></div>
+      </div>
+      <div style="display:flex;gap:0;border-bottom:1px solid #F0EBE3;padding:16px 20px;align-items:flex-start;">
+        <div style="width:28px;height:28px;background:#B8962E;color:#1A1A1A;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;font-family:system-ui;flex-shrink:0;margin-right:16px;">5</div>
+        <div><div style="font-size:14px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Run the Audit</div><div style="font-size:13px;color:#8A8070;font-family:system-ui;line-height:1.6;">Go to the Audit tab and answer all 15 questions honestly. The results will show you where your maintenance system is weak and link you directly to the tool that helps.</div></div>
+      </div>
+      <div style="display:flex;gap:0;padding:16px 20px;align-items:flex-start;">
+        <div style="width:28px;height:28px;background:#B8962E;color:#1A1A1A;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;font-family:system-ui;flex-shrink:0;margin-right:16px;">6</div>
+        <div><div style="font-size:14px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Use it daily</div><div style="font-size:13px;color:#8A8070;font-family:system-ui;line-height:1.6;">Dashboard first. Log issues as they happen. Tick off checklists each shift. That is the whole habit. Everything else builds from there.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#2A2A2A;"><span class="card-title">YOUR THREE EXPORT OPTIONS</span></div>
+    <div class="card-body" style="padding:0;">
+      <div style="padding:16px 20px;border-bottom:1px solid #F0EBE3;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+          <div style="background:#B8962E;color:#1A1A1A;font-size:11px;font-weight:700;font-family:system-ui;padding:4px 12px;letter-spacing:1px;">CSV</div>
+          <div style="font-size:14px;font-weight:700;color:#1A1A1A;">Export to spreadsheet</div>
+        </div>
+        <p style="font-size:13px;color:#8A8070;font-family:system-ui;line-height:1.6;">Downloads your Issue Log and Supplier List as a .csv file you can open in Excel or Google Sheets. Use it to share with your accountant, archive records, or analyse patterns. Does not include checklists, SOPs, or audit results.</p>
+      </div>
+      <div style="padding:16px 20px;border-bottom:1px solid #F0EBE3;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+          <div style="background:#1A1A1A;color:#B8962E;font-size:11px;font-weight:700;font-family:system-ui;padding:4px 12px;letter-spacing:1px;">&#9993; EMAIL</div>
+          <div style="font-size:14px;font-weight:700;color:#1A1A1A;">Send a maintenance report</div>
+        </div>
+        <p style="font-size:13px;color:#8A8070;font-family:system-ui;line-height:1.6;">Opens your mail app with a summary of all open issues — L3 first, then L2. Good for end-of-shift handover, reporting to a property owner, or flagging issues to a manager who is off site. Plain text only.</p>
+      </div>
+      <div style="padding:16px 20px;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+          <div style="background:#B8962E;color:#1A1A1A;font-size:11px;font-weight:700;font-family:system-ui;padding:4px 12px;letter-spacing:1px;">PDF</div>
+          <div style="font-size:14px;font-weight:700;color:#1A1A1A;">Print the full toolkit</div>
+        </div>
+        <p style="font-size:13px;color:#8A8070;font-family:system-ui;line-height:1.6;">Prints all tabs in one document — issue log, checklists, SOPs, contacts, and audit results. Use it for a full maintenance review, for a new staff member, or to keep a printed record. All tabs render before printing so nothing is missing.</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:#1A1A1A;padding:16px 24px;margin-bottom:20px;">
+    <div style="font-size:10px;color:#B8962E;letter-spacing:3px;font-family:system-ui;font-weight:600;margin-bottom:8px;">ONE RULE</div>
+    <p style="font-size:14px;color:#F5F0E8;font-family:system-ui;line-height:1.7;">Log everything. A maintenance issue that is not written down does not exist — until a guest finds it. The habit of logging takes two minutes. The cost of not logging can be a negative review, a repair bill, or an unhappy guest.</p>
+  </div>
+
+  <div class="action-row">
+    <button class="btn-gold" onclick="setTab('dashboard')">GO TO DASHBOARD &rarr;</button>
+  </div>
+  <div class="footer-note" style="text-align:center;margin-top:28px;color:#8A8070;font-size:11px;font-family:system-ui;letter-spacing:2px;">HOTEL MASTERY HUB &middot; MAINTENANCE TOOLKIT</div>
+</div>
+
+<!-- ═══ DASHBOARD ═══ -->
+<div class="section active" id="section-dashboard">
+  <div id="alarm-strip" style="display:none;" class="alarm-strip">
+    <span style="font-size:18px;">&#9888;</span>
+    <span class="alarm-strip-text" id="alarm-strip-text"></span>
+    <button class="btn-sec" style="margin-left:auto;font-size:10px;padding:4px 10px;" onclick="setTab('log')">VIEW LOG &rarr;</button>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">OPEN ISSUES</div>
+      <div class="stat-value" id="d-open" style="color:#B8962E;">0</div>
+      <div class="stat-sub">Total unresolved</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">L3 ACTIVE</div>
+      <div class="stat-value" id="d-l3" style="color:#CC5555;">0</div>
+      <div class="stat-sub">Guest-impact issues</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">TODAY'S CHECKS</div>
+      <div class="stat-value" id="d-checks" style="color:#55AA55;">0%</div>
+      <div class="stat-sub" id="d-checks-sub">Daily checklist</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">LAST AUDIT SCORE</div>
+      <div class="stat-value" id="d-audit" style="color:#8A8070;">-</div>
+      <div class="stat-sub">Run audit to update</div>
+    </div>
+  </div>
+
+  <div class="quick-links">
+    <div class="quick-link" onclick="setTab('log');showIssueForm()">
+      <div class="ql-icon">&#43;</div>
+      <div class="ql-label">LOG ISSUE</div>
+      <div class="ql-sub">Record a new problem</div>
+    </div>
+    <div class="quick-link" onclick="setTab('checklists')">
+      <div class="ql-icon">&#9745;</div>
+      <div class="ql-label">CHECKLISTS</div>
+      <div class="ql-sub">Daily, weekly, monthly</div>
+    </div>
+    <div class="quick-link" onclick="setTab('contacts')">
+      <div class="ql-icon">&#128222;</div>
+      <div class="ql-label">CONTACTS</div>
+      <div class="ql-sub">Who to call</div>
+    </div>
+    <div class="quick-link" onclick="setTab('sops')">
+      <div class="ql-icon">&#128196;</div>
+      <div class="ql-label">SOPs</div>
+      <div class="ql-sub">Written procedures</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head" style="background:#1A1A1A;"><span class="card-title">RECENT OPEN ISSUES</span><button class="btn-sec" style="font-size:10px;padding:4px 10px;" onclick="setTab('log')">VIEW ALL</button></div>
+    <div id="d-recent-issues" style="padding:0;"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head" style="background:#1A1A1A;"><span class="card-title">HOTEL INFORMATION</span></div>
+    <div class="card-body">
+      <div class="grid3">
+        <div class="field"><label>HOTEL NAME</label><input type="text" id="hotel-name" placeholder="e.g. Hotel Bella Vista" oninput="save()"></div>
+        <div class="field"><label>MAINTENANCE MANAGER</label><input type="text" id="maint-manager" placeholder="Name" oninput="save()"></div>
+        <div class="field"><label>TOTAL ROOMS</label><input type="number" id="total-rooms" value="40" oninput="save()"></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-note" style="text-align:center;margin-top:28px;color:#8A8070;font-size:11px;font-family:system-ui;letter-spacing:2px;">HOTEL MASTERY HUB &middot; MAINTENANCE TOOLKIT</div>
+</div>
+
+<!-- ═══ ISSUE LOG ═══ -->
+<div class="section" id="section-log">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+    <div>
+      <h2 style="font-size:22px;font-weight:700;color:#1A1A1A;">Maintenance Issue Log</h2>
+      <p style="font-size:13px;color:#8A8070;font-family:system-ui;margin-top:2px;">Log every issue. Track resolution. Nothing gets forgotten.</p>
+    </div>
+    <button class="btn-gold" onclick="showIssueForm()">+ LOG NEW ISSUE</button>
+  </div>
+
+  <div class="issue-form" id="issue-form">
+    <div style="font-size:12px;font-weight:700;color:#1A1A1A;letter-spacing:1px;font-family:system-ui;margin-bottom:14px;">NEW ISSUE</div>
+    <div class="field"><label>URGENCY LEVEL</label>
+      <div class="level-selector">
+        <button class="level-btn l1" id="lb1" onclick="setLevel(1)">L1 — Small</button>
+        <button class="level-btn l2 active" id="lb2" onclick="setLevel(2)">L2 — Operational</button>
+        <button class="level-btn l3" id="lb3" onclick="setLevel(3)">L3 — Guest Impact</button>
+      </div>
+      <div class="level-hint" id="level-hint">Fix within 24 hours. Assign before end of shift.</div>
+    </div>
+    <div class="grid2">
+      <div class="field"><label>WHAT IS THE ISSUE? *</label><input type="text" id="f-what" placeholder="Describe the issue..."></div>
+      <div class="field"><label>LOCATION *</label><input type="text" id="f-location" placeholder="e.g. Room 204, Reception, Pool area"></div>
+      <div class="field"><label>AREA</label>
+        <select id="f-area">
+          <option>Guest Room</option><option>Bathroom</option><option>Public Area</option><option>Kitchen</option><option>Back of House</option><option>Exterior</option><option>Technical / Plant Room</option><option>Other</option>
+        </select>
+      </div>
+      <div class="field"><label>ASSIGNED TO *</label><input type="text" id="f-responsible" placeholder="Name or supplier"></div>
+      <div class="field"><label>IMMEDIATE ACTION TAKEN</label><input type="text" id="f-action" placeholder="What was done straight away?"></div>
+      <div class="field"><label>NOTES</label><input type="text" id="f-notes" placeholder="Any additional details..."></div>
+    </div>
+    <div class="action-row">
+      <button class="btn-gold" onclick="addIssue()">SAVE ISSUE</button>
+      <button class="btn-sec" onclick="hideIssueForm()">CANCEL</button>
+    </div>
+    <div id="form-errors" style="font-size:11px;color:#CC5555;font-family:system-ui;margin-top:8px;"></div>
+  </div>
+
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+    <button class="filter-btn" onclick="setFilter('open',this)">Open</button>
+    <button class="filter-btn" onclick="setFilter('3',this)" style="color:#CC5555;">L3</button>
+    <button class="filter-btn" onclick="setFilter('2',this)" style="color:#D4903A;">L2</button>
+    <button class="filter-btn" onclick="setFilter('1',this)" style="color:#55AA55;">L1</button>
+    <button class="filter-btn" onclick="setFilter('resolved',this)">Resolved</button>
+  </div>
+
+  <div id="issues-container"></div>
+  <div class="footer-note" style="text-align:center;margin-top:28px;color:#8A8070;font-size:11px;font-family:system-ui;letter-spacing:2px;">HOTEL MASTERY HUB &middot; MAINTENANCE TOOLKIT</div>
+</div>
+
+<!-- ═══ CHECKLISTS ═══ -->
+<div class="section" id="section-checklists">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+    <div>
+      <h2 style="font-size:22px;font-weight:700;color:#1A1A1A;">Maintenance Checklists</h2>
+      <p style="font-size:13px;color:#8A8070;font-family:system-ui;margin-top:2px;">Catch problems before guests do.</p>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <input type="text" id="checklist-date" style="width:180px;font-size:13px;" oninput="save()">
+    </div>
+  </div>
+
+  <div class="mode-toggle">
+    <button class="filter-btn active" id="cl-edit-btn" onclick="setChecklistMode('edit')">&#9998; EDIT MODE — customise items and areas</button>
+    <button class="filter-btn" id="cl-use-btn" onclick="setChecklistMode('use')">&#9745; USE MODE — tick off checks</button>
+  </div>
+
+  <div id="cl-edit-hint" style="background:#FFF8F0;border-left:3px solid #B8962E;padding:10px 14px;font-size:12px;color:#8A8070;font-family:system-ui;margin-bottom:12px;">
+    <strong style="color:#1A1A1A;">EDIT MODE</strong> — Rename areas, edit check items, add your own items and areas. Switch to Use Mode when ready to run the checklist.
+  </div>
+
+  <div class="freq-tabs" id="freq-tabs-wrap">
+    <button class="freq-tab active" onclick="setFreq('daily',this)">DAILY</button>
+    <button class="freq-tab" onclick="setFreq('weekly',this)">WEEKLY</button>
+    <button class="freq-tab" onclick="setFreq('monthly',this)">MONTHLY</button>
+  </div>
+
+  <div id="prog-bar-wrap" style="display:none;">
+    <div class="prog-bar"><div class="prog-fill" id="cl-prog-fill" style="width:0%;background:#B8962E;"></div></div>
+    <div style="font-size:11px;color:#8A8070;font-family:system-ui;margin-bottom:12px;" id="cl-prog-text">0 checks complete</div>
+  </div>
+
+  <div id="checklists-container"></div>
+  <div class="footer-note" style="text-align:center;margin-top:28px;color:#8A8070;font-size:11px;font-family:system-ui;letter-spacing:2px;">HOTEL MASTERY HUB &middot; MAINTENANCE TOOLKIT</div>
+</div>
+
+<!-- ═══ SOP BUILDER ═══ -->
+<div class="section" id="section-sops">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+    <div>
+      <h2 style="font-size:22px;font-weight:700;color:#1A1A1A;">SOP Builder</h2>
+      <p style="font-size:13px;color:#8A8070;font-family:system-ui;margin-top:2px;">Write your maintenance procedures once. Your team follows them every time.</p>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn-sec" id="sop-edit-btn" onclick="setSopMode('edit')">&#9998; EDIT</button>
+      <button class="btn-sec" id="sop-use-btn" onclick="setSopMode('use')">&#128196; VIEW</button>
+      <button class="btn-dark" onclick="printCurrentSOP()">PRINT THIS SOP</button>
+      <button class="btn-dark" onclick="printAllSOPs()">PRINT ALL SOPs</button>
+      <button class="btn-gold" id="sop-add-btn" onclick="addSOP()">+ NEW SOP</button>
+    </div>
+  </div>
+  <div class="sop-layout">
+    <div class="sop-sidebar" id="sop-list"></div>
+    <div id="sop-editor">
+      <div style="padding:40px;text-align:center;color:#8A8070;font-family:system-ui;background:#fff;border:1px solid #E5DDD0;">Select an SOP from the list or create a new one.</div>
+    </div>
+  </div>
+  <div class="footer-note" style="text-align:center;margin-top:28px;color:#8A8070;font-size:11px;font-family:system-ui;letter-spacing:2px;">HOTEL MASTERY HUB &middot; MAINTENANCE TOOLKIT</div>
+</div>
+
+<!-- ═══ CONTACTS & SUPPLIERS ═══ -->
+<div class="section" id="section-contacts">
+  <div style="margin-bottom:14px;">
+    <h2 style="font-size:22px;font-weight:700;color:#1A1A1A;">Contacts & Suppliers</h2>
+    <p style="font-size:13px;color:#8A8070;font-family:system-ui;margin-top:2px;">Under pressure, people don't think clearly. Keep this visible and up to date.</p>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#1A3A5C;"><span class="card-title">ESCALATION CONTACT CARD</span><div style="font-size:10px;color:#8A8070;font-family:system-ui;">Who to call and when</div></div>
+    <div id="contacts-container"></div>
+    <button class="add-btn" onclick="addContact()">+ ADD CONTACT</button>
+  </div>
+
+  <div class="card">
+    <div class="card-head" style="background:#1E4620;"><span class="card-title">SUPPLIER LIST</span><button class="btn-sec" style="font-size:10px;padding:4px 10px;" onclick="addSupplier()">+ ADD SUPPLIER</button></div>
+    <div style="overflow-x:auto;">
+      <table class="supplier-table">
+        <thead><tr><th>SUPPLIER NAME</th><th>CATEGORY</th><th>PRIMARY CONTACT</th><th>PHONE</th><th>EMAIL</th><th>CONTRACT RENEWAL</th><th>NOTES</th><th></th></tr></thead>
+        <tbody id="suppliers-body"></tbody>
+      </table>
+    </div>
+    <button class="add-btn" onclick="addSupplier()">+ ADD SUPPLIER</button>
+  </div>
+  <div class="footer-note" style="text-align:center;margin-top:28px;color:#8A8070;font-size:11px;font-family:system-ui;letter-spacing:2px;">HOTEL MASTERY HUB &middot; MAINTENANCE TOOLKIT</div>
+</div>
+
+<!-- ═══ AUDIT ═══ -->
+<div class="section" id="section-audit">
+  <div style="margin-bottom:14px;">
+    <h2 style="font-size:22px;font-weight:700;color:#1A1A1A;">Maintenance System Audit</h2>
+    <p style="font-size:13px;color:#8A8070;font-family:system-ui;margin-top:2px;">Find out where your maintenance system is strong — and where it's letting you down.</p>
+  </div>
+
+  <div style="background:#FFF8F0;border-left:4px solid #B8962E;padding:12px 16px;font-size:13px;color:#1A1A1A;font-family:system-ui;line-height:1.6;margin-bottom:20px;">
+    Answer each question honestly. At the end you get a score across five areas and a prioritised list of what to fix first. Use it once now, then again in 3 months to track progress.
+  </div>
+
+  <div class="audit-section-tabs" id="audit-tabs"></div>
+  <div id="audit-questions"></div>
+  <div id="audit-results" style="display:none;"></div>
+  <div class="footer-note" style="text-align:center;margin-top:28px;color:#8A8070;font-size:11px;font-family:system-ui;letter-spacing:2px;">HOTEL MASTERY HUB &middot; MAINTENANCE TOOLKIT</div>
+</div>
+
+</div><!-- end wrap -->
+
+<script>
+const LS_KEY = 'hmh-maintenance-toolkit';
+
+// ═══ DATA ═══
+let issues = [];
+let issueCounter = 0;
+let currentFilter = 'all';
+let currentLevel = 2;
+let checklistMode = 'edit';
+let currentFreq = 'daily';
+let checks = {};
+
+let checklists = {
+  daily: [
+    { area:'Rooms', items:['Working lights in all fixtures','No visible leaks or water damage','Door locks and handles functioning','Windows open and close correctly','Heating/cooling system working'] },
+    { area:'Bathrooms', items:['No dripping taps or leaks','Hot water available','Extractor fan working','Toilet flush functioning','No loose tiles or water pooling'] },
+    { area:'Public Areas', items:['Lighting in corridors and lobby','No trip hazards','Exit signs illuminated','Entrance doors operating smoothly','Lifts functioning (if applicable)'] },
+  ],
+  weekly: [
+    { area:'Technical', items:['Boiler pressure checked','Emergency lighting tested','Fire extinguishers visually inspected','Water temperature checked (Legionella prevention)','Electrical panel — no trip switches'] },
+    { area:'Exterior', items:['Gutters and drains clear','Exterior lighting working','Pathways and car park safe','Roof — no obvious damage visible','Signage intact and illuminated'] },
+  ],
+  monthly: [
+    { area:'Full Property', items:['Deep inspection of all guest rooms','HVAC filters cleaned or replaced','Plumbing — check all isolator valves','Fire doors — check closing mechanism','Pest control check'] },
+    { area:'Equipment', items:['Laundry machines checked and serviced','Kitchen equipment service status','Pool pump and filtration (if applicable)','Generator test run (if applicable)','Safety equipment — first aid kits checked'] },
+  ],
+};
+
+let contacts = [
+  { id:'c1', category:'PLUMBING', label:'Plumber', response:'Within 2 hours', name:'', phone:'', backup:'', backupPhone:'', notes:'No hot water, leaks, flooding', custom:false },
+  { id:'c2', category:'ELECTRICAL', label:'Electrician', response:'Within 3 hours', name:'', phone:'', backup:'', backupPhone:'', notes:'Power failure, electrical fault', custom:false },
+  { id:'c3', category:'ACCESS', label:'Locksmith', response:'Immediate', name:'', phone:'', backup:'', backupPhone:'', notes:'Lock failure, key card system', custom:false },
+  { id:'c4', category:'TECHNOLOGY', label:'IT / WiFi', response:'Same day', name:'', phone:'', backup:'', backupPhone:'', notes:'WiFi down, system failure', custom:false },
+  { id:'c5', category:'GENERAL', label:'Handyman', response:'Same day', name:'', phone:'', backup:'', backupPhone:'', notes:'General repairs, furniture', custom:false },
+];
+let contactCounter = 10;
+
+let suppliers = [
+  { id:'s1', name:'', category:'Plumbing', contact:'', phone:'', email:'', renewal:'', notes:'' },
+  { id:'s2', name:'', category:'Electrical', contact:'', phone:'', email:'', renewal:'', notes:'' },
+  { id:'s3', name:'', category:'Cleaning supplies', contact:'', phone:'', email:'', renewal:'', notes:'' },
+];
+let supplierCounter = 10;
+
+let sops = [
+  { id:'sop1', name:'Reporting a Maintenance Issue', role:'Any Staff Member', reviewed:'', purpose:'How any staff member logs and escalates a maintenance issue correctly.',
+    steps:[
+      {what:'Issue noticed during cleaning, inspection, or guest report',who:'Any Staff Member',time:'0 min',decision:'If L3 (guest impact): act immediately. Do not log first — go to the problem first.'},
+      {what:'Assess urgency level — L1, L2, or L3',who:'Any Staff Member',time:'1 min',decision:'If unsure: L1 = log and plan. L2 = fix today. L3 = act now and call supplier.'},
+      {what:'Log the issue in the Issue Log with full details',who:'Any Staff Member',time:'2 min',decision:'If log unavailable: photograph and note on paper. Transfer to log immediately after.'},
+      {what:'Assign to responsible person with deadline',who:'Supervisor',time:'1 min',decision:'If responsible person unavailable: escalate to manager. Never leave unassigned.'},
+      {what:'Follow up before end of shift',who:'Supervisor',time:'2 min',decision:'If unresolved: hand over to next shift with clear status. Do not assume it was handled.'},
+    ]
+  },
+  { id:'sop2', name:'L3 Emergency Response', role:'Any Staff Member', reviewed:'', purpose:'What to do when a maintenance issue directly affects a guest right now.',
+    steps:[
+      {what:'Issue identified — guest is affected',who:'Any Staff Member',time:'0 min',decision:'Examples: no hot water, no power, lock failure, flooding, no heating in winter.'},
+      {what:'Go to the issue immediately',who:'Any Staff Member',time:'now',decision:'Do not log first. Do not finish what you are doing. Act now.'},
+      {what:'Inform the guest directly',who:'Any Staff Member',time:'1 min',decision:'If guest is upset: acknowledge the experience first. Do not argue.'},
+      {what:'Call the responsible supplier using the Escalation Contact Card',who:'Any Staff Member',time:'1 min',decision:'If supplier unavailable: call backup. If no backup: call manager.'},
+      {what:'Inform manager immediately',who:'Any Staff Member',time:'1 min',decision:'Manager must know. This is not optional regardless of time of day.'},
+      {what:'If room cannot be used: move or upgrade the guest',who:'Manager',time:'varies',decision:'Offer alternative room. Do not leave a guest with no solution.'},
+      {what:'Log the issue with full details once situation is stable',who:'Any Staff Member',time:'5 min',decision:'Record what happened, what was done, supplier called, outcome. Before end of shift.'},
+    ]
+  },
+  { id:'sop3', name:'Planned Maintenance Procedure', role:'Maintenance / Supervisor', reviewed:'', purpose:'How to schedule and complete planned maintenance without disrupting operations.',
+    steps:[
+      {what:'Identify rooms or areas requiring planned maintenance',who:'Supervisor',time:'varies',decision:'Check monthly checklist. Review open L1 issues. Review inspection notes.'},
+      {what:'Agree timing with front desk — avoid high occupancy periods',who:'Supervisor',time:'5 min',decision:'If timing unavoidable during high occupancy: inform affected guests in advance.'},
+      {what:'Block affected rooms in PMS',who:'Reception',time:'2 min',decision:'If room is needed: delay maintenance or find alternative solution. Never put a guest in an unready room.'},
+      {what:'Complete the maintenance work',who:'Maintenance',time:'varies',decision:'If additional faults found: log them. Do not fix beyond the scope without authorisation.'},
+      {what:'Inspect and confirm work is complete',who:'Supervisor',time:'5 min',decision:'Check quality before releasing room. Do not skip this step.'},
+      {what:'Release room in PMS and update issue log',who:'Reception / Supervisor',time:'2 min',decision:'Update log: what was done, date, who did it. Close the issue entry.'},
+    ]
+  },
+  { id:'sop4', name:'Supplier Call-Out Procedure', role:'Supervisor / Manager', reviewed:'', purpose:'How to call out a supplier correctly to avoid delays, confusion, and extra charges.',
+    steps:[
+      {what:'Confirm the issue requires a supplier — not internal fix',who:'Supervisor',time:'5 min',decision:'Check if anyone on the team can fix it. A call-out costs money. Use it when needed.'},
+      {what:'Check the Escalation Contact Card for the correct supplier',who:'Supervisor',time:'1 min',decision:'Use the primary contact first. If unavailable: use backup. Never call a random supplier.'},
+      {what:'Call the supplier and describe the issue clearly',who:'Supervisor',time:'3 min',decision:'Give: location, what the problem is, urgency level, whether a guest is affected.'},
+      {what:'Confirm arrival time and estimated cost',who:'Supervisor',time:'2 min',decision:'If cost is above your authority: get manager approval before confirming.'},
+      {what:'Meet supplier on arrival and show them the issue',who:'Supervisor',time:'5 min',decision:'Do not leave supplier unaccompanied in guest areas.'},
+      {what:'Check work is completed before they leave',who:'Supervisor',time:'5 min',decision:'Test the repair. Ask for a copy of any invoice or report.'},
+      {what:'Log outcome and update issue log',who:'Supervisor',time:'3 min',decision:'Record: supplier name, what was done, cost, date resolved. Close the log entry.'},
+    ]
+  },
+  { id:'sop5', name:'Guest Room Damage Assessment', role:'Housekeeper / Supervisor', reviewed:'', purpose:'What to do when damage is found in a guest room during or after a stay.',
+    steps:[
+      {what:'Damage noticed during cleaning or inspection',who:'Housekeeper',time:'0 min',decision:'Do not clean around it and say nothing. Report it.'},
+      {what:'Photograph the damage immediately',who:'Housekeeper',time:'1 min',decision:'Take clear photos before cleaning continues. This is evidence if a charge is needed.'},
+      {what:'Do not move or clean around the damage until supervisor has seen it',who:'Housekeeper',time:'0 min',decision:'If damage is a hazard (broken glass, sharp edge): make safe first, then report.'},
+      {what:'Report to supervisor with photos',who:'Housekeeper',time:'2 min',decision:'Supervisor must decide whether to log as maintenance issue and/or apply damage charge.'},
+      {what:'Supervisor assesses — maintenance issue or guest damage?',who:'Supervisor',time:'5 min',decision:'Normal wear and tear: log as maintenance. Clear guest damage: log and refer to damage policy.'},
+      {what:'Log the issue and take any required action',who:'Supervisor',time:'5 min',decision:'If guest damage charge applies: follow the hotel damage charge policy. If guest is still in house: inform manager before confronting guest.'},
+    ]
+  },
+];
+let sopCounter = 10;
+let activeSOP = 'sop1';
+
+const AUDIT_SECTIONS = [
+  { id:'detection', title:'Issue Detection', questions:[
+    {id:'hk_check', text:'Does housekeeping check room condition beyond just cleanliness?', options:['Never / rarely','Sometimes','Yes, consistently'], scores:[0,1,2]},
+    {id:'sup_inspect', text:'Does your supervisor inspect rooms specifically for maintenance issues?', options:['Never / rarely','Sometimes','Yes, consistently'], scores:[0,1,2]},
+    {id:'guest_first', text:'How often do guests report issues before your team notices?', options:['Very often — guests almost always find issues first','Sometimes','Rarely — we usually catch issues ourselves'], scores:[0,1,2]},
+  ]},
+  { id:'logging', title:'Logging & Recording', questions:[
+    {id:'log_exists', text:'Do you have a maintenance log that is actively used?', options:['No log exists','We have one but rarely used','Yes, we log issues consistently'], scores:[0,1,2]},
+    {id:'log_complete', text:'When issues are logged, do they include what, where, urgency, action, and who?', options:['No — just what broke','Some of this','Yes — all five fields'], scores:[0,1,2]},
+    {id:'followup', text:'How do you know when a logged issue has been resolved?', options:['We do not track this','The person tells us','We update the log when resolved'], scores:[0,1,2]},
+  ]},
+  { id:'suppliers', title:'Supplier Management', questions:[
+    {id:'supplier_list', text:'Do you have a written list of suppliers with contact numbers?', options:['No written list','Partially — some numbers saved in phones','Yes — written, accessible to all relevant staff'], scores:[0,1,2]},
+    {id:'backup_contacts', text:'Do you have backup contacts for key suppliers?', options:['No backups','For some suppliers','Yes — for all critical suppliers'], scores:[0,1,2]},
+    {id:'call_procedure', text:'Is there a clear procedure for calling out a supplier?', options:['No — whoever is available calls','Loose understanding','Yes — documented procedure'], scores:[0,1,2]},
+  ]},
+  { id:'response', title:'Team Response', questions:[
+    {id:'urgency_system', text:'Does your team know the difference between L1, L2, and L3 issues?', options:['No urgency system exists','Informal understanding','Yes — clear system everyone knows'], scores:[0,1,2]},
+    {id:'sops_exist', text:'Do you have written maintenance SOPs?', options:['No written procedures','Some notes or informal procedures','Yes — documented and staff know them'], scores:[0,1,2]},
+    {id:'escalation', text:'Does your team know who to escalate to and when?', options:['No clear escalation path','Loose understanding','Yes — clear and documented'], scores:[0,1,2]},
+  ]},
+  { id:'prevention', title:'Prevention & Review', questions:[
+    {id:'checklists', text:'Do you run regular maintenance checklists (daily/weekly/monthly)?', options:['No checklists','Occasional and inconsistent','Yes — regularly and consistently'], scores:[0,1,2]},
+    {id:'pattern_review', text:'Do you review maintenance issues for patterns?', options:['Never','Occasionally','Yes — regularly, and we act on patterns'], scores:[0,1,2]},
+    {id:'planned_maint', text:'Do you have a planned maintenance schedule?', options:['No planned maintenance','Some seasonal maintenance','Yes — scheduled and tracked'], scores:[0,1,2]},
+  ]},
+];
+
+let auditAnswers = {};
+let activeAuditSection = 'detection';
+let auditScore = null;
+
+// ═══ UTILS ═══
+function today() { return new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}); }
+function save() {
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify({
+      issues, issueCounter, checks, checklists, contacts, contactCounter,
+      suppliers, supplierCounter, sops, sopCounter, activeSOP,
+      auditAnswers, auditScore,
+      hotelName: document.getElementById('hotel-name')?.value||'',
+      maintManager: document.getElementById('maint-manager')?.value||'',
+      totalRooms: document.getElementById('total-rooms')?.value||'40',
+      checklistDate: document.getElementById('checklist-date')?.value||'',
+    }));
+  } catch(e) {}
+}
+
+function setTab(tab) {
+  ['guide','dashboard','log','checklists','sops','contacts','audit'].forEach(t => {
+    document.getElementById('section-'+t).classList.toggle('active', t===tab);
+    document.getElementById('tab-'+t).classList.toggle('active', t===tab);
+  });
+  if(tab==='dashboard') renderDashboard();
+  if(tab==='log') renderIssues();
+  if(tab==='checklists') renderChecklists();
+  if(tab==='sops') { renderSOPList(); renderSOPEditor(); }
+  if(tab==='contacts') { renderContacts(); renderSuppliers(); }
+  if(tab==='audit') renderAudit();
+}
+
+// ═══ DASHBOARD ═══
+function renderDashboard() {
+  const open = issues.filter(i=>!i.resolved);
+  const l3 = open.filter(i=>i.level===3);
+  document.getElementById('d-open').textContent = open.length;
+  document.getElementById('d-l3').textContent = l3.length;
+
+  const alarmStrip = document.getElementById('alarm-strip');
+  if(l3.length>0) {
+    alarmStrip.style.display='flex';
+    document.getElementById('alarm-strip-text').textContent = l3.length+' L3 issue'+(l3.length>1?'s':'')+' active — guest impact. Immediate action required.';
+  } else { alarmStrip.style.display='none'; }
+
+  const badgeEl = document.getElementById('badge-log');
+  badgeEl.textContent = open.length;
+  badgeEl.style.display = open.length>0?'inline-block':'none';
+
+  // Checklist progress
+  const todayChecks = checklists.daily.reduce((s,a)=>s+a.items.length,0);
+  const todayDone = checklists.daily.reduce((s,a)=>s+a.items.filter((_,i)=>checks[`daily-${a.area}-${i}`]).length,0);
+  const pct = todayChecks>0?Math.round((todayDone/todayChecks)*100):0;
+  document.getElementById('d-checks').textContent = pct+'%';
+  document.getElementById('d-checks-sub').textContent = todayDone+'/'+todayChecks+' daily checks';
+
+  document.getElementById('d-audit').textContent = auditScore!==null?auditScore+'%':'-';
+
+  const recent = issues.filter(i=>!i.resolved).slice(0,5);
+  const rc = document.getElementById('d-recent-issues');
+  if(recent.length===0) {
+    rc.innerHTML='<div style="padding:20px;text-align:center;color:#8A8070;font-family:system-ui;font-size:13px;">No open issues. Good work.</div>';
+  } else {
+    rc.innerHTML = recent.map(issue => {
+      const colors = {1:'#55AA55',2:'#D4903A',3:'#CC5555'};
+      const labels = {1:'L1',2:'L2',3:'L3'};
+      return `<div style="display:flex;align-items:center;gap:10px;padding:10px 18px;border-bottom:1px solid #F0EBE3;">
+        <span style="background:${colors[issue.level]};color:#fff;font-size:10px;font-weight:700;font-family:system-ui;padding:2px 8px;">${labels[issue.level]}</span>
+        <span style="flex:1;font-size:13px;font-family:system-ui;font-weight:600;">${issue.what}</span>
+        <span style="font-size:11px;color:#8A8070;font-family:system-ui;">${issue.location}</span>
+        <span style="font-size:11px;color:#8A8070;font-family:system-ui;">${issue.date}</span>
+      </div>`;
+    }).join('');
+  }
+}
+
+// ═══ ISSUE LOG ═══
+const LEVEL_HINTS = {1:'Log and plan. Handle at next maintenance window.',2:'Fix within 24 hours. Assign before end of shift.',3:'Stop everything. Fix now. Guest experience cannot wait.'};
+const LEVEL_LABELS = {1:'L1 — Small',2:'L2 — Operational',3:'L3 — Guest Impact'};
+const LEVEL_COLORS = {1:'#55AA55',2:'#D4903A',3:'#CC5555'};
+
+function showIssueForm() { document.getElementById('issue-form').classList.add('open'); document.getElementById('issue-form').scrollIntoView({behavior:'smooth',block:'start'}); }
+function hideIssueForm() { document.getElementById('issue-form').classList.remove('open'); document.getElementById('form-errors').textContent=''; }
+
+function setLevel(l) {
+  currentLevel=l;
+  [1,2,3].forEach(n=>{ document.getElementById('lb'+n).classList.toggle('active',n===l); document.getElementById('lb'+n).classList.remove('l1','l2','l3'); document.getElementById('lb'+n).classList.add('l'+n); if(n===l) document.getElementById('lb'+n).classList.add('active'); });
+  document.getElementById('level-hint').textContent=LEVEL_HINTS[l];
+}
+
+function addIssue() {
+  const what = document.getElementById('f-what').value.trim();
+  const location = document.getElementById('f-location').value.trim();
+  const responsible = document.getElementById('f-responsible').value.trim();
+  if(!what||!location||!responsible) { document.getElementById('form-errors').textContent='Please fill in: what is the issue, location, and assigned to.'; return; }
+  issueCounter++;
+  issues.unshift({ id:issueCounter, date:today(), what, location, responsible, area:document.getElementById('f-area').value, action:document.getElementById('f-action').value.trim(), notes:document.getElementById('f-notes').value.trim(), level:currentLevel, resolved:false, resolvedDate:null });
+  issues.sort((a,b)=>b.level-a.level);
+  ['f-what','f-location','f-responsible','f-action','f-notes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('form-errors').textContent='';
+  hideIssueForm();
+  save();
+  renderIssues();
+  renderDashboard();
+}
+
+function toggleResolve(id) {
+  const issue=issues.find(i=>i.id===id);
+  if(!issue) return;
+  issue.resolved=!issue.resolved;
+  issue.resolvedDate=issue.resolved?today():null;
+  save(); renderIssues(); renderDashboard();
+}
+
+function deleteIssue(id) {
+  issues=issues.filter(i=>i.id!==id);
+  save(); renderIssues(); renderDashboard();
+}
+
+function setFilter(f, btn) {
+  currentFilter=f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  renderIssues();
+}
+
+function renderIssues() {
+  let filtered = issues;
+  if(currentFilter==='open') filtered=issues.filter(i=>!i.resolved);
+  else if(currentFilter==='resolved') filtered=issues.filter(i=>i.resolved);
+  else if(['1','2','3'].includes(currentFilter)) filtered=issues.filter(i=>i.level===parseInt(currentFilter)&&!i.resolved);
+
+  const c=document.getElementById('issues-container');
+  if(filtered.length===0){
+    c.innerHTML=`<div class="empty-state"><div class="empty-icon">&#9989;</div><div style="font-size:15px;font-weight:700;margin-bottom:6px;">No issues here</div><div style="font-size:13px;">Log a new issue or change the filter above.</div></div>`;
+    return;
+  }
+  c.innerHTML=filtered.map(issue=>{
+    const col=LEVEL_COLORS[issue.level];
+    return `<div class="issue-row" ${issue.resolved?'style="opacity:0.6;"':''}>
+      <div class="issue-row-head">
+        <span class="issue-badge" style="background:${col};color:#fff;">${LEVEL_LABELS[issue.level]}</span>
+        <span class="issue-what">${issue.what}</span>
+        <span class="issue-date">${issue.date}</span>
+        ${issue.resolved?'<span style="background:#F0FFF0;color:#55AA55;font-size:10px;font-weight:700;font-family:system-ui;padding:2px 8px;">RESOLVED</span>':''}
+      </div>
+      <div class="issue-details">
+        <div class="issue-detail-item"><strong>${issue.location}</strong>Location</div>
+        <div class="issue-detail-item"><strong>${issue.area}</strong>Area</div>
+        <div class="issue-detail-item"><strong>${issue.responsible}</strong>Assigned to</div>
+        ${issue.action?`<div class="issue-detail-item"><strong>${issue.action}</strong>Action taken</div>`:''}
+        ${issue.notes?`<div class="issue-detail-item"><strong>${issue.notes}</strong>Notes</div>`:''}
+        ${issue.resolvedDate?`<div class="issue-detail-item"><strong>${issue.resolvedDate}</strong>Resolved</div>`:''}
+      </div>
+      <div class="issue-actions">
+        <button class="resolve-btn" style="background:${issue.resolved?'#F8F5F0':'#55AA55'};color:${issue.resolved?'#8A8070':'#fff'};" onclick="toggleResolve(${issue.id})">${issue.resolved?'Reopen':'Mark Resolved'}</button>
+        <button class="del-btn" onclick="deleteIssue(${issue.id})">x Delete</button>
+      </div>
+      ${issue.level===3&&!issue.resolved?`<div style="background:#CC5555;padding:6px 14px;"><span style="font-size:11px;color:#fff;font-family:system-ui;font-weight:600;">&#9888; GUEST-IMPACT — Stop everything. Fix now. Check Contacts tab for supplier numbers.</span></div>`:''}
+    </div>`;
+  }).join('');
+}
+
+// ═══ CHECKLISTS ═══
+function setChecklistMode(m) {
+  checklistMode=m;
+  document.getElementById('cl-edit-btn').classList.toggle('active',m==='edit');
+  document.getElementById('cl-use-btn').classList.toggle('active',m==='use');
+  document.getElementById('prog-bar-wrap').style.display=m==='use'?'block':'none';
+  document.getElementById('cl-edit-hint').style.display=m==='edit'?'block':'none';
+  renderChecklists();
+}
+
+function setFreq(f, btn) {
+  currentFreq=f;
+  document.querySelectorAll('.freq-tab').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  renderChecklists();
+}
+
+function renderChecklists() {
+  const container=document.getElementById('checklists-container');
+  const areas=checklists[currentFreq];
+
+  if(checklistMode==='use') {
+    const total=areas.reduce((s,a)=>s+a.items.length,0);
+    const done=areas.reduce((s,a)=>s+a.items.filter((_,i)=>checks[currentFreq+'-'+a.area+'-'+i]).length,0);
+    const pct=total>0?Math.round((done/total)*100):0;
+    document.getElementById('cl-prog-fill').style.width=pct+'%';
+    document.getElementById('cl-prog-fill').style.background=pct===100?'#55AA55':'#B8962E';
+    document.getElementById('cl-prog-text').textContent=done+' of '+total+' checks complete';
+
+    container.innerHTML=areas.map(area=>`
+      <div class="card" style="margin-bottom:12px;">
+        <div class="check-area-head">
+          <span class="check-area-title">${area.area}</span>
+          <span style="font-size:10px;color:#8A8070;font-family:system-ui;">${area.items.filter((_,i)=>checks[currentFreq+'-'+area.area+'-'+i]).length}/${area.items.length}</span>
+        </div>
+        ${area.items.map((item,i)=>{
+          const key=currentFreq+'-'+area.area+'-'+i;
+          const d=!!checks[key];
+          return `<div class="check-item-row" onclick="toggleCheck('${key}')"><div class="chk ${d?'done':''}">${d?'<span style="color:#fff;font-size:12px;font-weight:700;">&#10003;</span>':''}</div><span class="check-text ${d?'done':''}">${item}</span></div>`;
+        }).join('')}
+      </div>
+    `).join('')+`
+      <div class="action-row">
+        <button class="btn-gold" onclick="clearChecks()">CLEAR ALL CHECKS</button>
+      </div>
+    `;
+  } else {
+    container.innerHTML=areas.map((area,ai)=>`
+      <div class="card" style="margin-bottom:12px;">
+        <div class="check-area-head" style="justify-content:space-between;">
+          <input style="background:transparent;border:none;border-bottom:1px solid #555;color:#B8962E;font-size:11px;letter-spacing:2px;font-family:system-ui;font-weight:600;outline:none;flex:1;" value="${area.area}" oninput="checklists['${currentFreq}'][${ai}].area=this.value;save()">
+          <button class="del-btn" style="color:#8A8070;" onclick="deleteArea('${currentFreq}',${ai})">x Remove area</button>
+        </div>
+        ${area.items.map((item,i)=>`
+          <div class="check-item-row">
+            <input class="check-edit-input" type="text" value="${item}" oninput="checklists['${currentFreq}'][${ai}].items[${i}]=this.value;save()">
+            <button class="del-btn" onclick="deleteCheckItem('${currentFreq}',${ai},${i})">x</button>
+          </div>
+        `).join('')}
+        <div style="padding:8px 16px;border-top:1px solid #F0EBE3;display:flex;gap:8px;">
+          <input type="text" id="new-item-${currentFreq}-${ai}" placeholder="Add check item..." style="flex:1;">
+          <button class="btn-sec" style="padding:6px 12px;font-size:11px;" onclick="addCheckItem('${currentFreq}',${ai})">+ ADD</button>
+        </div>
+      </div>
+    `).join('')+`
+      <button class="add-btn" onclick="addArea('${currentFreq}')">+ ADD AREA</button>
+    `;
+  }
+  save();
+}
+
+function toggleCheck(key) { checks[key]=!checks[key]; save(); renderChecklists(); renderDashboard(); }
+function clearChecks() { Object.keys(checks).filter(k=>k.startsWith(currentFreq+'-')).forEach(k=>delete checks[k]); save(); renderChecklists(); }
+function addCheckItem(freq, ai) {
+  const inp=document.getElementById('new-item-'+freq+'-'+ai);
+  if(!inp||!inp.value.trim()) return;
+  checklists[freq][ai].items.push(inp.value.trim());
+  inp.value='';
+  save(); renderChecklists();
+}
+function deleteCheckItem(freq, ai, i) { checklists[freq][ai].items.splice(i,1); save(); renderChecklists(); }
+function addArea(freq) { checklists[freq].push({area:'New Area',items:['']}); save(); renderChecklists(); }
+function deleteArea(freq, ai) { if(checklists[freq].length<=1) return; checklists[freq].splice(ai,1); save(); renderChecklists(); }
+
+let sopMode = 'edit';
+
+function setSopMode(m) {
+  sopMode = m;
+  document.getElementById('sop-edit-btn').classList.toggle('active', m==='edit');
+  document.getElementById('sop-use-btn').classList.toggle('active', m==='use');
+  document.getElementById('sop-add-btn').style.display = m==='edit'?'block':'none';
+  document.getElementById('sop-list').style.display = m==='use'?'none':'block';
+  renderSOPEditor();
+}
+
+// ═══ SOP BUILDER ═══
+function addSOP() {
+  const id='sop'+sopCounter;
+  sops.push({id,name:'New SOP',role:'',reviewed:'',purpose:'',steps:[{what:'',who:'',time:'',decision:''}]});
+  activeSOP=id;
+  save(); renderSOPList(); renderSOPEditor();
+}
+
+function deleteSOP(id) {
+  if(!confirm('Delete this SOP?')) return;
+  sops=sops.filter(s=>s.id!==id);
+  activeSOP=sops.length>0?sops[0].id:null;
+  save(); renderSOPList(); renderSOPEditor();
+}
+
+function addSOPStep() {
+  const sop=sops.find(s=>s.id===activeSOP);
+  if(!sop) return;
+  sop.steps.push({what:'',who:'',time:'',decision:''});
+  save(); renderSOPEditor();
+}
+
+function deleteSOPStep(idx) {
+  const sop=sops.find(s=>s.id===activeSOP);
+  if(!sop||sop.steps.length<=1) return;
+  sop.steps.splice(idx,1);
+  save(); renderSOPEditor();
+}
+
+function updateSOP(field, val) {
+  const sop=sops.find(s=>s.id===activeSOP);
+  if(!sop) return;
+  sop[field]=val;
+  if(field==='name') { renderSOPList(); }
+  save();
+}
+
+function updateSOPStep(idx, field, val) {
+  const sop=sops.find(s=>s.id===activeSOP);
+  if(!sop) return;
+  sop.steps[idx][field]=val;
+  save();
+}
+
+function renderSOPList() {
+  document.getElementById('sop-list').innerHTML=sops.map(sop=>`
+    <div class="sop-item ${activeSOP===sop.id?'active':''}" onclick="activeSOP='${sop.id}';renderSOPList();renderSOPEditor();">
+      <div class="sop-item-name">${sop.name||'Untitled'}</div>
+      <div class="sop-item-steps">${sop.steps.length} steps</div>
+    </div>
+  `).join('');
+}
+
+function renderSOPEditor() {
+  const editor=document.getElementById('sop-editor');
+  if(!activeSOP) { editor.innerHTML='<div style="padding:40px;text-align:center;color:#8A8070;font-family:system-ui;background:#fff;border:1px solid #E5DDD0;">Select an SOP from the list or create a new one.</div>'; return; }
+
+  if(sopMode==='use') {
+    // Show all SOPs as clean formatted document
+    editor.innerHTML = sops.map(sop=>`
+      <div style="background:#fff;border:1px solid #E5DDD0;margin-bottom:24px;page-break-after:always;">
+        <div style="background:#1A1A1A;padding:16px 20px;">
+          <div style="font-size:10px;color:#B8962E;letter-spacing:3px;font-family:system-ui;font-weight:600;margin-bottom:4px;">STANDARD OPERATING PROCEDURE</div>
+          <div style="font-size:20px;color:#F5F0E8;font-weight:700;">${sop.name||'Untitled SOP'}</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid #E5DDD0;">
+          <div style="padding:10px 16px;border-right:1px solid #E5DDD0;"><div style="font-size:9px;color:#B8962E;letter-spacing:2px;font-family:system-ui;font-weight:600;margin-bottom:4px;">RESPONSIBLE ROLE</div><div style="font-size:13px;font-family:system-ui;font-weight:600;">${sop.role||'—'}</div></div>
+          <div style="padding:10px 16px;border-right:1px solid #E5DDD0;"><div style="font-size:9px;color:#B8962E;letter-spacing:2px;font-family:system-ui;font-weight:600;margin-bottom:4px;">LAST REVIEWED</div><div style="font-size:13px;font-family:system-ui;">${sop.reviewed||'—'}</div></div>
+          <div style="padding:10px 16px;"><div style="font-size:9px;color:#B8962E;letter-spacing:2px;font-family:system-ui;font-weight:600;margin-bottom:4px;">PURPOSE</div><div style="font-size:13px;font-family:system-ui;">${sop.purpose||'—'}</div></div>
+        </div>
+        <div style="background:#F8F5F0;display:grid;grid-template-columns:36px 2fr 120px 70px 2fr;border-bottom:1px solid #E5DDD0;">
+          <div style="padding:7px 8px;font-size:9px;color:#8A8070;letter-spacing:1px;font-family:system-ui;font-weight:600;border-right:1px solid #E5DDD0;">#</div>
+          <div style="padding:7px 8px;font-size:9px;color:#8A8070;letter-spacing:1px;font-family:system-ui;font-weight:600;border-right:1px solid #E5DDD0;">WHAT HAPPENS</div>
+          <div style="padding:7px 8px;font-size:9px;color:#8A8070;letter-spacing:1px;font-family:system-ui;font-weight:600;border-right:1px solid #E5DDD0;">WHO</div>
+          <div style="padding:7px 8px;font-size:9px;color:#8A8070;letter-spacing:1px;font-family:system-ui;font-weight:600;border-right:1px solid #E5DDD0;">TIME</div>
+          <div style="padding:7px 8px;font-size:9px;color:#D4903A;letter-spacing:1px;font-family:system-ui;font-weight:600;">IF OFF-PLAN</div>
+        </div>
+        ${sop.steps.map((step,i)=>`
+          <div style="display:grid;grid-template-columns:36px 2fr 120px 70px 2fr;border-bottom:1px solid #F0EBE3;background:${i%2===0?'#fff':'#FAFAFA'};">
+            <div style="padding:10px 8px;font-size:13px;font-weight:700;color:#B8962E;font-family:system-ui;border-right:1px solid #E5DDD0;text-align:center;">${i+1}</div>
+            <div style="padding:10px 8px;font-size:13px;font-family:system-ui;color:#1A1A1A;line-height:1.5;border-right:1px solid #E5DDD0;">${step.what||'—'}</div>
+            <div style="padding:10px 8px;font-size:12px;font-family:system-ui;color:#1A1A1A;border-right:1px solid #E5DDD0;">${step.who||'—'}</div>
+            <div style="padding:10px 8px;font-size:12px;font-family:system-ui;color:#8A8070;border-right:1px solid #E5DDD0;">${step.time||'—'}</div>
+            <div style="padding:10px 8px;font-size:12px;font-family:system-ui;color:#D4903A;line-height:1.5;">${step.decision||'—'}</div>
+          </div>
+        `).join('')}
+      </div>
+    `).join('');
+    return;
+  }
+
+  const sop=sops.find(s=>s.id===activeSOP);
+  if(!sop) return;
+  editor.innerHTML=`
+    <div class="sop-content">
+      <div class="sop-meta">
+        <input class="sop-title-input" type="text" value="${sop.name}" oninput="updateSOP('name',this.value)" placeholder="SOP Title">
+        <div class="sop-meta-row">
+          <div><div class="sop-meta-label">RESPONSIBLE ROLE</div><input class="sop-meta-input" type="text" value="${sop.role}" oninput="updateSOP('role',this.value)" placeholder="e.g. Supervisor"></div>
+          <div><div class="sop-meta-label">LAST REVIEWED</div><input class="sop-meta-input" type="text" value="${sop.reviewed}" oninput="updateSOP('reviewed',this.value)" placeholder="Date"></div>
+          <div><div class="sop-meta-label">PURPOSE</div><input class="sop-meta-input" type="text" value="${sop.purpose}" oninput="updateSOP('purpose',this.value)" placeholder="One sentence summary"></div>
+        </div>
+      </div>
+      <div class="step-table-head"><span>#</span><span>WHAT HAPPENS</span><span>WHO</span><span>TIME</span><span style="color:#D4903A;">IF OFF-PLAN &rarr;</span><span></span></div>
+      ${sop.steps.map((step,i)=>`
+        <div class="step-row">
+          <div class="step-num">${i+1}</div>
+          <div class="step-cell"><textarea class="step-ta" placeholder="Describe this step..." oninput="updateSOPStep(${i},'what',this.value)">${step.what}</textarea></div>
+          <div class="step-cell"><input class="step-inp" type="text" value="${step.who}" oninput="updateSOPStep(${i},'who',this.value)" placeholder="Role..."></div>
+          <div class="step-cell"><input class="step-inp" type="text" value="${step.time}" oninput="updateSOPStep(${i},'time',this.value)" placeholder="e.g. 2 min"></div>
+          <div class="step-cell"><textarea class="step-ta decision" placeholder="If this goes off-plan..." oninput="updateSOPStep(${i},'decision',this.value)">${step.decision}</textarea></div>
+          <div class="step-cell"><button class="del-btn" onclick="deleteSOPStep(${i})">x</button></div>
+        </div>
+      `).join('')}
+      <div style="padding:10px 16px;display:flex;gap:8px;border-top:1px solid #E5DDD0;background:#F8F5F0;">
+        <button class="btn-sec" onclick="addSOPStep()">+ ADD STEP</button>
+        <button class="btn-danger" onclick="deleteSOP('${sop.id}')">DELETE SOP</button>
+      </div>
+    </div>
+  `;
+}
+
+// ═══ CONTACTS ═══
+function renderContacts() {
+  const c=document.getElementById('contacts-container');
+  c.innerHTML=contacts.map(contact=>`
+    <div class="contact-card">
+      <div class="contact-head">
+        ${contact.custom
+          ? `<input type="text" value="${contact.category}" oninput="updateContact('${contact.id}','category',this.value)" style="background:transparent;border:none;border-bottom:1px solid #555;color:#B8962E;font-size:10px;letter-spacing:2px;font-family:system-ui;font-weight:600;outline:none;width:150px;">`
+          : `<span class="contact-cat">${contact.category}</span>`
+        }
+        <div style="display:flex;align-items:center;gap:10px;">
+          ${contact.custom
+            ? `<input type="text" value="${contact.response}" oninput="updateContact('${contact.id}','response',this.value)" style="background:transparent;border:none;border-bottom:1px solid #555;color:#8A8070;font-size:10px;font-family:system-ui;outline:none;width:120px;text-align:right;" placeholder="Response time">`
+            : `<span style="font-size:10px;color:#8A8070;font-family:system-ui;">${contact.response}</span>`
+          }
+          ${contact.custom?`<button class="btn-danger" onclick="deleteContact('${contact.id}')">x</button>`:''}
+        </div>
+      </div>
+      <div class="contact-grid">
+        ${contact.custom?`<div style="grid-column:1/-1;"><label>SERVICE TYPE</label><input type="text" value="${contact.label}" oninput="updateContact('${contact.id}','label',this.value)" placeholder="e.g. Pest Control"></div>`:`<div style="grid-column:1/-1;"><label>SERVICE</label><div style="font-size:14px;font-weight:700;color:#1A1A1A;">${contact.label}</div></div>`}
+        <div><label>PRIMARY NAME</label><input type="text" value="${contact.name}" oninput="updateContact('${contact.id}','name',this.value)" placeholder="Full name"></div>
+        <div><label>PRIMARY PHONE</label><input type="text" value="${contact.phone}" oninput="updateContact('${contact.id}','phone',this.value)" placeholder="+44 ..."></div>
+        <div><label>BACKUP NAME</label><input type="text" value="${contact.backup}" oninput="updateContact('${contact.id}','backup',this.value)" placeholder="If primary unavailable"></div>
+        <div><label>BACKUP PHONE</label><input type="text" value="${contact.backupPhone}" oninput="updateContact('${contact.id}','backupPhone',this.value)" placeholder="+44 ..."></div>
+      </div>
+      <div style="padding:0 14px 10px;"><label>WHEN TO CALL / NOTES</label><input type="text" value="${contact.notes}" oninput="updateContact('${contact.id}','notes',this.value)" placeholder="When to call this supplier..."></div>
+    </div>
+  `).join('');
+}
+
+function updateContact(id, field, val) { const c=contacts.find(c=>c.id===id); if(c) { c[field]=val; save(); } }
+function addContact() { contactCounter++; contacts.push({id:'c'+contactCounter,category:'NEW CATEGORY',label:'New Contact',response:'',name:'',phone:'',backup:'',backupPhone:'',notes:'',custom:true}); save(); renderContacts(); }
+function deleteContact(id) { contacts=contacts.filter(c=>c.id!==id); save(); renderContacts(); }
+
+// ═══ SUPPLIERS ═══
+const SUPPLIER_CATS = ['Plumbing','Electrical','Locksmith','IT / Technology','Laundry','Cleaning Supplies','HVAC / Heating','Pest Control','Construction','Landscaping','Other'];
+
+function renderSuppliers() {
+  document.getElementById('suppliers-body').innerHTML=suppliers.map(s=>`
+    <tr>
+      <td><input type="text" value="${s.name}" oninput="updateSupplier('${s.id}','name',this.value)" placeholder="Company name"></td>
+      <td><select onchange="updateSupplier('${s.id}','category',this.value)">${SUPPLIER_CATS.map(c=>`<option ${c===s.category?'selected':''}>${c}</option>`).join('')}</select></td>
+      <td><input type="text" value="${s.contact}" oninput="updateSupplier('${s.id}','contact',this.value)" placeholder="Contact name"></td>
+      <td><input type="text" value="${s.phone}" oninput="updateSupplier('${s.id}','phone',this.value)" placeholder="Phone"></td>
+      <td><input type="text" value="${s.email}" oninput="updateSupplier('${s.id}','email',this.value)" placeholder="Email"></td>
+      <td><input type="text" value="${s.renewal}" oninput="updateSupplier('${s.id}','renewal',this.value)" placeholder="Date"></td>
+      <td><input type="text" value="${s.notes}" oninput="updateSupplier('${s.id}','notes',this.value)" placeholder="Notes..."></td>
+      <td><button class="del-btn" onclick="deleteSupplier('${s.id}')">x</button></td>
+    </tr>
+  `).join('');
+}
+
+function updateSupplier(id, field, val) { const s=suppliers.find(s=>s.id===id); if(s) { s[field]=val; save(); } }
+function addSupplier() { supplierCounter++; suppliers.push({id:'s'+supplierCounter,name:'',category:'Other',contact:'',phone:'',email:'',renewal:'',notes:''}); save(); renderSuppliers(); }
+function deleteSupplier(id) { suppliers=suppliers.filter(s=>s.id!==id); save(); renderSuppliers(); }
+
+// ═══ AUDIT ═══
+function renderAudit() {
+  const allAnswered = AUDIT_SECTIONS.every(sec=>sec.questions.every(q=>auditAnswers[q.id]!==undefined));
+
+  // Tabs
+  document.getElementById('audit-tabs').innerHTML=AUDIT_SECTIONS.map(sec=>{
+    const done=sec.questions.every(q=>auditAnswers[q.id]!==undefined);
+    return `<button class="audit-tab ${activeAuditSection===sec.id?'active':''} ${done?'done':''}" onclick="activeAuditSection='${sec.id}';renderAudit();">${sec.title}${done?' ✓':''}</button>`;
+  }).join('')+`<button class="audit-tab" onclick="showAuditResults()" style="${allAnswered?'background:#B8962E;color:#1A1A1A;border-color:#B8962E;':''}">VIEW RESULTS &rarr;</button>`;
+
+  const sec=AUDIT_SECTIONS.find(s=>s.id===activeAuditSection);
+  document.getElementById('audit-results').style.display='none';
+  document.getElementById('audit-questions').style.display='block';
+  document.getElementById('audit-questions').innerHTML=sec.questions.map((q,qi)=>`
+    <div class="audit-q">
+      <div class="audit-q-top">
+        <div class="audit-q-num">QUESTION ${qi+1} OF ${sec.questions.length}</div>
+        <div class="audit-q-text">${q.text}</div>
+      </div>
+      <div class="audit-opts">
+        ${q.options.map((opt,oi)=>`
+          <div class="audit-opt ${auditAnswers[q.id]===oi?'selected':''}" onclick="setAuditAnswer('${q.id}',${oi})">
+            <div class="audit-radio"></div>
+            <span style="font-size:13px;color:#1A1A1A;font-family:system-ui;">${opt}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function setAuditAnswer(qid, oi) {
+  auditAnswers[qid]=oi;
+  save();
+  renderAudit();
+  const allAnswered=AUDIT_SECTIONS.every(sec=>sec.questions.every(q=>auditAnswers[q.id]!==undefined));
+  if(allAnswered) { const curIdx=AUDIT_SECTIONS.findIndex(s=>s.id===activeAuditSection); if(curIdx<AUDIT_SECTIONS.length-1) { setTimeout(()=>{ activeAuditSection=AUDIT_SECTIONS[curIdx+1].id; renderAudit(); },400); } }
+}
+
+function showAuditResults() {
+  const secScores=AUDIT_SECTIONS.map(sec=>{
+    const total=sec.questions.length*2;
+    const score=sec.questions.reduce((s,q)=>{
+      const ans=auditAnswers[q.id];
+      return s+(ans!==undefined?q.scores[ans]:0);
+    },0);
+    return {sec,score,total,pct:total>0?Math.round((score/total)*100):0};
+  });
+  const totalScore=secScores.reduce((s,x)=>s+x.score,0);
+  const totalMax=secScores.reduce((s,x)=>s+x.total,0);
+  const overallPct=totalMax>0?Math.round((totalScore/totalMax)*100):0;
+  auditScore=overallPct;
+  save();
+  renderDashboard();
+
+  const scoreColor=overallPct>=80?'#55AA55':overallPct>=50?'#D4903A':'#CC5555';
+  const weak=secScores.filter(x=>x.pct<60).sort((a,b)=>a.pct-b.pct);
+
+  const FIX_LINKS = {
+    detection: {tab:'checklists', label:'Go to Checklists', text:'Your team is not catching issues early enough. Run daily checklists consistently and add supervisor inspection tasks.'},
+    logging: {tab:'log', label:'Go to Issue Log', text:'Issues are not being recorded properly. Start using the Issue Log for every problem — no matter how small.'},
+    suppliers: {tab:'contacts', label:'Go to Contacts', text:'You don\'t have reliable supplier contacts written down. Fill in the Contacts & Suppliers tab now.'},
+    response: {tab:'sops', label:'Go to SOPs', text:'Your team doesn\'t have clear written procedures. Build your maintenance SOPs — start with L3 Emergency Response.'},
+    prevention: {tab:'checklists', label:'Go to Checklists', text:'You\'re not preventing issues before they happen. Set up weekly and monthly checklists and run them consistently.'},
+  };
+
+  document.getElementById('audit-questions').style.display='none';
+  document.getElementById('audit-results').style.display='block';
+  document.getElementById('audit-results').innerHTML=`
+    <div style="background:#1A1A1A;padding:24px 28px;margin-bottom:20px;">
+      <div style="font-size:10px;color:#B8962E;letter-spacing:3px;font-family:system-ui;font-weight:600;margin-bottom:8px;">AUDIT RESULT</div>
+      <div style="font-size:36px;font-weight:700;color:${scoreColor};margin-bottom:4px;">${overallPct}%</div>
+      <div style="font-size:14px;color:#F5F0E8;font-family:system-ui;">${overallPct>=80?'Strong maintenance system. Keep the standards up.':overallPct>=50?'Some gaps. Use the toolkit to fix them systematically.':'Significant gaps. Start with the highest priority actions below.'}</div>
+    </div>
+
+    ${secScores.map(x=>`
+      <div class="card" style="margin-bottom:12px;">
+        <div style="padding:14px 18px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #F0EBE3;">
+          <div style="font-size:14px;font-weight:700;color:#1A1A1A;">${x.sec.title}</div>
+          <div style="font-size:18px;font-weight:700;color:${x.pct>=80?'#55AA55':x.pct>=50?'#D4903A':'#CC5555'};">${x.pct}%</div>
+        </div>
+        <div style="padding:10px 18px 14px;">
+          <div class="score-bar"><div class="score-fill" style="width:${x.pct}%;background:${x.pct>=80?'#55AA55':x.pct>=50?'#D4903A':'#CC5555'};"></div></div>
+          ${x.pct<80&&FIX_LINKS[x.sec.id]?`<div style="font-size:12px;color:#8A8070;font-family:system-ui;margin-bottom:8px;">${FIX_LINKS[x.sec.id].text}</div><button class="result-link-btn" style="background:#B8962E;color:#1A1A1A;" onclick="setTab('${FIX_LINKS[x.sec.id].tab}')">${FIX_LINKS[x.sec.id].label} &rarr;</button>`:'<div style="font-size:12px;color:#55AA55;font-family:system-ui;">&#10003; On track</div>'}
+        </div>
+      </div>
+    `).join('')}
+
+    ${weak.length>0?`
+      <div style="background:#1A1A1A;border:1px solid rgba(184,150,46,0.3);padding:20px 24px;margin-bottom:20px;">
+        <div style="font-size:10px;color:#B8962E;letter-spacing:3px;font-family:system-ui;font-weight:600;margin-bottom:12px;">YOUR PRIORITY ACTIONS</div>
+        ${weak.map((x,i)=>`
+          <div style="display:flex;gap:12px;margin-bottom:12px;align-items:flex-start;">
+            <div style="width:24px;height:24px;background:#B8962E;color:#1A1A1A;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;font-family:system-ui;flex-shrink:0;">${i+1}</div>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:#F5F0E8;font-family:system-ui;margin-bottom:2px;">${x.sec.title} — ${x.pct}%</div>
+              <div style="font-size:12px;color:#8A8070;font-family:system-ui;">${FIX_LINKS[x.sec.id]?.text||'Review and improve this area.'}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `:''}
+
+    <div class="action-row">
+      <button class="btn-sec" onclick="document.getElementById('audit-questions').style.display='block';document.getElementById('audit-results').style.display='none';renderAudit();">&larr; Review Answers</button>
+      <button class="btn-gold" onclick="window.print()">SAVE AS PDF</button>
+    </div>
+  `;
+}
+
+// ═══ EXPORT ═══
+function sopPrintHTML(sopList) {
+  const hotelName = document.getElementById('hotel-name')?.value || 'Hotel Mastery Hub';
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8">
+  <title>SOPs — ${hotelName}</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:Georgia,serif; color:#1A1A1A; padding:20px; }
+    .sop-doc { margin-bottom:40px; page-break-after:always; }
+    .sop-doc:last-child { page-break-after:auto; }
+    .sop-header { background:#1A1A1A; padding:16px 20px; margin-bottom:0; }
+    .sop-label { font-size:9px; color:#B8962E; letter-spacing:3px; font-family:system-ui; font-weight:600; margin-bottom:4px; }
+    .sop-title { font-size:20px; color:#fff; font-weight:700; }
+    .sop-meta { display:grid; grid-template-columns:1fr 1fr 2fr; border-bottom:1px solid #E5DDD0; }
+    .sop-meta-cell { padding:10px 14px; border-right:1px solid #E5DDD0; }
+    .sop-meta-cell:last-child { border-right:none; }
+    .meta-label { font-size:9px; color:#B8962E; letter-spacing:2px; font-family:system-ui; font-weight:600; margin-bottom:3px; }
+    .meta-val { font-size:13px; font-family:system-ui; }
+    .step-header { display:grid; grid-template-columns:32px 2fr 110px 60px 2fr; background:#F0EBE3; border-bottom:1px solid #E5DDD0; }
+    .step-header span { padding:6px 8px; font-size:9px; color:#8A8070; letter-spacing:1px; font-family:system-ui; font-weight:600; border-right:1px solid #E5DDD0; }
+    .step-header span:last-child { border-right:none; color:#D4903A; }
+    .step-row { display:grid; grid-template-columns:32px 2fr 110px 60px 2fr; border-bottom:1px solid #F0EBE3; }
+    .step-row.even { background:#fff; }
+    .step-row.odd { background:#FAFAFA; }
+    .step-cell { padding:10px 8px; border-right:1px solid #F0EBE3; font-size:12px; font-family:system-ui; line-height:1.5; white-space:pre-wrap; word-break:break-word; }
+    .step-cell:last-child { border-right:none; color:#D4903A; }
+    .step-num { font-size:13px; font-weight:700; color:#B8962E; text-align:center; border-right:1px solid #F0EBE3; padding:10px 4px; display:flex; align-items:flex-start; justify-content:center; padding-top:12px; }
+    .footer { margin-top:6px; text-align:right; font-size:10px; color:#8A8070; font-family:system-ui; }
+  </style>
+  </head><body>
+  ${sopList.map(sop=>`
+    <div class="sop-doc">
+      <div class="sop-header">
+        <div class="sop-label">STANDARD OPERATING PROCEDURE</div>
+        <div class="sop-title">${sop.name||'Untitled SOP'}</div>
+      </div>
+      <div class="sop-meta">
+        <div class="sop-meta-cell"><div class="meta-label">RESPONSIBLE ROLE</div><div class="meta-val">${sop.role||'—'}</div></div>
+        <div class="sop-meta-cell"><div class="meta-label">LAST REVIEWED</div><div class="meta-val">${sop.reviewed||'—'}</div></div>
+        <div class="sop-meta-cell"><div class="meta-label">PURPOSE</div><div class="meta-val">${sop.purpose||'—'}</div></div>
+      </div>
+      <div class="step-header"><span>#</span><span>WHAT HAPPENS</span><span>WHO</span><span>TIME</span><span>IF OFF-PLAN</span></div>
+      ${sop.steps.map((step,i)=>`
+        <div class="step-row ${i%2===0?'even':'odd'}">
+          <div class="step-num">${i+1}</div>
+          <div class="step-cell">${step.what||'—'}</div>
+          <div class="step-cell">${step.who||'—'}</div>
+          <div class="step-cell">${step.time||'—'}</div>
+          <div class="step-cell">${step.decision||'—'}</div>
+        </div>
+      `).join('')}
+      <div class="footer">${hotelName} &middot; Hotel Mastery Hub</div>
+    </div>
+  `).join('')}
+  <script>window.onload=function(){window.print();}<\/script>
+  </body></html>`;
+}
+
+function printCurrentSOP() {
+  const sop = sops.find(s=>s.id===activeSOP);
+  if(!sop) { alert('Please select an SOP from the list first.'); return; }
+  printSOPsViaBlob([sop]);
+}
+
+function printAllSOPs() {
+  if(sops.length===0) { alert('No SOPs to print yet.'); return; }
+  printSOPsViaBlob(sops);
+}
+
+function printSOPsViaBlob(sopList) {
+  const html = sopPrintHTML(sopList);
+  const blob = new Blob([html], {type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const iframe = document.createElement('iframe');
+  iframe.style.display = 'none';
+  iframe.src = url;
+  document.body.appendChild(iframe);
+  iframe.onload = function() {
+    try {
+      iframe.contentWindow.focus();
+      iframe.contentWindow.print();
+    } catch(e) {
+      // Fallback: open in new tab
+      window.open(url, '_blank');
+    }
+    setTimeout(function() {
+      document.body.removeChild(iframe);
+      URL.revokeObjectURL(url);
+    }, 2000);
+  };
+}
+
+function printAll() {
+  renderIssues(); renderChecklists(); renderSOPList();
+  setSopMode('use'); // Switch to clean view for printing
+  renderContacts(); renderSuppliers();
+  window.print();
+}
+
+function exportCSV() {
+  const esc=val=>{const s=String(val||'');return/[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};
+  let csv='ISSUE LOG\r\n';
+  csv+=['Date','What','Location','Area','Level','Assigned To','Action Taken','Notes','Status','Resolved Date'].map(esc).join(',')+'\r\n';
+  csv+=issues.map(i=>[i.date,i.what,i.location,i.area,LEVEL_LABELS[i.level],i.responsible,i.action||'',i.notes||'',i.resolved?'Resolved':'Open',i.resolvedDate||''].map(esc).join(',')).join('\r\n');
+  csv+='\r\n\r\nSUPPLIER LIST\r\n';
+  csv+=['Supplier Name','Category','Contact','Phone','Email','Contract Renewal','Notes'].map(esc).join(',')+'\r\n';
+  csv+=suppliers.map(s=>[s.name,s.category,s.contact,s.phone,s.email,s.renewal,s.notes].map(esc).join(',')).join('\r\n');
+  const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='maintenance-toolkit-'+new Date().toISOString().slice(0,10)+'.csv';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+}
+
+function emailSummary() {
+  const open=issues.filter(i=>!i.resolved);
+  const l3=open.filter(i=>i.level===3);
+  const hotel=document.getElementById('hotel-name')?.value||'My Hotel';
+  let body=`MAINTENANCE REPORT — ${hotel}\nDate: ${today()}\n===============================\n\n`;
+  body+=`SUMMARY\nOpen issues: ${open.length}  |  L3 active: ${l3.length}  |  Total logged: ${issues.length}\n\n`;
+  if(l3.length>0){body+=`L3 ACTIVE — GUEST IMPACT\n`;l3.forEach(i=>{body+=`• ${i.what} — ${i.location} — Assigned: ${i.responsible}\n`;});body+='\n';}
+  const l2=open.filter(i=>i.level===2);
+  if(l2.length>0){body+=`L2 OPEN — FIX TODAY\n`;l2.forEach(i=>{body+=`• ${i.what} — ${i.location} — Assigned: ${i.responsible}\n`;});body+='\n';}
+  body+=`===============================\nHotel Mastery Hub — Maintenance Toolkit`;
+  window.location.href=`mailto:?subject=${encodeURIComponent('Maintenance Report — '+hotel)}&body=${encodeURIComponent(body)}`;
+}
+
+// ═══ RESTORE ═══
+(function(){
+  try {
+    const saved=localStorage.getItem(LS_KEY);
+    if(saved){
+      const d=JSON.parse(saved);
+      if(d.issues) issues=d.issues;
+      if(d.issueCounter) issueCounter=d.issueCounter;
+      if(d.checks) checks=d.checks;
+      if(d.checklists) checklists=d.checklists;
+      if(d.contacts) contacts=d.contacts;
+      if(d.contactCounter) contactCounter=d.contactCounter;
+      if(d.suppliers) suppliers=d.suppliers;
+      if(d.supplierCounter) supplierCounter=d.supplierCounter;
+      if(d.sops) sops=d.sops;
+      if(d.sopCounter) sopCounter=d.sopCounter;
+      if(d.activeSOP) activeSOP=d.activeSOP;
+      if(d.auditAnswers) auditAnswers=d.auditAnswers;
+      if(d.auditScore!==undefined) auditScore=d.auditScore;
+      if(d.hotelName) document.getElementById('hotel-name').value=d.hotelName;
+      if(d.maintManager) document.getElementById('maint-manager').value=d.maintManager;
+      if(d.totalRooms) document.getElementById('total-rooms').value=d.totalRooms;
+      if(d.checklistDate) document.getElementById('checklist-date').value=d.checklistDate;
+    }
+  } catch(e){}
+  // Set default checklist date
+  if(!document.getElementById('checklist-date').value) document.getElementById('checklist-date').value=today();
+  renderDashboard();
+  renderAudit();
+})();
+</script>
+</body>
+</html>
