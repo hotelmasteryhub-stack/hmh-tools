@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team KPI Tracker -- Hotel Mastery Hub</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:Georgia,serif; background:#F8F5F0; min-height:100vh; color:#1A1A1A; }
+.header { background:#1A1A1A; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+.hb { color:#B8962E; font-size:10px; letter-spacing:4px; font-family:system-ui; font-weight:600; }
+.hs { color:#8A8070; font-size:10px; letter-spacing:3px; font-family:system-ui; margin-left:10px; }
+.header-btns { display:flex; gap:6px; flex-wrap:wrap; }
+.btn-hdr { padding:5px 12px; font-size:10px; letter-spacing:1px; cursor:pointer; font-family:system-ui; font-weight:600; border:1px solid rgba(184,150,46,0.4); color:#D4AF5A; background:transparent; }
+.btn-hdr.gold { background:#B8962E; color:#1A1A1A; border-color:#B8962E; }
+.tabs { background:#111; display:flex; overflow-x:auto; border-bottom:2px solid #2A2A2A; }
+.tab { padding:11px 16px; font-size:10px; letter-spacing:2px; font-family:system-ui; font-weight:600; color:#8A8070; cursor:pointer; white-space:nowrap; border-bottom:3px solid transparent; margin-bottom:-2px; flex-shrink:0; }
+.tab:hover { color:#F5F0E8; }
+.tab.active { color:#B8962E; border-bottom-color:#B8962E; }
+.tab.add-tab { color:#55AA55; }
+.wrap { max-width:1060px; margin:0 auto; padding:24px 16px 60px; }
+.section { display:none; }
+.section.active { display:block; }
+/* CARDS */
+.card { background:#fff; border:1px solid #E5DDD0; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:16px; }
+.card-head { padding:10px 18px; display:flex; align-items:center; justify-content:space-between; }
+.card-title { font-size:11px; font-weight:700; color:#F5F0E8; letter-spacing:1px; font-family:system-ui; }
+.card-body { padding:16px 18px; }
+label { display:block; font-size:10px; color:#8A8070; letter-spacing:2px; font-family:system-ui; font-weight:600; margin-bottom:5px; }
+input[type=text], input[type=number] { width:100%; padding:8px 10px; border:1px solid #E5DDD0; font-size:13px; font-family:system-ui; background:#FAFAFA; color:#1A1A1A; outline:none; }
+input[type=text]:focus, input[type=number]:focus { border-color:#B8962E; }
+select { width:100%; padding:8px 10px; border:1px solid #E5DDD0; font-size:12px; font-family:system-ui; background:#FAFAFA; color:#1A1A1A; outline:none; }
+/* BUTTONS */
+.btn-gold { background:#B8962E; border:none; color:#1A1A1A; padding:9px 18px; font-size:11px; font-family:system-ui; font-weight:700; letter-spacing:1px; cursor:pointer; }
+.btn-gold:hover { background:#D4AF5A; }
+.btn-dark { background:#1A1A1A; border:none; color:#B8962E; padding:9px 18px; font-size:11px; font-family:system-ui; font-weight:700; letter-spacing:1px; cursor:pointer; }
+.btn-sec { background:#fff; border:1px solid #E5DDD0; color:#8A8070; padding:7px 14px; font-size:11px; font-family:system-ui; font-weight:600; cursor:pointer; }
+.btn-sec:hover { border-color:#B8962E; color:#B8962E; }
+.btn-sec.active { background:#1A1A1A; color:#B8962E; border-color:#1A1A1A; }
+.btn-danger { background:transparent; border:1px solid #CC5555; color:#CC5555; padding:5px 10px; font-size:10px; font-family:system-ui; cursor:pointer; }
+.del-btn { background:transparent; border:none; color:#CCC; cursor:pointer; font-size:16px; padding:2px 6px; line-height:1; }
+.del-btn:hover { color:#CC5555; }
+.add-btn { background:#F8F5F0; border:1px dashed #E5DDD0; color:#8A8070; padding:9px; font-size:11px; font-family:system-ui; cursor:pointer; width:100%; text-align:center; margin-top:8px; }
+.add-btn:hover { border-color:#B8962E; color:#B8962E; }
+.action-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:16px; }
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+.field { margin-bottom:12px; }
+/* OVERVIEW DASHBOARD */
+.overview-dept { background:#fff; border:1px solid #E5DDD0; margin-bottom:16px; }
+.overview-dept-head { background:#1A1A1A; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; cursor:pointer; }
+.overview-dept-name { font-size:13px; font-weight:700; color:#F5F0E8; }
+.overview-dept-sub { font-size:10px; color:#8A8070; font-family:system-ui; }
+.kpi-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:#E5DDD0; }
+.kpi-cell { background:#fff; padding:14px 16px; }
+.kpi-name { font-size:10px; color:#8A8070; letter-spacing:2px; font-family:system-ui; font-weight:600; margin-bottom:6px; }
+.kpi-actual { font-size:24px; font-weight:700; line-height:1; margin-bottom:4px; }
+.kpi-target { font-size:11px; color:#8A8070; font-family:system-ui; }
+.kpi-status { display:inline-block; font-size:9px; font-weight:700; font-family:system-ui; padding:2px 8px; border-radius:2px; margin-top:4px; letter-spacing:1px; }
+.status-green { background:#E8F5E8; color:#55AA55; }
+.status-amber { background:#FFF3E0; color:#D4903A; }
+.status-red { background:#FFEBEE; color:#CC5555; }
+.status-none { background:#F0EBE3; color:#8A8070; }
+/* EDIT MODE KPI LIST */
+.edit-hint { background:#FFF8F0; border-left:3px solid #B8962E; padding:9px 13px; font-size:12px; color:#8A8070; font-family:system-ui; margin-bottom:12px; }
+.kpi-edit-row { display:grid; grid-template-columns:2fr 1fr 1fr 80px 36px; gap:8px; align-items:center; padding:10px 14px; border-bottom:1px solid #F0EBE3; background:#fff; }
+.kpi-edit-row:nth-child(even) { background:#FAFAFA; }
+.kpi-edit-head { display:grid; grid-template-columns:2fr 1fr 1fr 80px 36px; gap:8px; padding:7px 14px; background:#F0EBE3; border-bottom:1px solid #E5DDD0; }
+.kpi-edit-head span { font-size:9px; color:#8A8070; letter-spacing:2px; font-family:system-ui; font-weight:600; }
+.kpi-inp { width:100%; padding:6px 8px; border:1px solid #E5DDD0; font-size:12px; font-family:system-ui; background:#fff; outline:none; }
+.kpi-inp:focus { border-color:#B8962E; }
+/* USE MODE — WEEKLY ENTRY */
+.week-entry-row { display:grid; grid-template-columns:2fr 80px 120px 80px 100px; gap:0; border-bottom:1px solid #F0EBE3; background:#fff; }
+.week-entry-row:nth-child(even) { background:#FAFAFA; }
+.week-entry-head { display:grid; grid-template-columns:2fr 80px 120px 80px 100px; gap:0; background:#F0EBE3; border-bottom:1px solid #E5DDD0; }
+.week-entry-head span { padding:7px 10px; font-size:9px; color:#8A8070; letter-spacing:1px; font-family:system-ui; font-weight:600; border-right:1px solid #E5DDD0; }
+.week-entry-head span:last-child { border-right:none; }
+.wer-cell { padding:8px 10px; border-right:1px solid #F0EBE3; font-size:12px; font-family:system-ui; }
+.wer-cell:last-child { border-right:none; }
+.wer-kpi-name { font-weight:700; color:#1A1A1A; }
+.wer-kpi-desc { font-size:10px; color:#8A8070; margin-top:2px; }
+.actual-inp { width:100%; border:none; border-bottom:1px solid #E5DDD0; background:transparent; font-size:13px; font-family:system-ui; font-weight:700; outline:none; padding:3px 0; text-align:center; }
+.actual-inp:focus { border-bottom-color:#B8962E; }
+/* HISTORY TABLE */
+.history-wrap { overflow-x:auto; margin-top:20px; }
+.history-table { width:100%; border-collapse:collapse; font-size:11px; font-family:system-ui; }
+.history-table th { padding:6px 10px; background:#1A1A1A; color:#B8962E; letter-spacing:1px; font-weight:600; text-align:left; white-space:nowrap; }
+.history-table td { padding:6px 10px; border-bottom:1px solid #F0EBE3; white-space:nowrap; }
+.history-table tr:nth-child(even) td { background:#FAFAFA; }
+.history-table td.h-kpi { font-weight:700; color:#1A1A1A; }
+.history-table td.h-target { color:#8A8070; }
+/* DEPT HEADER IN TAB */
+.dept-header { background:#1A1A1A; padding:14px 20px; margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+.dept-name-display { font-size:18px; font-weight:700; color:#F5F0E8; }
+.dept-week-display { font-size:11px; color:#8A8070; font-family:system-ui; margin-top:2px; }
+/* EXAMPLE NOTICE */
+.example-notice { background:#1A3A5C; padding:10px 16px; font-size:12px; color:#fff; font-family:system-ui; margin-bottom:14px; display:flex; align-items:center; gap:10px; }
+/* GUIDE */
+.guide-step { display:flex; border-bottom:1px solid #F0EBE3; padding:13px 16px; align-items:flex-start; }
+.guide-step:last-child { border-bottom:none; }
+.guide-circle { width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:system-ui; flex-shrink:0; margin-right:12px; background:#B8962E; color:#1A1A1A; }
+/* MODAL */
+.modal-overlay { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); z-index:999; align-items:center; justify-content:center; padding:20px; }
+.modal-overlay.open { display:flex; }
+.modal-box { background:#fff; max-width:440px; width:100%; padding:24px; }
+.modal-title { font-size:16px; font-weight:700; color:#1A1A1A; margin-bottom:16px; }
+.footer-note { text-align:center; margin-top:28px; color:#8A8070; font-size:11px; font-family:system-ui; letter-spacing:2px; }
+@media print {
+  .header,.tabs,.header-btns,.action-row,.add-btn,.del-btn,.btn-danger,.btn-sec,.btn-gold,.btn-dark,.edit-hint,.example-notice,.modal-overlay { display:none !important; }
+  .section { display:block !important; }
+  body { background:#fff; }
+  .wrap { padding:8px; }
+  input,select { border:none !important; background:transparent !important; }
+}
+@media (max-width:700px) {
+  .kpi-grid { grid-template-columns:1fr 1fr; }
+  .grid2,.grid3 { grid-template-columns:1fr; }
+  .kpi-edit-row,.kpi-edit-head { grid-template-columns:1fr 1fr; }
+  .week-entry-head,.week-entry-row { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div style="display:flex;align-items:center;">
+    <span class="hb">HOTEL MASTERY HUB</span>
+    <span class="hs">&middot; TEAM KPI TRACKER</span>
+  </div>
+  <div class="header-btns">
+    <button class="btn-hdr" onclick="exportCSV()">CSV</button>
+    <button class="btn-hdr" onclick="emailSummary()">&#9993;</button>
+    <button class="btn-hdr gold" onclick="window.print()">PDF</button>
+    <button class="btn-hdr" onclick="backupData()" title="Download full backup">BACKUP &#8595;</button>
+    <button class="btn-hdr" onclick="document.getElementById('restore-input').click()" title="Restore from backup">RESTORE &#8593;</button>
+    <input type="file" id="restore-input" accept=".json" style="display:none" onchange="restoreData(this)">
+  </div>
+</div>
+
+<div class="tabs" id="tabs-bar">
+  <div class="tab active" id="tab-guide" onclick="setTab('guide')">HOW TO USE</div>
+  <div class="tab" id="tab-overview" onclick="setTab('overview')">OVERVIEW</div>
+  <div class="add-tab tab" onclick="openAddDeptModal()">&#43; ADD DEPARTMENT</div>
+</div>
+
+<div class="wrap">
+
+<!-- HOW TO USE -->
+<div class="section active" id="section-guide">
+  <div style="background:#1A1A1A;padding:18px 24px;margin-bottom:20px;">
+    <div style="font-size:10px;color:#B8962E;letter-spacing:4px;font-family:system-ui;font-weight:600;margin-bottom:5px;">HOTEL MASTERY HUB</div>
+    <div style="font-size:20px;color:#F5F0E8;font-weight:700;margin-bottom:3px;">Team KPI Tracker</div>
+    <div style="font-size:12px;color:#8A8070;font-family:system-ui;">Weekly performance tracking for every department. Each manager tracks their own team. Everything flows into one overview.</div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#1A1A1A;"><span class="card-title">WHAT THIS TOOL DOES</span></div>
+    <div class="card-body">
+      <p style="font-size:14px;font-family:system-ui;line-height:1.8;color:#1A1A1A;margin-bottom:12px;">This tool lets each department track their own weekly KPIs — the numbers that tell you if your team is performing. Front Desk tracks review scores and upsell. Housekeeping tracks overhour % and rooms on time. F&B tracks covers and revenue per cover.</p>
+      <p style="font-size:14px;font-family:system-ui;line-height:1.8;color:#1A1A1A;margin-bottom:12px;">Each department manager uses this tool on their own device. They set their own KPIs and targets in Edit mode. Every Monday they switch to Use mode, enter last week's actuals, and see green or red against target.</p>
+      <p style="font-size:14px;font-family:system-ui;line-height:1.8;color:#1A1A1A;">Three departments come pre-filled with realistic example data — Front Desk, Housekeeping, and F&B. The data shown is example only. Replace it with your own in Edit mode.</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#1A3A5C;"><span class="card-title">TWO MODES — EDIT AND USE</span></div>
+    <div class="card-body" style="padding:0;">
+      <div style="padding:14px 16px;border-bottom:1px solid #F0EBE3;">
+        <div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:4px;">&#9998; EDIT mode</div>
+        <div style="font-size:13px;color:#8A8070;font-family:system-ui;line-height:1.6;">Customise your department. Rename it. Add KPIs that matter to your team. Delete ones that don't apply. Set targets. Set the unit — %, €, or number. Do this once when you set up. Update when targets change.</div>
+      </div>
+      <div style="padding:14px 16px;">
+        <div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:4px;">&#9745; USE mode</div>
+        <div style="font-size:13px;color:#8A8070;font-family:system-ui;line-height:1.6;">Every Monday, enter last week's actuals. Status shows green (on target), amber (within 10% of target), or red (off target). The 8-week history table below shows your trend over time.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#1E4620;"><span class="card-title">HOW TO GET STARTED</span></div>
+    <div class="card-body" style="padding:0;">
+      <div class="guide-step"><div class="guide-circle">1</div><div><div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Choose your department tab</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Three departments are pre-filled as examples — Front Desk, Housekeeping, and F&B. Click the tab for your department.</div></div></div>
+      <div class="guide-step"><div class="guide-circle">2</div><div><div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Switch to EDIT mode and customise</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Rename the department, edit KPI names, set your targets, choose units. Delete KPIs that don't apply. Add your own. The example data is a starting point — make it yours.</div></div></div>
+      <div class="guide-step"><div class="guide-circle">3</div><div><div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Every Monday — switch to USE mode</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Enter the week label (e.g. "W01 Jan") and last week's actuals for each KPI. Status calculates automatically. History table updates.</div></div></div>
+      <div class="guide-step"><div class="guide-circle">4</div><div><div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Check the Overview tab</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">The Overview tab shows all departments and all KPIs at a glance — green, amber, red. One view. Share it as a PDF for your weekly team meeting.</div></div></div>
+      <div class="guide-step"><div class="guide-circle">5</div><div><div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Add your own department</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Click + ADD DEPARTMENT in the tab bar. Name it, add your KPIs, set targets. Works for any team — spa, maintenance, reception, events.</div></div></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#2A2A2A;"><span class="card-title">EXPORT OPTIONS</span></div>
+    <div class="card-body" style="padding:0;">
+      <div style="padding:13px 16px;border-bottom:1px solid #F0EBE3;">
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:5px;"><span style="background:#1A1A1A;color:#B8962E;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">CSV</span><span style="font-size:13px;font-weight:700;color:#1A1A1A;">Export all KPI data to spreadsheet</span></div>
+        <p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Downloads all departments, all KPIs, targets, and 8-week history as a .csv file. Good for sharing with a GM or owner, or keeping an archive.</p>
+      </div>
+      <div style="padding:13px 16px;border-bottom:1px solid #F0EBE3;">
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:5px;"><span style="background:#1A1A1A;color:#B8962E;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">&#9993;</span><span style="font-size:13px;font-weight:700;color:#1A1A1A;">Email a weekly summary</span></div>
+        <p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Sends a plain text summary of all departments — this week's actuals vs targets, with green/red status. Good for a Monday morning update to the GM or property owner.</p>
+      </div>
+      <div style="padding:13px 16px;border-bottom:1px solid #F0EBE3;">
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:5px;"><span style="background:#B8962E;color:#1A1A1A;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">PDF</span><span style="font-size:13px;font-weight:700;color:#1A1A1A;">Print all departments</span></div>
+        <p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Prints the full tracker — all departments, all KPIs, current week and 8-week history. Good for a weekly team meeting or printed report for the owner.</p>
+      </div>
+      <div style="padding:13px 16px;border-bottom:1px solid #F0EBE3;">
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:5px;"><span style="background:#B8962E;color:#1A1A1A;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">BACKUP &#8595;</span><span style="font-size:13px;font-weight:700;color:#1A1A1A;">Save everything as a JSON file</span></div>
+        <p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Downloads a complete backup of all departments, KPIs, targets, and all weekly history. Save it somewhere safe. If your browser data is ever lost, you can restore from this file.</p>
+      </div>
+      <div style="padding:13px 16px;">
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:5px;"><span style="background:#B8962E;color:#1A1A1A;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">RESTORE &#8593;</span><span style="font-size:13px;font-weight:700;color:#1A1A1A;">Load from a backup file</span></div>
+        <p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Select a .json backup file to restore all your data. You will be asked to confirm before anything is replaced. Use this if you switch devices or your browser data is cleared.</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:#1A1A1A;padding:13px 18px;margin-bottom:20px;">
+    <div style="font-size:10px;color:#B8962E;letter-spacing:3px;font-family:system-ui;font-weight:600;margin-bottom:6px;">ONE RULE</div>
+    <p style="font-size:13px;color:#F5F0E8;font-family:system-ui;line-height:1.7;">A KPI that is never reviewed is just a number. Review it every Monday. If it is red two weeks in a row — act. That is the point of tracking it.</p>
+  </div>
+
+  <div class="action-row">
+    <button class="btn-gold" onclick="setTab('overview')">GO TO OVERVIEW &rarr;</button>
+  </div>
+  <div class="footer-note">HOTEL MASTERY HUB &middot; TEAM KPI TRACKER</div>
+</div>
+
+<!-- OVERVIEW -->
+<div class="section" id="section-overview">
+  <div style="margin-bottom:16px;">
+    <h2 style="font-size:20px;font-weight:700;color:#1A1A1A;">Weekly Overview</h2>
+    <p style="font-size:12px;color:#8A8070;font-family:system-ui;margin-top:2px;">All departments. All KPIs. This week at a glance.</p>
+  </div>
+  <div id="overview-container"></div>
+  <div class="footer-note">HOTEL MASTERY HUB &middot; TEAM KPI TRACKER</div>
+</div>
+
+<!-- Department sections rendered dynamically -->
+<div id="dept-sections"></div>
+
+</div><!-- end wrap -->
+
+<!-- ADD DEPT MODAL -->
+<div class="modal-overlay" id="add-dept-modal">
+  <div class="modal-box">
+    <div class="modal-title">Add New Department</div>
+    <div class="field"><label>DEPARTMENT NAME</label><input type="text" id="modal-dept-name" placeholder="e.g. Spa, Events, Reception"></div>
+    <div class="field"><label>MANAGER NAME (optional)</label><input type="text" id="modal-dept-manager" placeholder="Name"></div>
+    <div class="action-row">
+      <button class="btn-gold" onclick="addDept()">CREATE DEPARTMENT</button>
+      <button class="btn-sec" onclick="closeModal()">CANCEL</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const LS_KEY = 'hmh-team-kpi';
+const WEEKS = 8;
+let deptCounter = 10;
+let activeTab = 'guide';
+
+// ═══ DEFAULT DATA ═══
+function makeWeeks(vals) {
+  const labels = ['W44 Oct','W45 Nov','W46 Nov','W47 Nov','W48 Nov','W49 Dec','W50 Dec','W51 Dec'];
+  return labels.map((label,i) => ({ label, value: vals[i] !== undefined ? vals[i] : null }));
+}
+
+let departments = [
+  {
+    id:'dept1', name:'Front Desk', manager:'', isExample:true, mode:'use', kpiCounter:10,
+    kpis:[
+      {id:'k1', name:'Review Score', unit:'0-10', target:8.5, direction:'up', history: makeWeeks([8.1,8.3,8.0,8.4,8.6,8.2,8.5,8.3])},
+      {id:'k2', name:'Upsell Revenue', unit:'€', target:200, direction:'up', history: makeWeeks([145,180,210,165,220,195,230,188])},
+      {id:'k3', name:'Direct Bookings', unit:'number', target:10, direction:'up', history: makeWeeks([7,9,11,8,12,10,9,8])},
+      {id:'k4', name:'Cancellations', unit:'number', target:3, direction:'down', history: makeWeeks([5,4,2,3,4,2,3,5])},
+      {id:'k5', name:'Guest Complaints', unit:'number', target:0, direction:'down', history: makeWeeks([1,0,0,1,0,0,1,0])},
+    ]
+  },
+  {
+    id:'dept2', name:'Housekeeping', manager:'', isExample:true, mode:'use', kpiCounter:10,
+    kpis:[
+      {id:'k1', name:'Team Overhour %', unit:'%', target:5, direction:'down', history: makeWeeks([8.2,7.1,6.5,9.0,4.8,5.2,7.3,6.1])},
+      {id:'k2', name:'Rooms Ready On Time %', unit:'%', target:95, direction:'up', history: makeWeeks([88,91,94,87,96,93,90,92])},
+      {id:'k3', name:'Guest HSK Complaints', unit:'number', target:0, direction:'down', history: makeWeeks([2,1,0,1,0,0,1,0])},
+      {id:'k4', name:'Laundry Cost', unit:'€', target:150, direction:'down', history: makeWeeks([168,155,142,171,138,149,162,155])},
+    ]
+  },
+  {
+    id:'dept3', name:'F&B', manager:'', isExample:true, mode:'use', kpiCounter:10,
+    kpis:[
+      {id:'k1', name:'Covers Served', unit:'number', target:40, direction:'up', history: makeWeeks([32,38,41,35,44,39,42,37])},
+      {id:'k2', name:'Revenue Per Cover', unit:'€', target:18, direction:'up', history: makeWeeks([15.5,17.2,18.8,16.1,19.2,17.8,18.5,16.9])},
+      {id:'k3', name:'Food Cost %', unit:'%', target:32, direction:'down', history: makeWeeks([35,33,31,36,30,32,34,33])},
+      {id:'k4', name:'Days Profitable', unit:'number', target:5, direction:'up', history: makeWeeks([3,4,5,3,6,5,4,4])},
+    ]
+  },
+];
+
+// ═══ UTILS ═══
+function save() {
+  try { localStorage.setItem(LS_KEY, JSON.stringify({ departments, deptCounter })); } catch(e) {}
+}
+
+function getStatus(kpi) {
+  const latest = kpi.history[kpi.history.length-1];
+  if(latest === null || latest.value === null || latest.value === '') return 'none';
+  const val = parseFloat(latest.value);
+  const target = parseFloat(kpi.target);
+  if(isNaN(val) || isNaN(target)) return 'none';
+  const diff = kpi.direction === 'down' ? (val - target) / (target||1) : (target - val) / (target||1);
+  if(diff <= 0) return 'green';
+  if(diff <= 0.1) return 'amber';
+  return 'red';
+}
+
+function statusLabel(s) {
+  return {green:'ON TARGET', amber:'NEAR TARGET', red:'OFF TARGET', none:'NO DATA'}[s] || 'NO DATA';
+}
+
+function formatVal(kpi, val) {
+  if(val === null || val === '') return '—';
+  const v = parseFloat(val);
+  if(isNaN(v)) return '—';
+  if(kpi.unit === '€') return '€'+v.toFixed(2).replace(/\.00$/,'');
+  if(kpi.unit === '%') return v+'%';
+  if(kpi.unit === '0-10') return v.toFixed(1);
+  return v;
+}
+
+function currentVal(kpi) {
+  const latest = kpi.history[kpi.history.length-1];
+  return latest ? latest.value : null;
+}
+
+// ═══ TABS ═══
+function setTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  const tabEl = document.getElementById('tab-'+tab);
+  if(tabEl) tabEl.classList.add('active');
+  const secEl = document.getElementById('section-'+tab);
+  if(secEl) secEl.classList.add('active');
+  if(tab==='overview') renderOverview();
+  else {
+    const dept = departments.find(d=>d.id===tab);
+    if(dept) renderDept(dept);
+  }
+}
+
+// ═══ OVERVIEW ═══
+function renderOverview() {
+  const container = document.getElementById('overview-container');
+  if(departments.length===0) {
+    container.innerHTML='<div style="text-align:center;padding:40px;color:#8A8070;font-family:system-ui;">No departments yet. Click + ADD DEPARTMENT to get started.</div>';
+    return;
+  }
+  container.innerHTML = departments.map(dept => {
+    const statusCounts = {green:0, amber:0, red:0, none:0};
+    dept.kpis.forEach(k => { statusCounts[getStatus(k)]++; });
+    return `
+      <div class="overview-dept">
+        <div class="overview-dept-head" onclick="setTab('${dept.id}')">
+          <div>
+            <div class="overview-dept-name">${dept.name}${dept.isExample?' <span style="font-size:9px;color:#D4903A;font-family:system-ui;font-weight:600;background:rgba(212,144,58,0.15);padding:2px 8px;margin-left:8px;">EXAMPLE DATA</span>':''}</div>
+            <div class="overview-dept-sub">${dept.kpis.length} KPIs &middot; ${statusCounts.green} on target &middot; ${statusCounts.red} off target &middot; click to open</div>
+          </div>
+          <div style="display:flex;gap:6px;">
+            ${statusCounts.green>0?`<span class="kpi-status status-green">${statusCounts.green} &#10003;</span>`:''}
+            ${statusCounts.amber>0?`<span class="kpi-status status-amber">${statusCounts.amber} ~</span>`:''}
+            ${statusCounts.red>0?`<span class="kpi-status status-red">${statusCounts.red} &#10005;</span>`:''}
+          </div>
+        </div>
+        <div class="kpi-grid">
+          ${dept.kpis.map(kpi => {
+            const s = getStatus(kpi);
+            const val = currentVal(kpi);
+            return `<div class="kpi-cell">
+              <div class="kpi-name">${kpi.name}</div>
+              <div class="kpi-actual" style="color:${s==='green'?'#55AA55':s==='red'?'#CC5555':s==='amber'?'#D4903A':'#8A8070'};">${formatVal(kpi,val)}</div>
+              <div class="kpi-target">Target: ${formatVal(kpi,kpi.target)}</div>
+              <span class="kpi-status status-${s}">${statusLabel(s)}</span>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ═══ DEPT TAB ═══
+function renderDeptTab(dept) {
+  const tabsBar = document.getElementById('tabs-bar');
+  const addTab = tabsBar.querySelector('.add-tab');
+  const tabEl = document.createElement('div');
+  tabEl.className = 'tab';
+  tabEl.id = 'tab-'+dept.id;
+  tabEl.setAttribute('data-id', dept.id);
+  tabEl.onclick = function() { setTab(this.getAttribute('data-id')); };
+  tabEl.textContent = dept.name;
+  tabsBar.insertBefore(tabEl, addTab);
+
+  const secContainer = document.getElementById('dept-sections');
+  const secEl = document.createElement('div');
+  secEl.className = 'section';
+  secEl.id = 'section-'+dept.id;
+  secContainer.appendChild(secEl);
+  renderDept(dept);
+}
+
+function renderDept(dept) {
+  const secEl = document.getElementById('section-'+dept.id);
+  if(!secEl) return;
+  const isEdit = dept.mode === 'edit';
+  const latestWeek = dept.kpis[0]?.history[dept.kpis[0].history.length-1]?.label || '';
+
+  secEl.innerHTML = `
+    ${dept.isExample ? `<div class="example-notice">&#9432; This is example data for illustration. Switch to EDIT mode to rename this department and set your own KPIs and targets.</div>` : ''}
+    <div class="dept-header">
+      <div>
+        <div class="dept-name-display" id="dept-name-display-${dept.id}">${dept.name}</div>
+        <div class="dept-week-display">Current week: ${latestWeek||'not set'} &middot; ${dept.kpis.length} KPIs tracked</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <button class="btn-sec ${!isEdit?'active':''}" data-id="${dept.id}" onclick="setDeptMode(this,'use')">&#9745; USE</button>
+        <button class="btn-sec ${isEdit?'active':''}" data-id="${dept.id}" onclick="setDeptMode(this,'edit')">&#9998; EDIT</button>
+        <button class="btn-danger" data-id="${dept.id}" onclick="deleteDept(this)" style="font-size:10px;padding:5px 10px;">Remove Dept</button>
+      </div>
+    </div>
+
+    ${isEdit ? `
+      <div class="edit-hint"><strong style="color:#1A1A1A;">EDIT mode</strong> — Rename KPIs, set targets, choose direction (higher is better or lower is better), add or delete KPIs. Switch to USE mode to enter weekly actuals.</div>
+      <div class="card" style="margin-bottom:14px;">
+        <div class="card-head" style="background:#1A1A1A;"><span class="card-title">DEPARTMENT SETTINGS</span></div>
+        <div class="card-body">
+          <div class="grid2">
+            <div class="field"><label>DEPARTMENT NAME</label><input type="text" value="${dept.name}" data-id="${dept.id}" oninput="updateDeptName(this)"></div>
+            <div class="field"><label>MANAGER NAME</label><input type="text" value="${dept.manager}" data-id="${dept.id}" oninput="updateDeptManager(this)" placeholder="Optional"></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head" style="background:#1A1A1A;"><span class="card-title">KPIs</span></div>
+        <div class="kpi-edit-head"><span>KPI NAME</span><span>TARGET</span><span>UNIT</span><span>DIRECTION</span><span></span></div>
+        <div id="kpi-edit-list-${dept.id}"></div>
+        <button class="add-btn" data-id="${dept.id}" onclick="addKPI(this)">+ ADD KPI</button>
+      </div>
+    ` : `
+      <div class="card" style="margin-bottom:14px;">
+        <div class="card-head" style="background:#1A1A1A;">
+          <span class="card-title">THIS WEEK — ENTER ACTUALS</span>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <label style="margin:0;color:#8A8070;font-size:10px;">WEEK</label>
+            <input type="text" id="week-label-${dept.id}" value="${latestWeek}" placeholder="e.g. W01 Jan" style="width:100px;padding:4px 8px;font-size:12px;background:#2A2A2A;border:1px solid #333;color:#F5F0E8;" oninput="updateWeekLabel(this,'${dept.id}')">
+          </div>
+        </div>
+        <div class="week-entry-head"><span>KPI</span><span style="text-align:center;">TARGET</span><span style="text-align:center;">THIS WEEK</span><span style="text-align:center;">VS TARGET</span><span style="text-align:center;">STATUS</span></div>
+        <div id="kpi-use-list-${dept.id}"></div>
+      </div>
+      <div class="history-wrap">
+        <div style="font-size:10px;color:#8A8070;letter-spacing:3px;font-family:system-ui;font-weight:600;margin-bottom:10px;">8-WEEK HISTORY</div>
+        <div id="kpi-history-${dept.id}"></div>
+      </div>
+    `}
+
+    <div class="footer-note">HOTEL MASTERY HUB &middot; TEAM KPI TRACKER</div>
+  `;
+
+  if(isEdit) renderKPIEditList(dept);
+  else { renderKPIUseList(dept); renderHistory(dept); }
+}
+
+function renderKPIEditList(dept) {
+  const container = document.getElementById('kpi-edit-list-'+dept.id);
+  if(!container) return;
+  const UNITS = ['%','€','number','0-10','hrs','days','score'];
+  container.innerHTML = dept.kpis.map((kpi,i) => `
+    <div class="kpi-edit-row">
+      <input class="kpi-inp" type="text" value="${kpi.name}" data-id="${dept.id}" data-idx="${i}" oninput="updateKPIField(this,'name')">
+      <input class="kpi-inp" type="number" value="${kpi.target}" data-id="${dept.id}" data-idx="${i}" oninput="updateKPIField(this,'target')" step="0.1">
+      <select class="kpi-inp" data-id="${dept.id}" data-idx="${i}" onchange="updateKPIField(this,'unit')">
+        ${UNITS.map(u=>`<option ${kpi.unit===u?'selected':''}>${u}</option>`).join('')}
+      </select>
+      <select class="kpi-inp" data-id="${dept.id}" data-idx="${i}" onchange="updateKPIField(this,'direction')">
+        <option value="up" ${kpi.direction==='up'?'selected':''}>&#8593; Higher better</option>
+        <option value="down" ${kpi.direction==='down'?'selected':''}>&#8595; Lower better</option>
+      </select>
+      <button class="del-btn" data-id="${dept.id}" data-idx="${i}" onclick="deleteKPI(this)">x</button>
+    </div>
+  `).join('');
+}
+
+function renderKPIUseList(dept) {
+  const container = document.getElementById('kpi-use-list-'+dept.id);
+  if(!container) return;
+  container.innerHTML = dept.kpis.map((kpi,i) => {
+    const s = getStatus(kpi);
+    const latest = kpi.history[kpi.history.length-1];
+    const val = latest ? latest.value : '';
+    const targetFmt = formatVal(kpi, kpi.target);
+    const diff = (val !== null && val !== '') ? (() => {
+      const v = parseFloat(val); const t = parseFloat(kpi.target);
+      if(isNaN(v)||isNaN(t)||t===0) return '';
+      const pct = ((v-t)/t*100).toFixed(1);
+      return (parseFloat(pct)>0?'+':'')+pct+'%';
+    })() : '—';
+    return `
+      <div class="week-entry-row">
+        <div class="wer-cell"><div class="wer-kpi-name">${kpi.name}</div><div class="wer-kpi-desc">${kpi.unit} &middot; ${kpi.direction==='up'?'higher is better':'lower is better'}</div></div>
+        <div class="wer-cell" style="text-align:center;color:#8A8070;">${targetFmt}</div>
+        <div class="wer-cell" style="text-align:center;"><input class="actual-inp" type="number" value="${val!==null?val:''}" placeholder="—" step="0.1" data-id="${dept.id}" data-idx="${i}" oninput="updateActual(this)"></div>
+        <div class="wer-cell" style="text-align:center;font-size:12px;font-family:system-ui;color:${s==='green'?'#55AA55':s==='red'?'#CC5555':s==='amber'?'#D4903A':'#8A8070'};">${diff}</div>
+        <div class="wer-cell" style="text-align:center;"><span class="kpi-status status-${s}">${statusLabel(s)}</span></div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderHistory(dept) {
+  const container = document.getElementById('kpi-history-'+dept.id);
+  if(!container) return;
+  if(dept.kpis.length===0) { container.innerHTML=''; return; }
+  const weeks = dept.kpis[0].history.map(h=>h.label);
+  container.innerHTML = `
+    <div style="overflow-x:auto;">
+      <table class="history-table">
+        <thead><tr>
+          <th>KPI</th><th>TARGET</th>
+          ${weeks.map(w=>`<th>${w||'—'}</th>`).join('')}
+        </tr></thead>
+        <tbody>
+          ${dept.kpis.map(kpi=>`
+            <tr>
+              <td class="h-kpi">${kpi.name}</td>
+              <td class="h-target">${formatVal(kpi,kpi.target)}</td>
+              ${kpi.history.map(h=>{
+                const s = h.value!==null&&h.value!=='' ? (() => {
+                  const v=parseFloat(h.value),t=parseFloat(kpi.target);
+                  if(isNaN(v)||isNaN(t)) return 'none';
+                  const diff = kpi.direction==='down'?(v-t)/(t||1):(t-v)/(t||1);
+                  return diff<=0?'green':diff<=0.1?'amber':'red';
+                })() : 'none';
+                const colors = {green:'#55AA55',amber:'#D4903A',red:'#CC5555',none:'#8A8070'};
+                return `<td style="color:${colors[s]};font-weight:${s!=='none'?'700':'400'};">${formatVal(kpi,h.value)}</td>`;
+              }).join('')}
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+// ═══ INTERACTIONS ═══
+function setDeptMode(el, mode) {
+  const id = el.getAttribute('data-id');
+  const dept = departments.find(d=>d.id===id);
+  if(!dept) return;
+  dept.mode = mode;
+  save();
+  renderDept(dept);
+}
+
+function deleteDept(el) {
+  const id = el.getAttribute('data-id');
+  if(!confirm('Remove this department? All KPI data will be lost.')) return;
+  departments = departments.filter(d=>d.id!==id);
+  const tabEl = document.getElementById('tab-'+id);
+  const secEl = document.getElementById('section-'+id);
+  if(tabEl) tabEl.remove();
+  if(secEl) secEl.remove();
+  save();
+  setTab('overview');
+}
+
+function updateDeptName(el) {
+  const id = el.getAttribute('data-id');
+  const dept = departments.find(d=>d.id===id);
+  if(!dept) return;
+  dept.name = el.value;
+  dept.isExample = false;
+  const tabEl = document.getElementById('tab-'+id);
+  if(tabEl) tabEl.textContent = el.value;
+  const display = document.getElementById('dept-name-display-'+id);
+  if(display) display.textContent = el.value;
+  save();
+}
+
+function updateDeptManager(el) {
+  const id = el.getAttribute('data-id');
+  const dept = departments.find(d=>d.id===id);
+  if(dept) { dept.manager = el.value; save(); }
+}
+
+function updateKPIField(el, field) {
+  const id = el.getAttribute('data-id');
+  const idx = parseInt(el.getAttribute('data-idx'));
+  const dept = departments.find(d=>d.id===id);
+  if(!dept||!dept.kpis[idx]) return;
+  dept.kpis[idx][field] = field==='target' ? parseFloat(el.value)||0 : el.value;
+  dept.isExample = false;
+  save();
+}
+
+function addKPI(el) {
+  const id = el.getAttribute('data-id');
+  const dept = departments.find(d=>d.id===id);
+  if(!dept) return;
+  dept.kpiCounter++;
+  dept.kpis.push({
+    id:'k'+dept.kpiCounter, name:'New KPI', unit:'number', target:0, direction:'up',
+    history: Array.from({length:WEEKS}, (_,i) => ({label:'Week '+(i+1), value:null}))
+  });
+  dept.isExample = false;
+  save(); renderDept(dept);
+}
+
+function deleteKPI(el) {
+  const id = el.getAttribute('data-id');
+  const idx = parseInt(el.getAttribute('data-idx'));
+  const dept = departments.find(d=>d.id===id);
+  if(!dept||dept.kpis.length<=1) return;
+  dept.kpis.splice(idx,1);
+  save(); renderDept(dept);
+}
+
+function updateActual(el) {
+  const id = el.getAttribute('data-id');
+  const idx = parseInt(el.getAttribute('data-idx'));
+  const dept = departments.find(d=>d.id===id);
+  if(!dept||!dept.kpis[idx]) return;
+  const latest = dept.kpis[idx].history[dept.kpis[idx].history.length-1];
+  if(latest) latest.value = el.value===''?null:parseFloat(el.value);
+  dept.isExample = false;
+  save();
+  // Update status in place
+  const row = el.closest('.week-entry-row');
+  if(row) {
+    const s = getStatus(dept.kpis[idx]);
+    const statusEl = row.querySelector('.kpi-status');
+    if(statusEl) { statusEl.className='kpi-status status-'+s; statusEl.textContent=statusLabel(s); }
+    const diffEl = row.querySelectorAll('.wer-cell')[3];
+    if(diffEl) {
+      const val = parseFloat(el.value), t = parseFloat(dept.kpis[idx].target);
+      const diff = (!isNaN(val)&&!isNaN(t)&&t!==0) ? ((val-t)/t*100).toFixed(1) : null;
+      diffEl.textContent = diff!==null ? (parseFloat(diff)>0?'+':'')+diff+'%' : '—';
+      diffEl.style.color = s==='green'?'#55AA55':s==='red'?'#CC5555':s==='amber'?'#D4903A':'#8A8070';
+    }
+  }
+  renderHistory(dept);
+}
+
+function updateWeekLabel(el, deptId) {
+  const dept = departments.find(d=>d.id===deptId);
+  if(!dept) return;
+  dept.kpis.forEach(kpi => {
+    const latest = kpi.history[kpi.history.length-1];
+    if(latest) latest.label = el.value;
+  });
+  dept.isExample = false;
+  save();
+}
+
+// ═══ ADD DEPT MODAL ═══
+function openAddDeptModal() {
+  document.getElementById('modal-dept-name').value='';
+  document.getElementById('modal-dept-manager').value='';
+  document.getElementById('add-dept-modal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('add-dept-modal').classList.remove('open'); }
+
+function addDept() {
+  const name = document.getElementById('modal-dept-name').value.trim();
+  if(!name) { alert('Please enter a department name.'); return; }
+  deptCounter++;
+  const id = 'dept'+deptCounter;
+  const dept = {
+    id, name, manager: document.getElementById('modal-dept-manager').value.trim(),
+    isExample:false, mode:'edit', kpiCounter:10,
+    kpis:[
+      {id:'k1', name:'KPI 1', unit:'number', target:0, direction:'up', history:Array.from({length:WEEKS},(_,i)=>({label:'Week '+(i+1),value:null}))},
+      {id:'k2', name:'KPI 2', unit:'%', target:0, direction:'up', history:Array.from({length:WEEKS},(_,i)=>({label:'Week '+(i+1),value:null}))},
+    ]
+  };
+  departments.push(dept);
+  save();
+  closeModal();
+  renderDeptTab(dept);
+  setTab(id);
+}
+
+// ═══ EXPORTS ═══
+function exportCSV() {
+  const esc = val => { const s=String(val||''); return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; };
+  let csv = `TEAM KPI TRACKER EXPORT\r\nDate,${new Date().toLocaleDateString('en-GB')}\r\n\r\n`;
+  departments.forEach(dept => {
+    csv += `DEPARTMENT,${esc(dept.name)}\r\n`;
+    const weeks = dept.kpis[0]?.history.map(h=>h.label)||[];
+    csv += ['KPI','UNIT','TARGET','DIRECTION',...weeks].map(esc).join(',') + '\r\n';
+    dept.kpis.forEach(kpi => {
+      csv += [kpi.name,kpi.unit,kpi.target,kpi.direction,...kpi.history.map(h=>h.value!==null?h.value:'')].map(esc).join(',') + '\r\n';
+    });
+    csv += '\r\n';
+  });
+  const blob = new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download='team-kpi-'+new Date().toISOString().slice(0,10)+'.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+function emailSummary() {
+  let body = `TEAM KPI WEEKLY SUMMARY\n===============================\n`;
+  body += `Date: ${new Date().toLocaleDateString('en-GB')}\n\n`;
+  departments.forEach(dept => {
+    body += `${dept.name.toUpperCase()}\n`;
+    dept.kpis.forEach(kpi => {
+      const s = getStatus(kpi);
+      const val = currentVal(kpi);
+      const icon = s==='green'?'✓':s==='red'?'✗':s==='amber'?'~':'—';
+      body += `  ${icon} ${kpi.name}: ${formatVal(kpi,val)} (target: ${formatVal(kpi,kpi.target)})\n`;
+    });
+    body += '\n';
+  });
+  body += `--\nHotel Mastery Hub — Team KPI Tracker`;
+  window.location.href = `mailto:?subject=${encodeURIComponent('Weekly KPI Summary')}&body=${encodeURIComponent(body)}`;
+}
+
+function backupData() {
+  const data = { tool:'HMH Team KPI Tracker', version:'1.0', exported:new Date().toISOString(), departments, deptCounter };
+  const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download=`team-kpi-backup-${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+function restoreData(input) {
+  const file = input.files[0];
+  if(!file) return;
+  if(!confirm('This will replace ALL current data with the backup. Continue?')) { input.value=''; return; }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const d = JSON.parse(e.target.result);
+      if(!d.tool||!d.tool.includes('Team KPI')) { alert('This does not appear to be a Team KPI Tracker backup.'); return; }
+      // Remove existing dept tabs and sections
+      departments.forEach(dept => {
+        const t=document.getElementById('tab-'+dept.id); if(t) t.remove();
+        const s=document.getElementById('section-'+dept.id); if(s) s.remove();
+      });
+      departments = d.departments||[];
+      deptCounter = d.deptCounter||10;
+      departments.forEach(dept => renderDeptTab(dept));
+      save();
+      setTab('overview');
+      alert('Restored. '+departments.length+' department(s) loaded. Exported: '+new Date(d.exported).toLocaleDateString('en-GB'));
+    } catch(err) { alert('Could not read file. Make sure it is a valid Team KPI Tracker backup.'); }
+    input.value='';
+  };
+  reader.readAsText(file);
+}
+
+// ═══ RESTORE FROM LOCAL STORAGE ═══
+(function(){
+  try {
+    const saved = localStorage.getItem(LS_KEY);
+    if(saved) {
+      const d = JSON.parse(saved);
+      if(d.departments) departments = d.departments;
+      if(d.deptCounter) deptCounter = d.deptCounter;
+    }
+  } catch(e) {}
+  departments.forEach(dept => renderDeptTab(dept));
+})();
+</script>
+</body>
+</html>
