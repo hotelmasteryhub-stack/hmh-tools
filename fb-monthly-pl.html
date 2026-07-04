@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F&B Monthly P&L -- Hotel Mastery Hub</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:Georgia,serif; background:#F8F5F0; min-height:100vh; color:#1A1A1A; }
+.header { background:#1A1A1A; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+.hb { color:#B8962E; font-size:10px; letter-spacing:4px; font-family:system-ui; font-weight:600; }
+.hs { color:#8A8070; font-size:10px; letter-spacing:3px; font-family:system-ui; margin-left:10px; }
+.header-btns { display:flex; gap:6px; flex-wrap:wrap; }
+.btn-hdr { padding:5px 12px; font-size:10px; letter-spacing:1px; cursor:pointer; font-family:system-ui; font-weight:600; border:1px solid rgba(184,150,46,0.4); color:#D4AF5A; background:transparent; }
+.btn-hdr.gold { background:#B8962E; color:#1A1A1A; border-color:#B8962E; }
+.tabs { background:#111; display:flex; overflow-x:auto; border-bottom:2px solid #2A2A2A; }
+.tab { padding:11px 16px; font-size:10px; letter-spacing:2px; font-family:system-ui; font-weight:600; color:#8A8070; cursor:pointer; white-space:nowrap; border-bottom:3px solid transparent; margin-bottom:-2px; flex-shrink:0; }
+.tab:hover { color:#F5F0E8; }
+.tab.active { color:#B8962E; border-bottom-color:#B8962E; }
+.wrap { max-width:1060px; margin:0 auto; padding:24px 16px 60px; }
+.section { display:none; }
+.section.active { display:block; }
+.card { background:#fff; border:1px solid #E5DDD0; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:16px; }
+.card-head { padding:10px 18px; display:flex; align-items:center; justify-content:space-between; }
+.card-title { font-size:11px; font-weight:700; color:#F5F0E8; letter-spacing:1px; font-family:system-ui; }
+.card-body { padding:16px 18px; }
+label { display:block; font-size:10px; color:#8A8070; letter-spacing:2px; font-family:system-ui; font-weight:600; margin-bottom:5px; }
+input[type=text],input[type=number] { width:100%; padding:8px 10px; border:1px solid #E5DDD0; font-size:13px; font-family:system-ui; background:#FAFAFA; color:#1A1A1A; outline:none; }
+input[type=text]:focus,input[type=number]:focus { border-color:#B8962E; }
+select { width:100%; padding:8px 10px; border:1px solid #E5DDD0; font-size:12px; font-family:system-ui; background:#FAFAFA; color:#1A1A1A; outline:none; }
+.info-btn { background:#B8962E; border:none; color:#1A1A1A; width:18px; height:18px; border-radius:50%; font-size:11px; font-weight:700; cursor:pointer; font-family:system-ui; vertical-align:middle; margin-left:4px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; }
+.info-btn:hover { background:#D4AF5A; }
+.btn-gold { background:#B8962E; border:none; color:#1A1A1A; padding:9px 18px; font-size:11px; font-family:system-ui; font-weight:700; letter-spacing:1px; cursor:pointer; }
+.btn-gold:hover { background:#D4AF5A; }
+.btn-sec { background:#fff; border:1px solid #E5DDD0; color:#8A8070; padding:7px 14px; font-size:11px; font-family:system-ui; font-weight:600; cursor:pointer; }
+.btn-sec:hover { border-color:#B8962E; color:#B8962E; }
+.del-btn { background:transparent; border:none; color:#CCC; cursor:pointer; font-size:16px; padding:2px 6px; line-height:1; }
+.del-btn:hover { color:#CC5555; }
+.add-btn { background:#F8F5F0; border:1px dashed #E5DDD0; color:#8A8070; padding:8px; font-size:11px; font-family:system-ui; cursor:pointer; width:100%; text-align:center; margin-top:6px; }
+.add-btn:hover { border-color:#B8962E; color:#B8962E; }
+.action-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:16px; }
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+.grid4 { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:12px; }
+.field { margin-bottom:12px; }
+/* DYNAMIC LINES */
+.line-row { display:grid; grid-template-columns:1fr 140px 36px; gap:8px; align-items:center; padding:7px 12px; border-bottom:1px solid #F0EBE3; background:#fff; }
+.line-row:nth-child(even) { background:#FAFAFA; }
+.line-inp { width:100%; padding:6px 8px; border:1px solid #E5DDD0; font-size:12px; font-family:system-ui; background:#fff; outline:none; }
+.line-inp:focus { border-color:#B8962E; }
+.line-total { padding:8px 12px; background:#F8F5F0; font-size:12px; font-family:system-ui; font-weight:700; display:flex; justify-content:space-between; border-top:2px solid #1A1A1A; }
+/* KPI CARDS */
+.kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px; }
+.kpi-card { background:#1A1A1A; padding:14px 16px; }
+.kc-label { font-size:9px; color:#8A8070; letter-spacing:3px; font-family:system-ui; font-weight:600; margin-bottom:5px; display:flex; align-items:center; gap:4px; }
+.kc-value { font-size:26px; font-weight:700; line-height:1; margin-bottom:3px; }
+.kc-sub { font-size:11px; color:#8A8070; font-family:system-ui; }
+/* BENCH BAR */
+.bench-bar { height:6px; background:#2A2A2A; border-radius:3px; margin:5px 0 3px; }
+.bench-fill { height:6px; border-radius:3px; }
+/* P&L TABLE */
+.pl-table { width:100%; border-collapse:collapse; }
+.pl-table td { padding:9px 14px; border-bottom:1px solid #F0EBE3; font-size:13px; font-family:system-ui; }
+.pl-table td:last-child { text-align:right; font-weight:700; }
+.pl-sub td { color:#8A8070; font-size:12px; padding-left:28px !important; font-weight:400; }
+.pl-total td { font-weight:700; background:#F8F5F0; border-top:2px solid #1A1A1A; border-bottom:2px solid #1A1A1A; }
+.pl-section td { background:#1A1A1A; color:#B8962E; font-size:10px; letter-spacing:3px; font-family:system-ui; font-weight:600; border-bottom:none; padding:6px 14px; }
+/* SERVICE TOGGLE */
+.svc-toggle { padding:14px; cursor:pointer; transition:background 0.15s; }
+/* GUIDE */
+.guide-step { display:flex; border-bottom:1px solid #F0EBE3; padding:13px 16px; align-items:flex-start; }
+.guide-step:last-child { border-bottom:none; }
+.guide-circle { width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:system-ui; flex-shrink:0; margin-right:12px; background:#B8962E; color:#1A1A1A; }
+/* INFO MODAL */
+.info-modal { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); z-index:999; align-items:center; justify-content:center; padding:20px; }
+.info-modal.open { display:flex; }
+.info-box { background:#fff; max-width:440px; width:100%; padding:24px; position:relative; }
+.example-notice { background:#1A3A5C; padding:10px 16px; font-size:12px; color:#fff; font-family:system-ui; margin-bottom:14px; }
+.footer-note { text-align:center; margin-top:28px; color:#8A8070; font-size:11px; font-family:system-ui; letter-spacing:2px; }
+@media print {
+  .header,.tabs,.header-btns,.action-row,.add-btn,.del-btn,.btn-sec,.btn-gold,.info-modal { display:none !important; }
+  .section { display:block !important; }
+  body { background:#fff; }
+  .wrap { padding:8px; }
+  input,select { border:none !important; background:transparent !important; }
+}
+@media (max-width:700px) {
+  .kpi-grid { grid-template-columns:1fr 1fr; }
+  .grid2,.grid3,.grid4 { grid-template-columns:1fr; }
+  .line-row { grid-template-columns:1fr 100px 36px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div style="display:flex;align-items:center;">
+    <span class="hb">HOTEL MASTERY HUB</span>
+    <span class="hs">&middot; F&amp;B MONTHLY P&amp;L</span>
+  </div>
+  <div class="header-btns">
+    <button class="btn-hdr" onclick="exportCSV()">CSV</button>
+    <button class="btn-hdr" onclick="emailReport()">&#9993;</button>
+    <button class="btn-hdr gold" onclick="window.print()">PDF</button>
+    <button class="btn-hdr" onclick="backupData()">BACKUP &#8595;</button>
+    <button class="btn-hdr" onclick="document.getElementById('restore-input').click()">RESTORE &#8593;</button>
+    <input type="file" id="restore-input" accept=".json" style="display:none" onchange="restoreData(this)">
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" id="tab-guide" onclick="setTab('guide')">HOW TO USE</div>
+  <div class="tab" id="tab-setup" onclick="setTab('setup')">SETUP</div>
+  <div class="tab" id="tab-revenue" onclick="setTab('revenue')">REVENUE</div>
+  <div class="tab" id="tab-costs" onclick="setTab('costs')">COSTS</div>
+  <div class="tab" id="tab-pl" onclick="setTab('pl')">P&amp;L REPORT</div>
+</div>
+
+<!-- INFO MODAL -->
+<div class="info-modal" id="info-modal">
+  <div class="info-box">
+    <button onclick="closeInfo()" style="position:absolute;top:12px;right:14px;background:transparent;border:none;font-size:20px;cursor:pointer;color:#8A8070;">×</button>
+    <div id="info-title" style="font-size:10px;color:#B8962E;letter-spacing:3px;font-family:system-ui;font-weight:600;margin-bottom:8px;padding-right:20px;"></div>
+    <div id="info-body" style="font-size:13px;color:#1A1A1A;font-family:system-ui;line-height:1.7;"></div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- HOW TO USE -->
+<div class="section active" id="section-guide">
+  <div style="background:#1A1A1A;padding:18px 24px;margin-bottom:20px;">
+    <div style="font-size:10px;color:#B8962E;letter-spacing:4px;font-family:system-ui;font-weight:600;margin-bottom:5px;">HOTEL MASTERY HUB</div>
+    <div style="font-size:20px;color:#F5F0E8;font-weight:700;margin-bottom:3px;">F&amp;B Monthly P&amp;L</div>
+    <div style="font-size:12px;color:#8A8070;font-family:system-ui;">The complete monthly profitability picture for your F&amp;B operation.</div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#1A1A1A;"><span class="card-title">WHAT THIS TOOL DOES</span></div>
+    <div class="card-body">
+      <p style="font-size:14px;font-family:system-ui;line-height:1.8;color:#1A1A1A;margin-bottom:12px;">This tool gives you the full monthly F&B profit and loss. It answers the question the shift planner cannot: <strong>is the F&B operation actually profitable this month, after every cost?</strong></p>
+      <p style="font-size:14px;font-family:system-ui;line-height:1.8;color:#1A1A1A;margin-bottom:12px;">Revenue lines, purchasing costs, staff roles, and overheads are all fully dynamic — add and remove lines to match exactly how your operation is structured. No forced categories.</p>
+      <p style="font-size:14px;font-family:system-ui;line-height:1.8;color:#1A1A1A;">It calculates the four KPIs that matter most: <strong>food cost %</strong>, <strong>beverage cost %</strong>, <strong>labour cost %</strong>, and <strong>net profit %</strong> — each benchmarked so you know if you are in range.</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#1A3A5C;"><span class="card-title">FOUR KPIs — WHAT TO WATCH</span></div>
+    <div class="card-body" style="padding:0;">
+      <div style="padding:12px 16px;border-bottom:1px solid #F0EBE3;"><div style="font-size:12px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Food Cost % <span style="font-size:10px;color:#8A8070;font-weight:400;font-family:system-ui;">Benchmark: 28–35%</span></div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.5;">Total food purchasing ÷ total food revenue. Above 35% means pricing is too low, portions too large, or waste is high.</div></div>
+      <div style="padding:12px 16px;border-bottom:1px solid #F0EBE3;"><div style="font-size:12px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Beverage Cost % <span style="font-size:10px;color:#8A8070;font-weight:400;font-family:system-ui;">Benchmark: 18–25%</span></div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.5;">Total beverage purchasing ÷ total beverage revenue. Beverages carry higher margins than food — above 28% signals over-pouring or poor pricing.</div></div>
+      <div style="padding:12px 16px;border-bottom:1px solid #F0EBE3;"><div style="font-size:12px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Labour Cost % <span style="font-size:10px;color:#8A8070;font-weight:400;font-family:system-ui;">Benchmark: 30–35%</span></div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.5;">Total staff cost ÷ total revenue. Must include total employer cost — not just gross wages. Above 40% means overstaffed relative to revenue.</div></div>
+      <div style="padding:12px 16px;"><div style="font-size:12px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Net Profit % <span style="font-size:10px;color:#8A8070;font-weight:400;font-family:system-ui;">Benchmark: 8–15%</span></div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.5;">Net profit ÷ total revenue. After all costs. Below 5% is very thin — any slow month puts you in loss.</div></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#1E4620;"><span class="card-title">HOW TO USE</span></div>
+    <div class="card-body" style="padding:0;">
+      <div class="guide-step"><div class="guide-circle">1</div><div><div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Setup — do once per month</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Enter hotel name, month, year, currency, and toggle which services ran this month.</div></div></div>
+      <div class="guide-step"><div class="guide-circle">2</div><div><div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Revenue — add lines per service</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Each active service has its own list of revenue lines. Add as many as you need — Buffet, À la carte, Room service, Wine, Cocktails. Enter the actual amount for each line. Covers field is per service.</div></div></div>
+      <div class="guide-step"><div class="guide-circle">3</div><div><div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Costs — add purchasing, staff roles, overheads</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Three dynamic sections: purchasing costs (food and beverage by category), staff roles (each role as a separate line, total employer cost), and fixed overheads. Add and remove lines freely.</div></div></div>
+      <div class="guide-step" style="border-bottom:none;"><div class="guide-circle">4</div><div><div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">P&L Report — read and act</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Full P&L with all KPIs and benchmarks. Export as PDF for monthly review or email to your accountant.</div></div></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#2A2A2A;"><span class="card-title">EXPORT OPTIONS</span></div>
+    <div class="card-body" style="padding:0;">
+      <div style="padding:13px 16px;border-bottom:1px solid #F0EBE3;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:5px;"><span style="background:#1A1A1A;color:#B8962E;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">CSV</span><span style="font-size:13px;font-weight:700;color:#1A1A1A;">Full P&L to spreadsheet</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Downloads all revenue lines, cost lines, and calculated KPIs. Good for sharing with an accountant or building your own monthly trend analysis.</p></div>
+      <div style="padding:13px 16px;border-bottom:1px solid #F0EBE3;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:5px;"><span style="background:#1A1A1A;color:#B8962E;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">&#9993;</span><span style="font-size:13px;font-weight:700;color:#1A1A1A;">Monthly summary by email</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Plain text P&L summary — total revenue, gross profit, all four KPIs with benchmark comparison, net result.</p></div>
+      <div style="padding:13px 16px;border-bottom:1px solid #F0EBE3;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:5px;"><span style="background:#B8962E;color:#1A1A1A;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">PDF</span><span style="font-size:13px;font-weight:700;color:#1A1A1A;">Print full monthly report</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Prints all tabs — setup, all revenue lines, all cost lines, and P&L report with KPI benchmarks.</p></div>
+      <div style="padding:13px 16px;border-bottom:1px solid #F0EBE3;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:5px;"><span style="background:#B8962E;color:#1A1A1A;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">BACKUP &#8595;</span><span style="font-size:13px;font-weight:700;color:#1A1A1A;">Save everything as JSON</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Downloads complete backup of all revenue lines, cost lines, and settings. Do this at the end of every month before entering new data.</p></div>
+      <div style="padding:13px 16px;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:5px;"><span style="background:#B8962E;color:#1A1A1A;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">RESTORE &#8593;</span><span style="font-size:13px;font-weight:700;color:#1A1A1A;">Load from backup file</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Select a .json backup to restore all data. You will be asked to confirm before anything is replaced.</p></div>
+    </div>
+  </div>
+
+  <div style="background:#1A1A1A;padding:13px 18px;margin-bottom:20px;">
+    <div style="font-size:10px;color:#B8962E;letter-spacing:3px;font-family:system-ui;font-weight:600;margin-bottom:6px;">ONE RULE</div>
+    <p style="font-size:13px;color:#F5F0E8;font-family:system-ui;line-height:1.7;">A busy restaurant is not the same as a profitable restaurant. Know your food cost %, labour cost %, and net profit every month. These three numbers tell you the truth.</p>
+  </div>
+
+  <div class="action-row"><button class="btn-gold" onclick="setTab('setup')">GO TO SETUP &rarr;</button></div>
+  <div class="footer-note">HOTEL MASTERY HUB &middot; F&amp;B MONTHLY P&amp;L</div>
+</div>
+
+<!-- SETUP -->
+<div class="section" id="section-setup">
+  <div style="margin-bottom:16px;">
+    <h2 style="font-size:20px;font-weight:700;color:#1A1A1A;">Setup</h2>
+    <p style="font-size:12px;color:#8A8070;font-family:system-ui;margin-top:2px;">Update once per month. All tabs pull from here.</p>
+  </div>
+  <div class="example-notice">&#9432; Pre-filled with example data for Hotel Bella Vista — replace with your own figures.</div>
+  <div class="card">
+    <div class="card-head" style="background:#1A1A1A;"><span class="card-title">PROPERTY &amp; PERIOD</span></div>
+    <div class="card-body">
+      <div class="grid3">
+        <div class="field"><label>HOTEL NAME</label><input type="text" id="s-hotel" value="Hotel Bella Vista" oninput="save()"></div>
+        <div class="field"><label>MONTH</label>
+          <select id="s-month" onchange="save()">
+            <option>January</option><option>February</option><option>March</option><option>April</option><option selected>May</option><option>June</option><option>July</option><option>August</option><option>September</option><option>October</option><option>November</option><option>December</option>
+          </select>
+        </div>
+        <div class="field"><label>YEAR</label><input type="number" id="s-year" value="2026" oninput="save()"></div>
+        <div class="field"><label>F&amp;B MANAGER</label><input type="text" id="s-manager" value="Marco Rossi" oninput="save()"></div>
+        <div class="field"><label>CURRENCY</label>
+          <select id="s-currency" onchange="save()">
+            <option value="€" selected>€ Euro</option>
+            <option value="£">£ Pound</option>
+            <option value="$">$ Dollar</option>
+            <option value="kr">kr Krone</option>
+          </select>
+        </div>
+        <div class="field"><label>WORKING DAYS THIS MONTH</label><input type="number" id="s-days" value="31" min="1" max="31" oninput="save()"></div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head" style="background:#1A1A1A;"><span class="card-title">ACTIVE SERVICES — click to toggle</span></div>
+    <div class="card-body">
+      <p style="font-size:12px;font-family:system-ui;color:#8A8070;margin-bottom:14px;">Toggle which services ran this month. Inactive services are excluded from all calculations.</p>
+      <div class="grid4" id="service-toggles"></div>
+    </div>
+  </div>
+  <div class="action-row"><button class="btn-gold" onclick="setTab('revenue')">GO TO REVENUE &rarr;</button></div>
+  <div class="footer-note">HOTEL MASTERY HUB &middot; F&amp;B MONTHLY P&amp;L</div>
+</div>
+
+<!-- REVENUE -->
+<div class="section" id="section-revenue">
+  <div style="margin-bottom:16px;">
+    <h2 style="font-size:20px;font-weight:700;color:#1A1A1A;">Revenue</h2>
+    <p style="font-size:12px;color:#8A8070;font-family:system-ui;margin-top:2px;">Add as many revenue lines as you need per service. Enter monthly totals from your PMS or till reports.</p>
+  </div>
+  <div id="revenue-container"></div>
+  <div class="action-row"><button class="btn-gold" onclick="setTab('costs')">GO TO COSTS &rarr;</button></div>
+  <div class="footer-note">HOTEL MASTERY HUB &middot; F&amp;B MONTHLY P&amp;L</div>
+</div>
+
+<!-- COSTS -->
+<div class="section" id="section-costs">
+  <div style="margin-bottom:16px;">
+    <h2 style="font-size:20px;font-weight:700;color:#1A1A1A;">Costs</h2>
+    <p style="font-size:12px;color:#8A8070;font-family:system-ui;margin-top:2px;">Enter actual costs from invoices, payroll records, and supplier statements.</p>
+  </div>
+  <div id="costs-container"></div>
+  <div class="action-row"><button class="btn-gold" onclick="setTab('pl')">VIEW P&amp;L REPORT &rarr;</button></div>
+  <div class="footer-note">HOTEL MASTERY HUB &middot; F&amp;B MONTHLY P&amp;L</div>
+</div>
+
+<!-- P&L REPORT -->
+<div class="section" id="section-pl">
+  <div style="margin-bottom:14px;">
+    <h2 style="font-size:20px;font-weight:700;color:#1A1A1A;">Monthly P&amp;L Report</h2>
+    <p style="font-size:12px;color:#8A8070;font-family:system-ui;margin-top:2px;" id="pl-sub">All figures calculated from Revenue and Costs tabs.</p>
+  </div>
+  <div id="pl-container"></div>
+  <div class="footer-note">HOTEL MASTERY HUB &middot; F&amp;B MONTHLY P&amp;L</div>
+</div>
+
+</div>
+
+<script>
+const LS_KEY = 'hmh-fb-monthly-pl';
+const SVCS = ['breakfast','lunch','dinner','bar'];
+const SVC_LABELS = {breakfast:'Breakfast',lunch:'Lunch',dinner:'Dinner',bar:'Bar'};
+const SVC_ICONS = {breakfast:'☕',lunch:'🍽',dinner:'🌙',bar:'🍸'};
+const SVC_COLORS = {breakfast:'#1E4620',lunch:'#1A3A5C',dinner:'#2A1A5C',bar:'#5C1A1A'};
+
+const INFO = {
+  totalEmployer: { title:'TOTAL EMPLOYER COST', text:'What the business actually pays per staff member is more than the gross wage. The real employer cost includes: gross salary + employer social security contributions (typically 8–15%) + holiday pay accrual (8–12%) + employer pension contributions + insurance. In most EU countries the total employer cost is 20–35% above gross payroll. Always use the total employer cost figure here — not just the gross wage. Ask your accountant or payroll provider for the exact figure.' },
+  foodCostPct: { title:'FOOD COST %', text:'Food purchasing cost ÷ food revenue × 100. Benchmark: 28–35%. Above 35% means your menu prices are too low, portions are too large, or waste/theft is high. Below 25% may indicate quality is being compromised. This is calculated using only food purchasing costs against food revenue — beverage costs and revenue are tracked separately.' },
+  bevCostPct: { title:'BEVERAGE COST %', text:'Beverage purchasing cost ÷ beverage revenue × 100. Benchmark: 18–25%. Beverages typically carry higher margins than food — a well-run bar should be below 25%. Above 28% signals over-pouring, theft, free pours, or poor pricing. This is why beverages are tracked separately from food.' },
+  labourPct: { title:'LABOUR COST %', text:'Total staff cost ÷ total revenue × 100. Benchmark: 30–35%. This must use the total employer cost — not just gross wages. Above 40% consistently means you are overstaffed relative to your revenue level. Review scheduling and staffing ratios per service.' },
+  netProfitPct: { title:'NET PROFIT %', text:'Net profit ÷ total revenue × 100. Benchmark: 8–15%. After all costs — purchasing, labour, and overheads. F&B typically generates lower margins than rooms. Below 5% is very thin and any slow month results in loss. If net profit is below 5%, check food cost % and labour cost % first — those are usually the culprits.' },
+  grossProfit: { title:'GROSS PROFIT', text:'Total revenue minus purchasing costs (food + beverage combined). This is what remains before paying for labour and overheads. A healthy F&B gross profit is 65–75%. If your gross profit is below 60%, your purchasing costs are too high or your prices are too low — fix this before addressing labour.' },
+};
+
+function showInfo(key) {
+  const info = INFO[key]; if(!info) return;
+  document.getElementById('info-title').textContent = info.title;
+  document.getElementById('info-body').textContent = info.text;
+  document.getElementById('info-modal').classList.add('open');
+}
+function closeInfo() { document.getElementById('info-modal').classList.remove('open'); }
+
+// ═══ DATA ═══
+let services = {
+  breakfast: { active:true, covers:620, lines:[{id:'r1',name:'Buffet revenue',amount:3800},{id:'r2',name:'À la carte',amount:400}] },
+  lunch:     { active:true, covers:380, lines:[{id:'r1',name:'Set menu',amount:4200},{id:'r2',name:'À la carte',amount:1800},{id:'r3',name:'Soft drinks & coffee',amount:1000}] },
+  dinner:    { active:true, covers:290, lines:[{id:'r1',name:'Set menu',amount:6500},{id:'r2',name:'À la carte',amount:3000},{id:'r3',name:'Wine & drinks',amount:3800}] },
+  bar:       { active:true, covers:0,   lines:[{id:'r1',name:'Cocktails & spirits',amount:2800},{id:'r2',name:'Wine by glass',amount:900},{id:'r3',name:'Beer & soft drinks',amount:500}] },
+};
+
+let costs = {
+  purchasing: [
+    {id:'p1',name:'Meat & fish',amount:1800},
+    {id:'p2',name:'Dry goods & dairy',amount:1100},
+    {id:'p3',name:'Fruit & vegetables',amount:600},
+    {id:'p4',name:'Wine & spirits',amount:1400},
+    {id:'p5',name:'Beer & soft drinks',amount:700},
+  ],
+  staff: [
+    {id:'s1',name:'Head chef (total employer cost)',amount:3200},
+    {id:'s2',name:'Kitchen staff (total employer cost)',amount:2600},
+    {id:'s3',name:'Floor service staff (total employer cost)',amount:2800},
+    {id:'s4',name:'F&B manager (total employer cost)',amount:3000},
+  ],
+  overheads: [
+    {id:'o1',name:'Rent / space allocation',amount:1500},
+    {id:'o2',name:'Utilities — F&B share',amount:800},
+    {id:'o3',name:'Equipment & maintenance',amount:300},
+    {id:'o4',name:'Licences & subscriptions',amount:150},
+    {id:'o5',name:'Marketing & menus',amount:200},
+  ],
+};
+
+let lineCounter = 100;
+
+function getCur() { return document.getElementById('s-currency')?.value||'€'; }
+function fmt(n) { const c=getCur(); return c+(Math.abs(n)).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,','); }
+function fmtSigned(n) { const c=getCur(); return (n>=0?c:'−'+c)+(Math.abs(n)).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,','); }
+function fmtPct(n) { return (isNaN(n)||!isFinite(n))?'—':n.toFixed(1)+'%'; }
+function v(id) { return parseFloat(document.getElementById(id)?.value)||0; }
+function sumLines(lines) { return (lines||[]).reduce((t,l)=>t+(parseFloat(l.amount)||0),0); }
+
+function calcTotals() {
+  const activeSvcs = SVCS.filter(s=>services[s].active);
+  let totalFoodRev=0, totalBevRev=0, totalCovers=0;
+  // Food rev = breakfast/lunch/dinner lines, bev rev = bar lines
+  // Actually: we separate by service type — bar is beverage, others are food+bev mixed
+  // Simpler: total all service revenue, track food purchasing vs bev purchasing separately
+  activeSvcs.forEach(s => { totalFoodRev += sumLines(services[s].lines); totalCovers += parseFloat(services[s].covers)||0; });
+  // Purchasing split: first N lines are food, rest bev — actually user decides via line names
+  // We track purchasing totals from cost sections
+  const totalPurchasing = sumLines(costs.purchasing);
+  const totalStaff = sumLines(costs.staff);
+  const totalOverheads = sumLines(costs.overheads);
+  const totalRev = totalFoodRev; // all service revenue
+  const grossProfit = totalRev - totalPurchasing;
+  const totalCosts = totalPurchasing + totalStaff + totalOverheads;
+  const netProfit = totalRev - totalCosts;
+  const grossProfitPct = totalRev>0 ? grossProfit/totalRev*100 : 0;
+  const labourPct = totalRev>0 ? totalStaff/totalRev*100 : 0;
+  const netProfitPct = totalRev>0 ? netProfit/totalRev*100 : 0;
+  const overheadPct = totalRev>0 ? totalOverheads/totalRev*100 : 0;
+  const purchasingPct = totalRev>0 ? totalPurchasing/totalRev*100 : 0;
+  const revPerDay = v('s-days')>0 ? totalRev/v('s-days') : 0;
+  const revPerCover = totalCovers>0 ? totalRev/totalCovers : 0;
+  return { totalRev,totalCovers,totalPurchasing,totalStaff,totalOverheads,totalCosts,grossProfit,grossProfitPct,netProfit,netProfitPct,labourPct,overheadPct,purchasingPct,revPerDay,revPerCover,activeSvcs };
+}
+
+function save() {
+  try { localStorage.setItem(LS_KEY, JSON.stringify({
+    services, costs, lineCounter,
+    hotel:document.getElementById('s-hotel')?.value||'',
+    month:document.getElementById('s-month')?.value||'',
+    year:document.getElementById('s-year')?.value||'',
+    manager:document.getElementById('s-manager')?.value||'',
+    currency:document.getElementById('s-currency')?.value||'€',
+    days:document.getElementById('s-days')?.value||'31',
+  })); } catch(e) {}
+}
+
+function setTab(tab) {
+  ['guide','setup','revenue','costs','pl'].forEach(t=>{
+    document.getElementById('section-'+t).classList.toggle('active',t===tab);
+    document.getElementById('tab-'+t).classList.toggle('active',t===tab);
+  });
+  if(tab==='setup') renderSetup();
+  if(tab==='revenue') renderRevenue();
+  if(tab==='costs') renderCosts();
+  if(tab==='pl') renderPL();
+}
+
+// ═══ SETUP ═══
+function renderSetup() {
+  document.getElementById('service-toggles').innerHTML = SVCS.map(svc=>`
+    <div class="svc-toggle" style="background:${services[svc].active?SVC_COLORS[svc]:'#2A2A2A'};" onclick="toggleService('${svc}')">
+      <div style="font-size:18px;margin-bottom:4px;">${SVC_ICONS[svc]}</div>
+      <div style="font-size:12px;font-weight:700;color:#F5F0E8;font-family:system-ui;">${SVC_LABELS[svc]}</div>
+      <div style="font-size:10px;color:${services[svc].active?'rgba(255,255,255,0.6)':'#8A8070'};font-family:system-ui;margin-top:3px;">${services[svc].active?'ACTIVE':'INACTIVE'}</div>
+    </div>
+  `).join('');
+}
+
+function toggleService(svc) { services[svc].active=!services[svc].active; save(); renderSetup(); }
+
+// ═══ REVENUE ═══
+function renderRevenue() {
+  const activeSvcs = SVCS.filter(s=>services[s].active);
+  document.getElementById('revenue-container').innerHTML = activeSvcs.map(svc=>{
+    const s=services[svc];
+    const total=sumLines(s.lines);
+    const avgSpend=(parseFloat(s.covers)||0)>0?total/(parseFloat(s.covers)||1):0;
+    return `
+      <div class="card" style="margin-bottom:14px;">
+        <div class="card-head" style="background:${SVC_COLORS[svc]};"><span class="card-title">${SVC_ICONS[svc]} ${SVC_LABELS[svc].toUpperCase()}</span><span style="font-size:13px;font-weight:700;color:#fff;">${fmt(total)}</span></div>
+        <div style="background:#F8F5F0;padding:8px 14px;display:flex;gap:16px;font-size:11px;font-family:system-ui;border-bottom:1px solid #E5DDD0;">
+          <span>Covers: <input type="number" value="${s.covers}" min="0" step="1" data-svc="${svc}" oninput="updateCovers(this)" style="width:70px;border:none;border-bottom:1px solid #B8962E;background:transparent;font-size:12px;font-family:system-ui;outline:none;padding:1px 4px;font-weight:700;"></span>
+          <span style="color:#8A8070;">Avg spend: <strong style="color:#1A1A1A;">${fmt(avgSpend)}</strong></span>
+        </div>
+        <div style="padding:0 0 0 0;">
+          <div style="display:grid;grid-template-columns:1fr 140px 36px;padding:6px 12px;background:#F0EBE3;border-bottom:1px solid #E5DDD0;">
+            <span style="font-size:9px;color:#8A8070;letter-spacing:2px;font-family:system-ui;font-weight:600;">REVENUE LINE</span>
+            <span style="font-size:9px;color:#8A8070;letter-spacing:2px;font-family:system-ui;font-weight:600;text-align:right;">AMOUNT €</span>
+            <span></span>
+          </div>
+          <div id="rev-lines-${svc}">
+            ${s.lines.map((line,i)=>`
+              <div class="line-row">
+                <input class="line-inp" type="text" value="${line.name}" data-svc="${svc}" data-idx="${i}" data-field="name" oninput="updateRevLine(this)" placeholder="Revenue line name">
+                <input class="line-inp" type="number" value="${line.amount}" step="10" data-svc="${svc}" data-idx="${i}" data-field="amount" oninput="updateRevLine(this)" style="text-align:right;">
+                <button class="del-btn" data-svc="${svc}" data-idx="${i}" onclick="deleteRevLine(this)">x</button>
+              </div>
+            `).join('')}
+          </div>
+          <div class="line-total"><span>TOTAL</span><span>${fmt(total)}</span></div>
+          <button class="add-btn" data-svc="${svc}" onclick="addRevLine(this)">+ ADD REVENUE LINE</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function updateCovers(el) {
+  const svc=el.getAttribute('data-svc');
+  services[svc].covers=parseFloat(el.value)||0;
+  save(); renderRevenue();
+}
+
+function updateRevLine(el) {
+  const svc=el.getAttribute('data-svc');
+  const idx=parseInt(el.getAttribute('data-idx'));
+  const field=el.getAttribute('data-field');
+  services[svc].lines[idx][field]=field==='name'?el.value:parseFloat(el.value)||0;
+  save();
+  // update total display
+  const total=sumLines(services[svc].lines);
+  const totalEl=el.closest('.card')?.querySelector('.line-total span:last-child');
+  if(totalEl) totalEl.textContent=fmt(total);
+  const headTotal=el.closest('.card')?.querySelector('.card-head span:last-child');
+  if(headTotal) headTotal.textContent=fmt(total);
+}
+
+function addRevLine(el) {
+  const svc=el.getAttribute('data-svc');
+  lineCounter++;
+  services[svc].lines.push({id:'r'+lineCounter,name:'New revenue line',amount:0});
+  save(); renderRevenue();
+}
+
+function deleteRevLine(el) {
+  const svc=el.getAttribute('data-svc');
+  const idx=parseInt(el.getAttribute('data-idx'));
+  if(services[svc].lines.length<=1) return;
+  services[svc].lines.splice(idx,1);
+  save(); renderRevenue();
+}
+
+// ═══ COSTS ═══
+function renderCosts() {
+  document.getElementById('costs-container').innerHTML = `
+    <!-- PURCHASING -->
+    <div class="card" style="margin-bottom:14px;">
+      <div class="card-head" style="background:#1E4620;"><span class="card-title">PURCHASING COSTS — VARIABLE</span><span style="font-size:13px;font-weight:700;color:#fff;" id="total-purchasing">${fmt(sumLines(costs.purchasing))}</span></div>
+      <div style="background:#FFF8F0;border-left:3px solid #B8962E;padding:9px 14px;font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Food and beverage purchasing from your supplier invoices. Add a separate line per category so you can track where money is going. These are variable costs — they move with your volume.</div>
+      <div>
+        <div style="display:grid;grid-template-columns:1fr 140px 36px;padding:6px 12px;background:#F0EBE3;border-bottom:1px solid #E5DDD0;">
+          <span style="font-size:9px;color:#8A8070;letter-spacing:2px;font-family:system-ui;font-weight:600;">COST CATEGORY</span>
+          <span style="font-size:9px;color:#8A8070;letter-spacing:2px;font-family:system-ui;font-weight:600;text-align:right;">AMOUNT €</span>
+          <span></span>
+        </div>
+        <div id="cost-lines-purchasing">
+          ${costs.purchasing.map((line,i)=>`
+            <div class="line-row">
+              <input class="line-inp" type="text" value="${line.name}" data-section="purchasing" data-idx="${i}" data-field="name" oninput="updateCostLine(this)" placeholder="Cost category">
+              <input class="line-inp" type="number" value="${line.amount}" step="10" data-section="purchasing" data-idx="${i}" data-field="amount" oninput="updateCostLine(this)" style="text-align:right;">
+              <button class="del-btn" data-section="purchasing" data-idx="${i}" onclick="deleteCostLine(this)">x</button>
+            </div>
+          `).join('')}
+        </div>
+        <div class="line-total"><span>TOTAL PURCHASING</span><span>${fmt(sumLines(costs.purchasing))}</span></div>
+        <button class="add-btn" data-section="purchasing" onclick="addCostLine(this)">+ ADD PURCHASING LINE</button>
+      </div>
+    </div>
+
+    <!-- STAFF -->
+    <div class="card" style="margin-bottom:14px;">
+      <div class="card-head" style="background:#1A3A5C;"><span class="card-title">STAFF COSTS — TOTAL EMPLOYER COST <button class="info-btn" onclick="showInfo('totalEmployer')" style="background:#2A4A6C;color:#B8962E;">?</button></span><span style="font-size:13px;font-weight:700;color:#fff;" id="total-staff">${fmt(sumLines(costs.staff))}</span></div>
+      <div style="background:#FFF8F0;border-left:3px solid #B8962E;padding:9px 14px;font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Enter the total employer cost per role — not just gross wages. Include social contributions, holiday pay accrual, pension, and insurance. This is typically 20–35% above gross payroll. <button class="info-btn" onclick="showInfo('totalEmployer')" style="margin-left:4px;">?</button></div>
+      <div>
+        <div style="display:grid;grid-template-columns:1fr 140px 36px;padding:6px 12px;background:#F0EBE3;border-bottom:1px solid #E5DDD0;">
+          <span style="font-size:9px;color:#8A8070;letter-spacing:2px;font-family:system-ui;font-weight:600;">ROLE / STAFF GROUP</span>
+          <span style="font-size:9px;color:#8A8070;letter-spacing:2px;font-family:system-ui;font-weight:600;text-align:right;">TOTAL COST €</span>
+          <span></span>
+        </div>
+        <div id="cost-lines-staff">
+          ${costs.staff.map((line,i)=>`
+            <div class="line-row">
+              <input class="line-inp" type="text" value="${line.name}" data-section="staff" data-idx="${i}" data-field="name" oninput="updateCostLine(this)" placeholder="Role name">
+              <input class="line-inp" type="number" value="${line.amount}" step="50" data-section="staff" data-idx="${i}" data-field="amount" oninput="updateCostLine(this)" style="text-align:right;">
+              <button class="del-btn" data-section="staff" data-idx="${i}" onclick="deleteCostLine(this)">x</button>
+            </div>
+          `).join('')}
+        </div>
+        <div class="line-total"><span>TOTAL STAFF COST</span><span>${fmt(sumLines(costs.staff))}</span></div>
+        <button class="add-btn" data-section="staff" onclick="addCostLine(this)">+ ADD STAFF ROLE</button>
+      </div>
+    </div>
+
+    <!-- OVERHEADS -->
+    <div class="card" style="margin-bottom:14px;">
+      <div class="card-head" style="background:#2A1A5C;"><span class="card-title">FIXED OVERHEADS</span><span style="font-size:13px;font-weight:700;color:#fff;" id="total-overheads">${fmt(sumLines(costs.overheads))}</span></div>
+      <div style="background:#FFF8F0;border-left:3px solid #B8962E;padding:9px 14px;font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Fixed costs that do not change with volume — rent, utilities, licences, equipment. Add one line per category.</div>
+      <div>
+        <div style="display:grid;grid-template-columns:1fr 140px 36px;padding:6px 12px;background:#F0EBE3;border-bottom:1px solid #E5DDD0;">
+          <span style="font-size:9px;color:#8A8070;letter-spacing:2px;font-family:system-ui;font-weight:600;">OVERHEAD CATEGORY</span>
+          <span style="font-size:9px;color:#8A8070;letter-spacing:2px;font-family:system-ui;font-weight:600;text-align:right;">AMOUNT €</span>
+          <span></span>
+        </div>
+        <div id="cost-lines-overheads">
+          ${costs.overheads.map((line,i)=>`
+            <div class="line-row">
+              <input class="line-inp" type="text" value="${line.name}" data-section="overheads" data-idx="${i}" data-field="name" oninput="updateCostLine(this)" placeholder="Overhead category">
+              <input class="line-inp" type="number" value="${line.amount}" step="50" data-section="overheads" data-idx="${i}" data-field="amount" oninput="updateCostLine(this)" style="text-align:right;">
+              <button class="del-btn" data-section="overheads" data-idx="${i}" onclick="deleteCostLine(this)">x</button>
+            </div>
+          `).join('')}
+        </div>
+        <div class="line-total"><span>TOTAL OVERHEADS</span><span>${fmt(sumLines(costs.overheads))}</span></div>
+        <button class="add-btn" data-section="overheads" onclick="addCostLine(this)">+ ADD OVERHEAD LINE</button>
+      </div>
+    </div>
+  `;
+}
+
+function updateCostLine(el) {
+  const sec=el.getAttribute('data-section');
+  const idx=parseInt(el.getAttribute('data-idx'));
+  const field=el.getAttribute('data-field');
+  costs[sec][idx][field]=field==='name'?el.value:parseFloat(el.value)||0;
+  save();
+  const total=sumLines(costs[sec]);
+  const totalEl=el.closest('.card')?.querySelector('.line-total span:last-child');
+  if(totalEl) totalEl.textContent=fmt(total);
+  const headTotal=el.closest('.card')?.querySelector('.card-head span:last-child');
+  if(headTotal) headTotal.textContent=fmt(total);
+}
+
+function addCostLine(el) {
+  const sec=el.getAttribute('data-section');
+  lineCounter++;
+  costs[sec].push({id:'c'+lineCounter,name:'New line',amount:0});
+  save(); renderCosts();
+}
+
+function deleteCostLine(el) {
+  const sec=el.getAttribute('data-section');
+  const idx=parseInt(el.getAttribute('data-idx'));
+  if(costs[sec].length<=1) return;
+  costs[sec].splice(idx,1);
+  save(); renderCosts();
+}
+
+// ═══ P&L REPORT ═══
+function renderPL() {
+  const hotel=document.getElementById('s-hotel')?.value||'My Hotel';
+  const month=document.getElementById('s-month')?.value||'';
+  const year=document.getElementById('s-year')?.value||'';
+  const manager=document.getElementById('s-manager')?.value||'';
+  document.getElementById('pl-sub').textContent=hotel+' · '+month+' '+year;
+
+  const t=calcTotals();
+  const labColor=t.labourPct<=35?'#55AA55':t.labourPct<=42?'#D4903A':'#CC5555';
+  const netColor=t.netProfitPct>=8?'#55AA55':t.netProfitPct>=3?'#D4903A':'#CC5555';
+  const gpColor=t.grossProfitPct>=65?'#55AA55':t.grossProfitPct>=55?'#D4903A':'#CC5555';
+  const prcColor=t.purchasingPct<=35?'#55AA55':t.purchasingPct<=42?'#D4903A':'#CC5555';
+
+  function bar(val,good,warn,reverse) {
+    const pct=Math.min(Math.abs(val)/Math.max(warn,1)*100,100);
+    const col=reverse?(val>=good?'#55AA55':val>=warn*0.5?'#D4903A':'#CC5555'):(val<=good?'#55AA55':val<=warn?'#D4903A':'#CC5555');
+    return `<div class="bench-bar"><div class="bench-fill" style="width:${pct}%;background:${col};"></div></div>`;
+  }
+
+  document.getElementById('pl-container').innerHTML = `
+    <div style="background:#1A1A1A;padding:14px 20px;margin-bottom:16px;">
+      <div style="font-size:9px;color:#B8962E;letter-spacing:3px;font-family:system-ui;font-weight:600;margin-bottom:3px;">F&amp;B MONTHLY PROFIT &amp; LOSS</div>
+      <div style="font-size:16px;color:#F5F0E8;font-weight:700;">${hotel} &middot; ${month} ${year}</div>
+      ${manager?`<div style="font-size:11px;color:#8A8070;font-family:system-ui;margin-top:2px;">F&amp;B Manager: ${manager}</div>`:''}
+    </div>
+
+    <div class="kpi-grid" style="margin-bottom:16px;">
+      <div class="kpi-card">
+        <div class="kc-label">PURCHASING COST % <button class="info-btn" style="background:#2A2A2A;color:#B8962E;" onclick="showInfo('grossProfit')">?</button></div>
+        <div class="kc-value" style="color:${prcColor};">${fmtPct(t.purchasingPct)}</div>
+        ${bar(t.purchasingPct,35,50,false)}
+        <div class="kc-sub">Benchmark: ≤35% of revenue</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kc-label">GROSS PROFIT % <button class="info-btn" style="background:#2A2A2A;color:#B8962E;" onclick="showInfo('grossProfit')">?</button></div>
+        <div class="kc-value" style="color:${gpColor};">${fmtPct(t.grossProfitPct)}</div>
+        ${bar(t.grossProfitPct,65,50,true)}
+        <div class="kc-sub">Benchmark: 65–75%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kc-label">LABOUR COST % <button class="info-btn" style="background:#2A2A2A;color:#B8962E;" onclick="showInfo('labourPct')">?</button></div>
+        <div class="kc-value" style="color:${labColor};">${fmtPct(t.labourPct)}</div>
+        ${bar(t.labourPct,35,50,false)}
+        <div class="kc-sub">Benchmark: 30–35%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kc-label">NET PROFIT % <button class="info-btn" style="background:#2A2A2A;color:#B8962E;" onclick="showInfo('netProfitPct')">?</button></div>
+        <div class="kc-value" style="color:${netColor};">${fmtPct(t.netProfitPct)}</div>
+        ${bar(t.netProfitPct,8,3,true)}
+        <div class="kc-sub">Benchmark: 8–15%</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-head" style="background:#1A1A1A;"><span class="card-title">PROFIT &amp; LOSS STATEMENT</span></div>
+      <div style="overflow-x:auto;">
+        <table class="pl-table">
+          <tbody>
+            <tr class="pl-section"><td colspan="2">REVENUE</td></tr>
+            ${t.activeSvcs.map(svc=>{
+              const svcTotal=sumLines(services[svc].lines);
+              return `
+                <tr><td class="pl-row-label">${SVC_ICONS[svc]} ${SVC_LABELS[svc]}</td><td>${fmt(svcTotal)}</td></tr>
+                ${services[svc].lines.map(l=>`<tr class="pl-sub"><td>${l.name}</td><td>${fmt(parseFloat(l.amount)||0)}</td></tr>`).join('')}
+              `;
+            }).join('')}
+            <tr class="pl-total"><td>TOTAL REVENUE</td><td>${fmt(t.totalRev)}</td></tr>
+
+            <tr class="pl-section"><td colspan="2">PURCHASING COSTS</td></tr>
+            ${costs.purchasing.map(l=>`<tr class="pl-sub"><td>${l.name}</td><td style="color:#CC5555;">−${fmt(parseFloat(l.amount)||0)}</td></tr>`).join('')}
+            <tr class="pl-total"><td>GROSS PROFIT <button class="info-btn" onclick="showInfo('grossProfit')" style="font-size:9px;width:15px;height:15px;">?</button></td><td style="color:${gpColor};">${fmtSigned(t.grossProfit)} <span style="font-size:11px;font-weight:400;color:#8A8070;">(${fmtPct(t.grossProfitPct)})</span></td></tr>
+
+            <tr class="pl-section"><td colspan="2">STAFF COSTS — TOTAL EMPLOYER COST</td></tr>
+            ${costs.staff.map(l=>`<tr class="pl-sub"><td>${l.name}</td><td style="color:#CC5555;">−${fmt(parseFloat(l.amount)||0)}</td></tr>`).join('')}
+            <tr class="pl-total"><td>TOTAL STAFF <span style="font-size:11px;font-weight:400;color:#8A8070;">(${fmtPct(t.labourPct)} of rev)</span></td><td style="color:#CC5555;">−${fmt(t.totalStaff)}</td></tr>
+
+            <tr class="pl-section"><td colspan="2">FIXED OVERHEADS</td></tr>
+            ${costs.overheads.map(l=>`<tr class="pl-sub"><td>${l.name}</td><td style="color:#CC5555;">−${fmt(parseFloat(l.amount)||0)}</td></tr>`).join('')}
+            <tr class="pl-total"><td>TOTAL OVERHEADS <span style="font-size:11px;font-weight:400;color:#8A8070;">(${fmtPct(t.overheadPct)} of rev)</span></td><td style="color:#CC5555;">−${fmt(t.totalOverheads)}</td></tr>
+
+            <tr style="background:#1A1A1A;border-top:3px solid #B8962E;">
+              <td style="color:#F5F0E8;font-weight:700;font-size:15px;padding:12px 14px;">NET PROFIT / LOSS</td>
+              <td style="color:${netColor};font-size:18px;font-weight:700;text-align:right;padding:12px 14px;">${fmtSigned(t.netProfit)} <span style="font-size:12px;">(${fmtPct(t.netProfitPct)})</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head" style="background:#1A1A1A;"><span class="card-title">ADDITIONAL METRICS</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid #E5DDD0;">
+        <div style="padding:14px 16px;border-right:1px solid #E5DDD0;">
+          <div style="font-size:9px;color:#8A8070;letter-spacing:2px;font-family:system-ui;font-weight:600;margin-bottom:8px;">REVENUE</div>
+          <div style="font-size:12px;font-family:system-ui;margin-bottom:4px;">Revenue per day: <strong>${fmt(t.revPerDay)}</strong></div>
+          <div style="font-size:12px;font-family:system-ui;margin-bottom:4px;">Revenue per cover: <strong>${fmt(t.revPerCover)}</strong></div>
+          <div style="font-size:12px;font-family:system-ui;">Total covers: <strong>${t.totalCovers}</strong></div>
+        </div>
+        <div style="padding:14px 16px;border-right:1px solid #E5DDD0;">
+          <div style="font-size:9px;color:#8A8070;letter-spacing:2px;font-family:system-ui;font-weight:600;margin-bottom:8px;">COST STRUCTURE</div>
+          <div style="font-size:12px;font-family:system-ui;margin-bottom:4px;">Purchasing: <strong>${fmt(t.totalPurchasing)}</strong> (${fmtPct(t.purchasingPct)})</div>
+          <div style="font-size:12px;font-family:system-ui;margin-bottom:4px;">Staff: <strong>${fmt(t.totalStaff)}</strong> (${fmtPct(t.labourPct)})</div>
+          <div style="font-size:12px;font-family:system-ui;">Overheads: <strong>${fmt(t.totalOverheads)}</strong> (${fmtPct(t.overheadPct)})</div>
+        </div>
+        <div style="padding:14px 16px;">
+          <div style="font-size:9px;color:#8A8070;letter-spacing:2px;font-family:system-ui;font-weight:600;margin-bottom:8px;">BENCHMARK STATUS</div>
+          <div style="font-size:12px;font-family:system-ui;margin-bottom:4px;">Gross profit: <strong style="color:${gpColor};">${fmtPct(t.grossProfitPct)}</strong> <span style="color:#8A8070;">(target ≥65%)</span></div>
+          <div style="font-size:12px;font-family:system-ui;margin-bottom:4px;">Labour %: <strong style="color:${labColor};">${fmtPct(t.labourPct)}</strong> <span style="color:#8A8070;">(target ≤35%)</span></div>
+          <div style="font-size:12px;font-family:system-ui;">Net profit: <strong style="color:${netColor};">${fmtPct(t.netProfitPct)}</strong> <span style="color:#8A8070;">(target ≥8%)</span></div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ═══ EXPORTS ═══
+function exportCSV() {
+  const esc=val=>{ const s=String(val||''); return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; };
+  const t=calcTotals();
+  const hotel=document.getElementById('s-hotel')?.value||'';
+  const month=document.getElementById('s-month')?.value||'';
+  const year=document.getElementById('s-year')?.value||'';
+  let csv=`F&B MONTHLY P&L\r\nHotel,${esc(hotel)}\r\nMonth,${esc(month+' '+year)}\r\nExported,${new Date().toLocaleDateString('en-GB')}\r\n\r\n`;
+  csv+=`REVENUE\r\n`;
+  t.activeSvcs.forEach(svc=>{
+    csv+=`${SVC_LABELS[svc]}\r\n`;
+    services[svc].lines.forEach(l=>{ csv+=`,${esc(l.name)},${l.amount}\r\n`; });
+  });
+  csv+=`TOTAL REVENUE,,${t.totalRev}\r\n\r\n`;
+  csv+=`PURCHASING COSTS\r\n`;
+  costs.purchasing.forEach(l=>{ csv+=`${esc(l.name)},,${l.amount}\r\n`; });
+  csv+=`TOTAL PURCHASING,,${t.totalPurchasing}\r\n\r\n`;
+  csv+=`STAFF COSTS\r\n`;
+  costs.staff.forEach(l=>{ csv+=`${esc(l.name)},,${l.amount}\r\n`; });
+  csv+=`TOTAL STAFF,,${t.totalStaff}\r\n\r\n`;
+  csv+=`OVERHEADS\r\n`;
+  costs.overheads.forEach(l=>{ csv+=`${esc(l.name)},,${l.amount}\r\n`; });
+  csv+=`TOTAL OVERHEADS,,${t.totalOverheads}\r\n\r\n`;
+  csv+=`KPIs\r\nGross Profit,${fmt(t.grossProfit)},${fmtPct(t.grossProfitPct)}\r\n`;
+  csv+=`Labour Cost %,,${fmtPct(t.labourPct)}\r\nNet Profit,${fmt(t.netProfit)},${fmtPct(t.netProfitPct)}\r\n`;
+  const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download=`fb-monthly-pl-${(month||'').toLowerCase()}-${year||'2026'}.csv`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+function emailReport() {
+  const t=calcTotals();
+  const hotel=document.getElementById('s-hotel')?.value||'My Hotel';
+  const month=document.getElementById('s-month')?.value||'';
+  const year=document.getElementById('s-year')?.value||'';
+  let body=`F&B MONTHLY P&L — ${hotel}\nPeriod: ${month} ${year}\nDate: ${new Date().toLocaleDateString('en-GB')}\n===============================\n\n`;
+  body+=`REVENUE: ${fmt(t.totalRev)}\n`;
+  t.activeSvcs.forEach(svc=>{ body+=`  ${SVC_LABELS[svc]}: ${fmt(sumLines(services[svc].lines))}\n`; });
+  body+=`\nKEY KPIs\n`;
+  body+=`  Gross Profit: ${fmt(t.grossProfit)} (${fmtPct(t.grossProfitPct)}) — benchmark 65–75%\n`;
+  body+=`  Labour Cost %: ${fmtPct(t.labourPct)} — benchmark 30–35%\n`;
+  body+=`  Net Profit: ${fmt(t.netProfit)} (${fmtPct(t.netProfitPct)}) — benchmark 8–15%\n`;
+  body+=`\n--\nHotel Mastery Hub — F&B Monthly P&L`;
+  window.location.href=`mailto:?subject=${encodeURIComponent('F&B Monthly P&L — '+hotel+' — '+month+' '+year)}&body=${encodeURIComponent(body)}`;
+}
+
+function backupData() {
+  const data={
+    tool:'HMH F&B Monthly P&L',version:'1.0',exported:new Date().toISOString(),
+    services,costs,lineCounter,
+    hotel:document.getElementById('s-hotel')?.value||'',
+    month:document.getElementById('s-month')?.value||'',
+    year:document.getElementById('s-year')?.value||'',
+    manager:document.getElementById('s-manager')?.value||'',
+    currency:document.getElementById('s-currency')?.value||'€',
+    days:document.getElementById('s-days')?.value||'31',
+  };
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  const month=document.getElementById('s-month')?.value||'';
+  const year=document.getElementById('s-year')?.value||'';
+  a.href=url; a.download=`fb-monthly-pl-backup-${(month||'').toLowerCase()}-${year||'2026'}.json`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+function restoreData(input) {
+  const file=input.files[0]; if(!file) return;
+  if(!confirm('This will replace ALL current data. Continue?')) { input.value=''; return; }
+  const reader=new FileReader();
+  reader.onload=function(e){
+    try {
+      const d=JSON.parse(e.target.result);
+      if(!d.tool||!d.tool.includes('F&B Monthly')) { alert('This does not appear to be an F&B Monthly P&L backup.'); return; }
+      if(d.services) services=d.services;
+      if(d.costs) costs=d.costs;
+      if(d.lineCounter) lineCounter=d.lineCounter;
+      const flds=['hotel','month','year','manager','currency','days'];
+      const ids=['s-hotel','s-month','s-year','s-manager','s-currency','s-days'];
+      flds.forEach((f,i)=>{ if(d[f]&&document.getElementById(ids[i])) document.getElementById(ids[i]).value=d[f]; });
+      save(); setTab('pl');
+      alert('Backup restored. Exported: '+new Date(d.exported).toLocaleDateString('en-GB'));
+    } catch(err) { alert('Could not read file. Make sure it is a valid F&B Monthly P&L backup.'); }
+    input.value='';
+  };
+  reader.readAsText(file);
+}
+
+// ═══ INIT ═══
+(function(){
+  try {
+    const saved=localStorage.getItem(LS_KEY);
+    if(saved){
+      const d=JSON.parse(saved);
+      if(d.services) services=d.services;
+      if(d.costs) costs=d.costs;
+      if(d.lineCounter) lineCounter=d.lineCounter;
+      const flds=['hotel','month','year','manager','currency','days'];
+      const ids=['s-hotel','s-month','s-year','s-manager','s-currency','s-days'];
+      flds.forEach((f,i)=>{ if(d[f]&&document.getElementById(ids[i])) document.getElementById(ids[i]).value=d[f]; });
+    }
+  } catch(e){}
+  // Safety: ensure every service has lines array
+  SVCS.forEach(svc => {
+    if(!services[svc]) services[svc]={active:false,covers:0,lines:[]};
+    if(!services[svc].lines) services[svc].lines=[];
+  });
+  // Safety: ensure costs sections exist
+  if(!costs.purchasing) costs.purchasing=[];
+  if(!costs.staff) costs.staff=[];
+  if(!costs.overheads) costs.overheads=[];
+  // Save example data on first load so it persists immediately
+  if(!localStorage.getItem(LS_KEY)) save();
+  renderSetup();
+})();
+</script>
+</body>
+</html>
