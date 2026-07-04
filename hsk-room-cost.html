@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HSK Room Cost Calculator -- Hotel Mastery Hub</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:Georgia,serif; background:#F8F5F0; min-height:100vh; color:#1A1A1A; }
+.header { background:#1A1A1A; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+.hb { color:#B8962E; font-size:10px; letter-spacing:4px; font-family:system-ui; font-weight:600; }
+.hs { color:#8A8070; font-size:10px; letter-spacing:3px; font-family:system-ui; margin-left:10px; }
+.header-btns { display:flex; gap:6px; flex-wrap:wrap; }
+.btn-hdr { padding:5px 12px; font-size:10px; letter-spacing:1px; cursor:pointer; font-family:system-ui; font-weight:600; border:1px solid rgba(184,150,46,0.4); color:#D4AF5A; background:transparent; }
+.btn-hdr.gold { background:#B8962E; color:#1A1A1A; border-color:#B8962E; }
+.tabs { background:#111; display:flex; overflow-x:auto; border-bottom:2px solid #2A2A2A; }
+.tab { padding:11px 16px; font-size:10px; letter-spacing:2px; font-family:system-ui; font-weight:600; color:#8A8070; cursor:pointer; white-space:nowrap; border-bottom:3px solid transparent; margin-bottom:-2px; flex-shrink:0; }
+.tab:hover { color:#F5F0E8; }
+.tab.active { color:#B8962E; border-bottom-color:#B8962E; }
+.wrap { max-width:1100px; margin:0 auto; padding:24px 16px 60px; }
+.section { display:none; }
+.section.active { display:block; }
+.card { background:#fff; border:1px solid #E5DDD0; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:16px; }
+.card-head { padding:10px 18px; display:flex; align-items:center; justify-content:space-between; }
+.card-title { font-size:11px; font-weight:700; color:#F5F0E8; letter-spacing:1px; font-family:system-ui; }
+.card-body { padding:16px 18px; }
+label { display:block; font-size:10px; color:#8A8070; letter-spacing:2px; font-family:system-ui; font-weight:600; margin-bottom:5px; }
+input[type=text],input[type=number] { width:100%; padding:8px 10px; border:1px solid #E5DDD0; font-size:13px; font-family:system-ui; background:#FAFAFA; color:#1A1A1A; outline:none; }
+input[type=text]:focus,input[type=number]:focus { border-color:#B8962E; }
+select { width:100%; padding:8px 10px; border:1px solid #E5DDD0; font-size:12px; font-family:system-ui; background:#FAFAFA; color:#1A1A1A; outline:none; }
+.info-btn { background:#B8962E; border:none; color:#1A1A1A; width:18px; height:18px; border-radius:50%; font-size:11px; font-weight:700; cursor:pointer; font-family:system-ui; vertical-align:middle; margin-left:4px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; }
+.info-btn:hover { background:#D4AF5A; }
+.btn-gold { background:#B8962E; border:none; color:#1A1A1A; padding:9px 18px; font-size:11px; font-family:system-ui; font-weight:700; letter-spacing:1px; cursor:pointer; }
+.btn-gold:hover { background:#D4AF5A; }
+.btn-sec { background:#fff; border:1px solid #E5DDD0; color:#8A8070; padding:7px 14px; font-size:11px; font-family:system-ui; font-weight:600; cursor:pointer; }
+.btn-sec:hover { border-color:#B8962E; color:#B8962E; }
+.btn-sec.active { background:#1A1A1A; color:#B8962E; border-color:#1A1A1A; }
+.del-btn { background:transparent; border:none; color:#CCC; cursor:pointer; font-size:16px; padding:2px 6px; line-height:1; }
+.del-btn:hover { color:#CC5555; }
+.add-btn { background:#F8F5F0; border:1px dashed #E5DDD0; color:#8A8070; padding:8px; font-size:11px; font-family:system-ui; cursor:pointer; width:100%; text-align:center; margin-top:6px; }
+.add-btn:hover { border-color:#B8962E; color:#B8962E; }
+.action-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:16px; }
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+.grid4 { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:12px; }
+.field { margin-bottom:12px; }
+/* TOGGLE */
+.toggle-row { display:flex; gap:6px; align-items:center; margin-bottom:14px; }
+.toggle-btn { padding:6px 14px; font-size:11px; font-family:system-ui; font-weight:600; cursor:pointer; border:1px solid #E5DDD0; background:#fff; color:#8A8070; }
+.toggle-btn.active { background:#1A1A1A; color:#B8962E; border-color:#1A1A1A; }
+/* ROOM TYPE TABLE */
+.rt-table { width:100%; border-collapse:collapse; }
+.rt-table th { padding:7px 10px; font-size:9px; color:#8A8070; letter-spacing:1px; font-family:system-ui; font-weight:600; background:#F0EBE3; border-right:1px solid #E5DDD0; text-align:left; white-space:nowrap; }
+.rt-table th:last-child { border-right:none; }
+.rt-table td { padding:0; border-bottom:1px solid #F0EBE3; border-right:1px solid #F0EBE3; vertical-align:middle; }
+.rt-table td:last-child { border-right:none; }
+.rt-table tr:last-child td { border-bottom:none; }
+.rt-inp { width:100%; padding:7px 8px; border:none; font-size:12px; font-family:system-ui; background:transparent; outline:none; }
+.rt-inp:focus { background:#FFFDF5; }
+.rt-calc { padding:7px 10px; font-size:12px; font-family:system-ui; font-weight:700; text-align:right; color:#1A1A1A; }
+/* LINEN TABLE */
+.ln-table { width:100%; border-collapse:collapse; }
+.ln-table th { padding:7px 10px; font-size:9px; color:#8A8070; letter-spacing:1px; font-family:system-ui; font-weight:600; background:#F0EBE3; border-right:1px solid #E5DDD0; text-align:left; white-space:nowrap; }
+.ln-table td { padding:0; border-bottom:1px solid #F0EBE3; border-right:1px solid #F0EBE3; }
+.ln-table td:last-child { border-right:none; }
+.ln-table tr:last-child td { border-bottom:none; }
+/* RESULTS */
+.result-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px; }
+.result-card { background:#1A1A1A; padding:14px 16px; }
+.rc-label { font-size:9px; color:#8A8070; letter-spacing:2px; font-family:system-ui; font-weight:600; margin-bottom:5px; display:flex; align-items:center; gap:4px; }
+.rc-value { font-size:22px; font-weight:700; line-height:1; margin-bottom:3px; }
+.rc-sub { font-size:11px; color:#8A8070; font-family:system-ui; }
+/* RESULTS BREAKDOWN TABLE */
+.res-table { width:100%; border-collapse:collapse; }
+.res-table th { padding:8px 12px; font-size:9px; color:#8A8070; letter-spacing:1px; font-family:system-ui; font-weight:600; background:#F0EBE3; border-right:1px solid #E5DDD0; text-align:left; white-space:nowrap; }
+.res-table th:last-child { border-right:none; }
+.res-table td { padding:9px 12px; border-bottom:1px solid #F0EBE3; border-right:1px solid #F0EBE3; font-size:12px; font-family:system-ui; }
+.res-table td:last-child { border-right:none; }
+.res-table tr:last-child td { border-bottom:none; }
+.res-table td.bold { font-weight:700; }
+.res-table td.gold { color:#B8962E; font-weight:700; }
+.res-table td.muted { color:#8A8070; }
+/* GUIDE */
+.guide-step { display:flex; border-bottom:1px solid #F0EBE3; padding:13px 16px; align-items:flex-start; }
+.guide-step:last-child { border-bottom:none; }
+.guide-circle { width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:system-ui; flex-shrink:0; margin-right:12px; background:#B8962E; color:#1A1A1A; }
+/* INFO MODAL */
+.info-modal { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); z-index:999; align-items:center; justify-content:center; padding:20px; }
+.info-modal.open { display:flex; }
+.info-box { background:#fff; max-width:440px; width:100%; padding:24px; position:relative; }
+.example-notice { background:#1A3A5C; padding:10px 16px; font-size:12px; color:#fff; font-family:system-ui; margin-bottom:14px; }
+.footer-note { text-align:center; margin-top:28px; color:#8A8070; font-size:11px; font-family:system-ui; letter-spacing:2px; }
+@media print {
+  .header,.tabs,.header-btns,.action-row,.add-btn,.del-btn,.btn-sec,.btn-gold,.info-modal { display:none !important; }
+  .section { display:block !important; }
+  body { background:#fff; }
+  .wrap { padding:8px; }
+  input,select { border:none !important; background:transparent !important; }
+}
+@media (max-width:700px) {
+  .result-grid { grid-template-columns:1fr 1fr; }
+  .grid2,.grid3,.grid4 { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div style="display:flex;align-items:center;">
+    <span class="hb">HOTEL MASTERY HUB</span>
+    <span class="hs">&middot; HSK ROOM COST CALCULATOR</span>
+  </div>
+  <div class="header-btns">
+    <button class="btn-hdr" onclick="exportCSV()">CSV</button>
+    <button class="btn-hdr" onclick="emailReport()">&#9993;</button>
+    <button class="btn-hdr gold" onclick="window.print()">PDF</button>
+    <button class="btn-hdr" onclick="backupData()">BACKUP &#8595;</button>
+    <button class="btn-hdr" onclick="document.getElementById('restore-input').click()">RESTORE &#8593;</button>
+    <input type="file" id="restore-input" accept=".json" style="display:none" onchange="restoreData(this)">
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" id="tab-guide" onclick="setTab('guide')">HOW TO USE</div>
+  <div class="tab" id="tab-setup" onclick="setTab('setup')">SETUP</div>
+  <div class="tab" id="tab-rooms" onclick="setTab('rooms')">ROOM TYPES</div>
+  <div class="tab" id="tab-linen" onclick="setTab('linen')">LINEN &amp; SUPPLIES</div>
+  <div class="tab" id="tab-results" onclick="setTab('results')">RESULTS</div>
+</div>
+
+<!-- INFO MODAL -->
+<div class="info-modal" id="info-modal">
+  <div class="info-box">
+    <button onclick="closeInfo()" style="position:absolute;top:12px;right:14px;background:transparent;border:none;font-size:20px;cursor:pointer;color:#8A8070;">×</button>
+    <div id="info-title" style="font-size:10px;color:#B8962E;letter-spacing:3px;font-family:system-ui;font-weight:600;margin-bottom:8px;padding-right:20px;"></div>
+    <div id="info-body" style="font-size:13px;color:#1A1A1A;font-family:system-ui;line-height:1.7;"></div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- HOW TO USE -->
+<div class="section active" id="section-guide">
+  <div style="background:#1A1A1A;padding:18px 24px;margin-bottom:20px;">
+    <div style="font-size:10px;color:#B8962E;letter-spacing:4px;font-family:system-ui;font-weight:600;margin-bottom:5px;">HOTEL MASTERY HUB</div>
+    <div style="font-size:20px;color:#F5F0E8;font-weight:700;margin-bottom:3px;">HSK Room Cost Calculator</div>
+    <div style="font-size:12px;color:#8A8070;font-family:system-ui;">Calculate exactly what it costs to clean each room type — by design. Labour, linen, and supplies per clean, per stay, per room night.</div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#1A1A1A;"><span class="card-title">WHAT THIS TOOL DOES</span></div>
+    <div class="card-body">
+      <p style="font-size:14px;font-family:system-ui;line-height:1.8;color:#1A1A1A;margin-bottom:12px;">This tool calculates the true cost of cleaning each room type in your hotel — not the monthly invoice total, but the <strong>designed cost per clean</strong>. It breaks down exactly what one departure clean, one stayover clean, and one linen change costs — by room type.</p>
+      <p style="font-size:14px;font-family:system-ui;line-height:1.8;color:#1A1A1A;margin-bottom:12px;">When you know the cost per clean by design, you can answer questions like: if we change our linen policy from every 7 nights to every 5 nights, what does that add to our monthly laundry bill? If we add a family room type with longer cleaning times, what does each stay cost in housekeeping?</p>
+      <p style="font-size:14px;font-family:system-ui;line-height:1.8;color:#1A1A1A;">Works with both laundry pricing models — <strong>per piece</strong> (itemised invoice) or <strong>per kg</strong> (weight-based invoice). Switch between them in the Linen tab.</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#1A3A5C;"><span class="card-title">WHAT EACH COST MEANS</span></div>
+    <div class="card-body" style="padding:0;">
+      <div style="padding:12px 16px;border-bottom:1px solid #F0EBE3;"><div style="font-size:12px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Labour cost per departure clean</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.5;">Departure time (minutes) ÷ 60 × real hourly rate. This is what one full room reset costs in staff time. Varies per room type — a family room takes longer than a single room.</div></div>
+      <div style="padding:12px 16px;border-bottom:1px solid #F0EBE3;"><div style="font-size:12px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Labour cost per stayover clean</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.5;">Stayover time (minutes) ÷ 60 × real hourly rate. Lighter than a departure — no full linen change, no full reset. Still costs real money per service.</div></div>
+      <div style="padding:12px 16px;border-bottom:1px solid #F0EBE3;"><div style="font-size:12px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Linen cost per change</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.5;">The cost of washing one full linen set for this room type. Per piece: sum of all items × qty per room turn. Per kg: weight of room set × kg rate. Different room types use different linen quantities.</div></div>
+      <div style="padding:12px 16px;border-bottom:1px solid #F0EBE3;"><div style="font-size:12px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Total cost per stay</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.5;">All cleaning labour + all linen changes + supplies for the full stay. Depends on stay length, number of stayover cleans, and number of linen changes — all set per room type in the Room Types tab.</div></div>
+      <div style="padding:12px 16px;"><div style="font-size:12px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">HSK cost per room night</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.5;">Total stay cost ÷ stay length. This is the number that feeds into your room cost and pricing calculations. Compare it to your monthly invoice total ÷ room nights sold to check alignment.</div></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#1E4620;"><span class="card-title">HOW TO USE — FOUR STEPS</span></div>
+    <div class="card-body" style="padding:0;">
+      <div class="guide-step"><div class="guide-circle">1</div><div><div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Setup — enter staff rate and laundry model</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Enter your gross hourly rate and employer cost multiplier. Choose your laundry pricing model — per piece or per kg. This feeds all calculations.</div></div></div>
+      <div class="guide-step"><div class="guide-circle">2</div><div><div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Room Types — set cleaning times and stay policy per room type</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Add each room type — Small, Double, Family, Dorm Bed. For each: departure clean time, stayover clean time, typical stay length, number of stayover cleans per stay, number of linen changes per stay.</div></div></div>
+      <div class="guide-step"><div class="guide-circle">3</div><div><div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Linen &amp; Supplies — set prices and quantities</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Per piece: enter price per linen item and how many of each go into one room set per room type. Per kg: enter your rate per kg and the weight of one room set per room type. Also set supply cost per room night.</div></div></div>
+      <div class="guide-step" style="border-bottom:none;"><div class="guide-circle">4</div><div><div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Results — read and compare</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Full breakdown per room type — labour per clean, linen per change, supplies, total per stay, HSK cost per room night. Export as PDF for your pricing review.</div></div></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#2A2A2A;"><span class="card-title">EXPORT OPTIONS</span></div>
+    <div class="card-body" style="padding:0;">
+      <div style="padding:13px 16px;border-bottom:1px solid #F0EBE3;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:5px;"><span style="background:#1A1A1A;color:#B8962E;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">CSV</span><span style="font-size:13px;font-weight:700;color:#1A1A1A;">Export full breakdown to spreadsheet</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Downloads all room types with their labour costs, linen costs, supply costs, and total cost per stay and per room night. Good for sharing with a GM or using in your pricing model.</p></div>
+      <div style="padding:13px 16px;border-bottom:1px solid #F0EBE3;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:5px;"><span style="background:#1A1A1A;color:#B8962E;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">&#9993;</span><span style="font-size:13px;font-weight:700;color:#1A1A1A;">Email a summary</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Sends a plain text summary of HSK cost per room night per room type. Good for sharing with a property owner or accountant.</p></div>
+      <div style="padding:13px 16px;border-bottom:1px solid #F0EBE3;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:5px;"><span style="background:#B8962E;color:#1A1A1A;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">PDF</span><span style="font-size:13px;font-weight:700;color:#1A1A1A;">Print full report</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Prints all tabs — setup, room types, linen, and full results. Good for a pricing review meeting or keeping a record when you update your rates.</p></div>
+      <div style="padding:13px 16px;border-bottom:1px solid #F0EBE3;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:5px;"><span style="background:#B8962E;color:#1A1A1A;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">BACKUP &#8595;</span><span style="font-size:13px;font-weight:700;color:#1A1A1A;">Save everything as JSON</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Downloads a complete backup of all room types, linen prices, and settings. Restore if your browser data is cleared or you switch devices.</p></div>
+      <div style="padding:13px 16px;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:5px;"><span style="background:#B8962E;color:#1A1A1A;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">RESTORE &#8593;</span><span style="font-size:13px;font-weight:700;color:#1A1A1A;">Load from backup</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Select a .json backup to restore all data. You will be asked to confirm before anything is replaced.</p></div>
+    </div>
+  </div>
+
+  <div style="background:#1A1A1A;padding:13px 18px;margin-bottom:20px;">
+    <div style="font-size:10px;color:#B8962E;letter-spacing:3px;font-family:system-ui;font-weight:600;margin-bottom:6px;">ONE RULE</div>
+    <p style="font-size:13px;color:#F5F0E8;font-family:system-ui;line-height:1.7;">If you do not know what one departure clean costs by design, you cannot price your rooms correctly, you cannot control your laundry bill, and you cannot make informed decisions about your linen policy. This is the foundation of HSK cost control.</p>
+  </div>
+
+  <div class="action-row"><button class="btn-gold" onclick="setTab('setup')">GO TO SETUP &rarr;</button></div>
+  <div class="footer-note">HOTEL MASTERY HUB &middot; HSK ROOM COST CALCULATOR</div>
+</div>
+
+<!-- SETUP -->
+<div class="section" id="section-setup">
+  <div style="margin-bottom:16px;">
+    <h2 style="font-size:20px;font-weight:700;color:#1A1A1A;">Setup</h2>
+    <p style="font-size:12px;color:#8A8070;font-family:system-ui;margin-top:2px;">Set once. Update when staff rates or supplier prices change.</p>
+  </div>
+  <div class="example-notice">&#9432; Pre-filled with example data for Hotel Bella Vista — replace with your own figures.</div>
+
+  <div class="card">
+    <div class="card-head" style="background:#1A1A1A;"><span class="card-title">PROPERTY</span></div>
+    <div class="card-body">
+      <div class="grid3">
+        <div class="field"><label>HOTEL NAME</label><input type="text" id="s-hotel" value="Hotel Bella Vista" oninput="save()"></div>
+        <div class="field"><label>MANAGER</label><input type="text" id="s-manager" value="Anna Kovacs" oninput="save()"></div>
+        <div class="field"><label>LAST UPDATED</label><input type="text" id="s-date" value="" placeholder="e.g. Jun 2026" oninput="save()"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head" style="background:#1A1A1A;"><span class="card-title">STAFF RATE</span></div>
+    <div class="card-body">
+      <div class="grid3">
+        <div class="field"><label>GROSS HOURLY RATE (€) <button class="info-btn" onclick="showInfo('rate')">?</button></label><input type="number" id="s-rate" value="12" step="0.05" oninput="save();renderResults()"></div>
+        <div class="field"><label>EMPLOYER COST MULTIPLIER <button class="info-btn" onclick="showInfo('multiplier')">?</button></label><input type="number" id="s-mult" value="1.28" step="0.01" min="1" max="2" oninput="save();renderResults()"></div>
+        <div class="field"><label>REAL COST PER HOUR <button class="info-btn" onclick="showInfo('realRate')">?</button></label><div id="real-rate-display" style="padding:9px 10px;background:#1A1A1A;font-size:15px;font-weight:700;font-family:system-ui;color:#B8962E;"></div></div>
+      </div>
+      <div style="background:#F8F5F0;padding:8px 12px;font-size:11px;font-family:system-ui;color:#8A8070;margin-top:4px;">Real cost per hour includes employer social contributions, holiday pay accrual, pension, and insurance. In most EU countries the multiplier is 1.20–1.35. Ask your accountant.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head" style="background:#1A1A1A;"><span class="card-title">LAUNDRY PRICING MODEL <button class="info-btn" onclick="showInfo('laundryModel')" style="background:#2A2A2A;color:#B8962E;">?</button></span></div>
+    <div class="card-body">
+      <p style="font-size:12px;font-family:system-ui;color:#8A8070;margin-bottom:12px;line-height:1.6;">Choose how your laundry supplier charges. This changes how linen costs are calculated in the Linen tab.</p>
+      <div class="toggle-row">
+        <button class="toggle-btn active" id="mode-piece" onclick="setLaundryMode('piece')">PER PIECE — itemised price per linen item</button>
+        <button class="toggle-btn" id="mode-kg" onclick="setLaundryMode('kg')">PER KG — weight-based invoice rate</button>
+      </div>
+      <div id="laundry-mode-hint" style="font-size:12px;font-family:system-ui;color:#8A8070;background:#F8F5F0;padding:8px 12px;"></div>
+    </div>
+  </div>
+
+  <div class="action-row"><button class="btn-gold" onclick="setTab('rooms')">GO TO ROOM TYPES &rarr;</button></div>
+  <div class="footer-note">HOTEL MASTERY HUB &middot; HSK ROOM COST CALCULATOR</div>
+</div>
+
+<!-- ROOM TYPES -->
+<div class="section" id="section-rooms">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+    <div>
+      <h2 style="font-size:20px;font-weight:700;color:#1A1A1A;">Room Types</h2>
+      <p style="font-size:12px;color:#8A8070;font-family:system-ui;margin-top:2px;">One row per room type. Set cleaning times and stay policy.</p>
+    </div>
+    <button class="btn-gold" onclick="addRoomType()">+ ADD ROOM TYPE</button>
+  </div>
+
+  <div style="background:#FFF8F0;border-left:3px solid #B8962E;padding:9px 13px;font-size:12px;color:#8A8070;font-family:system-ui;margin-bottom:12px;line-height:1.6;">
+    <strong style="color:#1A1A1A;">Cleaning times</strong> are what your cleaning targets say each type should take. <strong style="color:#1A1A1A;">Stay policy</strong> is your linen change rule — e.g. 1 linen change per departure, 1 mid-stay change for stays over 7 nights.
+  </div>
+
+  <div class="card">
+    <div style="overflow-x:auto;">
+      <table class="rt-table">
+        <thead>
+          <tr>
+            <th style="min-width:140px;">ROOM TYPE</th>
+            <th style="min-width:100px;">DEP. TIME (min) <button class="info-btn" onclick="showInfo('depTime')" style="font-size:9px;width:15px;height:15px;">?</button></th>
+            <th style="min-width:100px;">STAY TIME (min) <button class="info-btn" onclick="showInfo('stayTime')" style="font-size:9px;width:15px;height:15px;">?</button></th>
+            <th style="min-width:90px;">STAY LENGTH (nights)</th>
+            <th style="min-width:100px;">STAYOVER CLEANS <button class="info-btn" onclick="showInfo('stayCleans')" style="font-size:9px;width:15px;height:15px;">?</button></th>
+            <th style="min-width:100px;">LINEN CHANGES <button class="info-btn" onclick="showInfo('linenChanges')" style="font-size:9px;width:15px;height:15px;">?</button></th>
+            <th style="min-width:110px;">SUPPLY €/ROOM NIGHT <button class="info-btn" onclick="showInfo('supplies')" style="font-size:9px;width:15px;height:15px;">?</button></th>
+            <th style="width:40px;"></th>
+          </tr>
+        </thead>
+        <tbody id="room-types-tbody"></tbody>
+      </table>
+    </div>
+    <button class="add-btn" onclick="addRoomType()">+ ADD ROOM TYPE</button>
+  </div>
+
+  <div class="action-row"><button class="btn-gold" onclick="setTab('linen')">GO TO LINEN &amp; SUPPLIES &rarr;</button></div>
+  <div class="footer-note">HOTEL MASTERY HUB &middot; HSK ROOM COST CALCULATOR</div>
+</div>
+
+<!-- LINEN & SUPPLIES -->
+<div class="section" id="section-linen">
+  <div style="margin-bottom:14px;">
+    <h2 style="font-size:20px;font-weight:700;color:#1A1A1A;">Linen &amp; Supplies</h2>
+    <p style="font-size:12px;color:#8A8070;font-family:system-ui;margin-top:2px;" id="linen-subtitle">Configure linen pricing and quantities per room type.</p>
+  </div>
+  <div id="linen-container"></div>
+  <div class="action-row"><button class="btn-gold" onclick="setTab('results')">VIEW RESULTS &rarr;</button></div>
+  <div class="footer-note">HOTEL MASTERY HUB &middot; HSK ROOM COST CALCULATOR</div>
+</div>
+
+<!-- RESULTS -->
+<div class="section" id="section-results">
+  <div style="margin-bottom:14px;">
+    <h2 style="font-size:20px;font-weight:700;color:#1A1A1A;">Results</h2>
+    <p style="font-size:12px;color:#8A8070;font-family:system-ui;margin-top:2px;" id="results-sub">Full HSK cost breakdown per room type.</p>
+  </div>
+  <div id="results-container"></div>
+  <div class="footer-note">HOTEL MASTERY HUB &middot; HSK ROOM COST CALCULATOR</div>
+</div>
+
+</div>
+
+<script>
+const LS_KEY = 'hmh-hsk-room-cost';
+let laundryMode = 'piece'; // 'piece' or 'kg'
+let roomCounter = 10;
+
+const INFO = {
+  rate: { title:'GROSS HOURLY RATE', text:'What the housekeeper earns per hour before tax — their gross pay. The real cost to the business is higher once you add employer contributions. Use the multiplier to get the true cost per hour.' },
+  multiplier: { title:'EMPLOYER COST MULTIPLIER', text:'The business pays more than just gross wages. Add: employer social security contributions (8–15%), holiday pay accrual (8–12%), pension contributions, and insurance. In most EU countries the multiplier is 1.20–1.35. For example: €12/hr × 1.28 = €15.36 real cost per hour. Ask your accountant or payroll provider.' },
+  realRate: { title:'REAL COST PER HOUR', text:'Gross hourly rate × employer cost multiplier. This is what each labour hour truly costs the business. All cleaning cost calculations use this figure. If you use gross rate without multiplier, you will underestimate labour cost by 20–35%.' },
+  laundryModel: { title:'LAUNDRY PRICING MODEL', text:'Per piece: your supplier charges a fixed price per linen item — e.g. €3.09 per fitted sheet, €1.59 per bath towel. You enter each item price and how many go into one room set. Per kg: your supplier charges by the weight of laundry — e.g. €4.00 per kg. You enter the rate per kg and the weight of one complete room set. Both models calculate the same output: cost per linen change per room type.' },
+  depTime: { title:'DEPARTURE CLEAN TIME (MINUTES)', text:'How many minutes a full departure clean takes for this room type. This is the full reset — strip linen, clean bathroom completely, vacuum, make bed to standard, restock all amenities. Time this in your hotel — do not estimate. Typical ranges: single room 20–30 min, double room 25–35 min, family room 35–50 min, dorm bed 8–15 min.' },
+  stayTime: { title:'STAYOVER CLEAN TIME (MINUTES)', text:'How many minutes a stayover service takes for this room type. Lighter than a departure — refresh, empty bins, replace used towels, wipe bathroom, vacuum if needed. No full linen change. Typical ranges: single/double 10–20 min, family 15–25 min, dorm bed 5–10 min.' },
+  stayCleans: { title:'STAYOVER CLEANS PER STAY', text:'How many times this room type gets a stayover service during a typical stay. Based on your cleaning policy — e.g. "clean every 3 days" for a 7-night stay = 2 stayover cleans (days 3 and 6, with departure on day 7). For a dorm bed with daily service = stay length minus 1.' },
+  linenChanges: { title:'LINEN CHANGES PER STAY', text:'Total number of full linen set changes per stay — including the arrival change and any mid-stay changes. Example: 7-night policy with one mid-stay change = 2 linen changes (arrival + day 4). A departure-only policy = 1 linen change per stay. This is one of the biggest drivers of laundry cost — review this number carefully.' },
+  supplies: { title:'SUPPLY COST PER ROOM NIGHT', text:'Cleaning products and guest amenities per room per night — detergents, toilet paper, soap, shampoo, amenity kit. Enter the average cost across all nights of a typical stay. Usually €0.50–€3.00 per room night depending on your amenity standard. Get this from your monthly supply spend ÷ room nights sold, or calculate from your order sheets.' },
+  kgRate: { title:'LAUNDRY RATE PER KG', text:'What your supplier charges per kilogram of laundry. Found on your invoice — usually as a per-kg rate or derivable from total invoice ÷ total kg washed that month. Typical range: €3.50–€5.50 per kg for outsourced hotel laundry.' },
+  setWeight: { title:'WEIGHT OF ONE ROOM SET (KG)', text:'The total weight of all linen items in one complete room set for this room type. Weigh it once: put a complete set in a bag — fitted sheet, duvet cover, pillowcases, bath towels, hand towels, bath mat — and weigh it on a scale. Typical range: 3–6 kg for a double room set.' },
+};
+
+function showInfo(key) {
+  const info = INFO[key]; if(!info) return;
+  document.getElementById('info-title').textContent = info.title;
+  document.getElementById('info-body').textContent = info.text;
+  document.getElementById('info-modal').classList.add('open');
+}
+function closeInfo() { document.getElementById('info-modal').classList.remove('open'); }
+
+// ═══ DATA ═══
+// Per-piece linen items (global list)
+let linenItems = [
+  {id:'li1', name:'Fitted sheet (2-person)', pricePerPiece:3.09},
+  {id:'li2', name:'Fitted sheet (1-person)', pricePerPiece:1.54},
+  {id:'li3', name:'Duvet cover (2-person)', pricePerPiece:4.24},
+  {id:'li4', name:'Duvet cover (1-person)', pricePerPiece:2.12},
+  {id:'li5', name:'Pillowcase', pricePerPiece:0.61},
+  {id:'li6', name:'Bath towel', pricePerPiece:1.59},
+  {id:'li7', name:'Hand towel', pricePerPiece:0.74},
+  {id:'li8', name:'Bath mat', pricePerPiece:0.74},
+  {id:'li9', name:'Pool / extra towel', pricePerPiece:1.20},
+];
+let linenCounter = 20;
+
+// Room types
+let roomTypes = [
+  { id:'rt1', name:'Small / Single Room', depTime:20, stayTime:10, stayLength:3, stayCleans:0, linenChanges:1, supplyPerNight:1.20,
+    quantities:{li1:1,li2:0,li3:0,li4:1,li5:1,li6:1,li7:1,li8:1,li9:0}, kgWeight:3.2 },
+  { id:'rt2', name:'Double Room', depTime:28, stayTime:14, stayLength:5, stayCleans:1, linenChanges:1, supplyPerNight:1.50,
+    quantities:{li1:1,li2:0,li3:1,li4:0,li5:2,li6:2,li7:2,li8:1,li9:0}, kgWeight:4.5 },
+  { id:'rt3', name:'Family Room', depTime:42, stayTime:22, stayLength:7, stayCleans:2, linenChanges:2, supplyPerNight:2.00,
+    quantities:{li1:1,li2:1,li3:1,li4:1,li5:4,li6:3,li7:3,li8:1,li9:0}, kgWeight:6.8 },
+  { id:'rt4', name:'Dorm Bed', depTime:10, stayTime:6, stayLength:3, stayCleans:2, linenChanges:1, supplyPerNight:0.60,
+    quantities:{li1:0,li2:1,li3:0,li4:1,li5:1,li6:1,li7:1,li8:0,li9:0}, kgWeight:1.8 },
+];
+
+// KG rate (global)
+let kgRate = 4.00;
+
+function save() {
+  try { localStorage.setItem(LS_KEY, JSON.stringify({
+    laundryMode, roomTypes, linenItems, linenCounter, roomCounter, kgRate,
+    hotel:document.getElementById('s-hotel')?.value||'',
+    manager:document.getElementById('s-manager')?.value||'',
+    date:document.getElementById('s-date')?.value||'',
+    rate:document.getElementById('s-rate')?.value||'12',
+    mult:document.getElementById('s-mult')?.value||'1.28',
+  })); } catch(e) {}
+}
+
+function getRealRate() {
+  const rate = parseFloat(document.getElementById('s-rate')?.value)||12;
+  const mult = parseFloat(document.getElementById('s-mult')?.value)||1.28;
+  return rate * mult;
+}
+
+function fmt(n) { return '€'+(parseFloat(n)||0).toFixed(2); }
+function fmtRound(n) { return '€'+(parseFloat(n)||0).toFixed(2); }
+
+function setTab(tab) {
+  ['guide','setup','rooms','linen','results'].forEach(t=>{
+    document.getElementById('section-'+t).classList.toggle('active',t===tab);
+    document.getElementById('tab-'+t).classList.toggle('active',t===tab);
+  });
+  if(tab==='setup') { updateRealRateDisplay(); updateLaundryModeHint(); }
+  if(tab==='rooms') renderRoomTypes();
+  if(tab==='linen') renderLinen();
+  if(tab==='results') renderResults();
+}
+
+function updateRealRateDisplay() {
+  const rr = getRealRate();
+  const el = document.getElementById('real-rate-display');
+  if(el) el.textContent = fmt(rr) + ' / hr';
+}
+
+function setLaundryMode(mode) {
+  laundryMode = mode;
+  document.getElementById('mode-piece').classList.toggle('active', mode==='piece');
+  document.getElementById('mode-kg').classList.toggle('active', mode==='kg');
+  updateLaundryModeHint();
+  save();
+}
+
+function updateLaundryModeHint() {
+  const el = document.getElementById('laundry-mode-hint');
+  if(!el) return;
+  el.textContent = laundryMode==='piece'
+    ? 'Per piece selected — you will enter the price per linen item and how many of each go into one room set per room type. The tool calculates the cost of one linen change automatically.'
+    : 'Per kg selected — you will enter your laundry rate per kg and the weight of one complete room set per room type. The tool multiplies weight × rate to get cost per linen change.';
+}
+
+// ═══ ROOM TYPES ═══
+function renderRoomTypes() {
+  const tbody = document.getElementById('room-types-tbody');
+  tbody.innerHTML = roomTypes.map((rt,i)=>`
+    <tr>
+      <td><input class="rt-inp" type="text" value="${rt.name}" data-idx="${i}" data-field="name" oninput="updateRoomType(this)"></td>
+      <td><input class="rt-inp" type="number" value="${rt.depTime}" min="0" step="1" data-idx="${i}" data-field="depTime" oninput="updateRoomType(this)" style="text-align:right;"></td>
+      <td><input class="rt-inp" type="number" value="${rt.stayTime}" min="0" step="1" data-idx="${i}" data-field="stayTime" oninput="updateRoomType(this)" style="text-align:right;"></td>
+      <td><input class="rt-inp" type="number" value="${rt.stayLength}" min="1" step="1" data-idx="${i}" data-field="stayLength" oninput="updateRoomType(this)" style="text-align:right;"></td>
+      <td><input class="rt-inp" type="number" value="${rt.stayCleans}" min="0" step="1" data-idx="${i}" data-field="stayCleans" oninput="updateRoomType(this)" style="text-align:right;"></td>
+      <td><input class="rt-inp" type="number" value="${rt.linenChanges}" min="1" step="1" data-idx="${i}" data-field="linenChanges" oninput="updateRoomType(this)" style="text-align:right;"></td>
+      <td><input class="rt-inp" type="number" value="${rt.supplyPerNight}" min="0" step="0.1" data-idx="${i}" data-field="supplyPerNight" oninput="updateRoomType(this)" style="text-align:right;"></td>
+      <td style="text-align:center;padding:4px 8px;">${roomTypes.length>1?`<button class="del-btn" data-idx="${i}" onclick="deleteRoomType(this)">x</button>`:''}</td>
+    </tr>
+  `).join('');
+}
+
+function updateRoomType(el) {
+  const idx = parseInt(el.getAttribute('data-idx'));
+  const field = el.getAttribute('data-field');
+  roomTypes[idx][field] = field==='name' ? el.value : parseFloat(el.value)||0;
+  save();
+}
+
+function addRoomType() {
+  roomCounter++;
+  roomTypes.push({
+    id:'rt'+roomCounter, name:'New Room Type', depTime:25, stayTime:12,
+    stayLength:3, stayCleans:0, linenChanges:1, supplyPerNight:1.00,
+    quantities:{}, kgWeight:4.0
+  });
+  save(); renderRoomTypes();
+}
+
+function deleteRoomType(el) {
+  const idx = parseInt(el.getAttribute('data-idx'));
+  if(roomTypes.length<=1) return;
+  roomTypes.splice(idx,1);
+  save(); renderRoomTypes();
+}
+
+// ═══ LINEN ═══
+function renderLinen() {
+  const container = document.getElementById('linen-container');
+  document.getElementById('linen-subtitle').textContent = laundryMode==='piece'
+    ? 'Per piece pricing — enter price per item and quantity per room set for each room type.'
+    : 'Per kg pricing — enter your rate per kg and the weight of one full room set per room type.';
+
+  if(laundryMode==='kg') {
+    container.innerHTML = `
+      <div class="card" style="margin-bottom:16px;">
+        <div class="card-head" style="background:#1A1A1A;"><span class="card-title">LAUNDRY RATE PER KG <button class="info-btn" onclick="showInfo('kgRate')" style="background:#2A2A2A;color:#B8962E;">?</button></span></div>
+        <div class="card-body">
+          <div style="max-width:200px;"><label>RATE PER KG (€)</label><input type="number" id="kg-rate" value="${kgRate}" step="0.10" oninput="kgRate=parseFloat(this.value)||0;save();"></div>
+          <div style="background:#F8F5F0;padding:8px 12px;font-size:11px;font-family:system-ui;color:#8A8070;margin-top:8px;">From your laundry invoice — total invoice ÷ total kg washed. Typical range: €3.50–€5.50/kg.</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head" style="background:#1A1A1A;"><span class="card-title">ROOM SET WEIGHTS PER ROOM TYPE <button class="info-btn" onclick="showInfo('setWeight')" style="background:#2A2A2A;color:#B8962E;">?</button></span></div>
+        <div style="overflow-x:auto;">
+          <table class="ln-table">
+            <thead><tr>
+              <th style="min-width:160px;">ROOM TYPE</th>
+              <th style="min-width:130px;">WEIGHT PER SET (KG)</th>
+              <th style="min-width:160px;">COST PER LINEN CHANGE</th>
+            </tr></thead>
+            <tbody>
+              ${roomTypes.map((rt,i)=>{
+                const cost = (parseFloat(rt.kgWeight)||0) * kgRate;
+                return `<tr>
+                  <td style="padding:8px 12px;font-weight:700;font-family:system-ui;font-size:12px;">${rt.name}</td>
+                  <td><input class="rt-inp" type="number" value="${rt.kgWeight}" step="0.1" min="0" data-idx="${i}" data-field="kgWeight" oninput="updateRoomType(this);renderLinen();" style="text-align:right;"></td>
+                  <td><div class="rt-calc" style="color:#55AA55;">${fmt(cost)}</div></td>
+                </tr>`;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  // PER PIECE
+  container.innerHTML = `
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-head" style="background:#1A1A1A;">
+        <span class="card-title">LINEN ITEMS &amp; PRICES</span>
+        <button class="btn-sec" onclick="addLinenItem()" style="font-size:10px;padding:4px 10px;">+ ADD ITEM</button>
+      </div>
+      <div style="background:#FFF8F0;border-left:3px solid #B8962E;padding:8px 14px;font-size:12px;color:#8A8070;font-family:system-ui;">Enter the price your laundry supplier charges per piece. Then for each room type, enter how many of each item go into one complete linen set.</div>
+      <div style="overflow-x:auto;">
+        <table class="ln-table">
+          <thead><tr>
+            <th style="min-width:180px;">LINEN ITEM</th>
+            <th style="min-width:120px;">PRICE PER PIECE (€)</th>
+            ${roomTypes.map(rt=>`<th style="min-width:100px;">${rt.name.split(' ').slice(0,2).join(' ')} (qty)</th>`).join('')}
+            <th style="width:36px;"></th>
+          </tr></thead>
+          <tbody>
+            ${linenItems.map((item,i)=>`
+              <tr style="background:${i%2===0?'#fff':'#FAFAFA'};">
+                <td><input class="rt-inp" type="text" value="${item.name}" data-idx="${i}" data-field="name" oninput="updateLinenItem(this)" placeholder="Item name"></td>
+                <td><input class="rt-inp" type="number" value="${item.pricePerPiece}" step="0.01" data-idx="${i}" data-field="pricePerPiece" oninput="updateLinenItem(this)" style="text-align:right;"></td>
+                ${roomTypes.map((rt,ri)=>{
+                  const qty = rt.quantities?.[item.id]||0;
+                  return `<td><input class="rt-inp" type="number" value="${qty}" min="0" step="1" data-li="${i}" data-rt="${ri}" oninput="updateQty(this)" style="text-align:center;"></td>`;
+                }).join('')}
+                <td style="text-align:center;padding:4px;">${linenItems.length>1?`<button class="del-btn" data-idx="${i}" onclick="deleteLinenItem(this)">x</button>`:''}</td>
+              </tr>
+            `).join('')}
+            <tr style="background:#F8F5F0;border-top:2px solid #1A1A1A;">
+              <td style="padding:8px 12px;font-weight:700;font-size:12px;font-family:system-ui;">COST PER LINEN CHANGE</td>
+              <td></td>
+              ${roomTypes.map(rt=>{
+                const cost = calcLinenCostPerChange(rt);
+                return `<td><div class="rt-calc" style="color:#55AA55;">${fmt(cost)}</div></td>`;
+              }).join('')}
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function calcLinenCostPerChange(rt) {
+  if(laundryMode==='kg') return (parseFloat(rt.kgWeight)||0) * kgRate;
+  return linenItems.reduce((total,item)=>{
+    const qty = parseFloat(rt.quantities?.[item.id])||0;
+    return total + qty * (parseFloat(item.pricePerPiece)||0);
+  }, 0);
+}
+
+function updateLinenItem(el) {
+  const idx = parseInt(el.getAttribute('data-idx'));
+  const field = el.getAttribute('data-field');
+  linenItems[idx][field] = field==='name' ? el.value : parseFloat(el.value)||0;
+  save();
+}
+
+function addLinenItem() {
+  linenCounter++;
+  const id = 'li'+linenCounter;
+  linenItems.push({id, name:'New Linen Item', pricePerPiece:0});
+  roomTypes.forEach(rt=>{ if(!rt.quantities) rt.quantities={}; rt.quantities[id]=0; });
+  save(); renderLinen();
+}
+
+function deleteLinenItem(el) {
+  const idx = parseInt(el.getAttribute('data-idx'));
+  if(linenItems.length<=1) return;
+  const id = linenItems[idx].id;
+  linenItems.splice(idx,1);
+  roomTypes.forEach(rt=>{ if(rt.quantities) delete rt.quantities[id]; });
+  save(); renderLinen();
+}
+
+function updateQty(el) {
+  const li = parseInt(el.getAttribute('data-li'));
+  const ri = parseInt(el.getAttribute('data-rt'));
+  const item = linenItems[li];
+  if(!roomTypes[ri].quantities) roomTypes[ri].quantities={};
+  roomTypes[ri].quantities[item.id] = parseFloat(el.value)||0;
+  save();
+}
+
+// ═══ RESULTS ═══
+function calcRoom(rt) {
+  const realRate = getRealRate();
+  const labourDep = (parseFloat(rt.depTime)||0) / 60 * realRate;
+  const labourStay = (parseFloat(rt.stayTime)||0) / 60 * realRate;
+  const linenPerChange = calcLinenCostPerChange(rt);
+  const stayLen = parseFloat(rt.stayLength)||1;
+  const stayCleans = parseFloat(rt.stayCleans)||0;
+  const linenChanges = parseFloat(rt.linenChanges)||1;
+  const supplyPerNight = parseFloat(rt.supplyPerNight)||0;
+  const labourTotal = labourDep + (labourStay * stayCleans);
+  const linenTotal = linenPerChange * linenChanges;
+  const supplyTotal = supplyPerNight * stayLen;
+  const totalStayCost = labourTotal + linenTotal + supplyTotal;
+  const costPerNight = stayLen>0 ? totalStayCost/stayLen : 0;
+  return { labourDep, labourStay, linenPerChange, labourTotal, linenTotal, supplyTotal, totalStayCost, costPerNight };
+}
+
+function renderResults() {
+  const hotel = document.getElementById('s-hotel')?.value||'My Hotel';
+  const manager = document.getElementById('s-manager')?.value||'';
+  const realRate = getRealRate();
+  document.getElementById('results-sub').textContent = `${hotel} · Real labour rate: ${fmt(realRate)}/hr · Laundry: ${laundryMode==='piece'?'per piece':'per kg'}`;
+
+  const allResults = roomTypes.map(rt=>({rt, calc:calcRoom(rt)}));
+  const minCostPerNight = Math.min(...allResults.map(r=>r.calc.costPerNight));
+  const maxCostPerNight = Math.max(...allResults.map(r=>r.calc.costPerNight));
+
+  document.getElementById('results-container').innerHTML = `
+    <div style="background:#1A1A1A;padding:14px 20px;margin-bottom:16px;">
+      <div style="font-size:9px;color:#B8962E;letter-spacing:3px;font-family:system-ui;font-weight:600;margin-bottom:3px;">HSK ROOM COST BY DESIGN</div>
+      <div style="font-size:16px;color:#F5F0E8;font-weight:700;">${hotel}${manager?' · '+manager:''}</div>
+      <div style="font-size:11px;color:#8A8070;font-family:system-ui;margin-top:2px;">Laundry model: ${laundryMode==='piece'?'Per piece (itemised)':'Per kg (weight-based)'} · Real hourly rate: ${fmt(realRate)}</div>
+    </div>
+
+    <div class="result-grid" style="margin-bottom:16px;">
+      <div class="result-card"><div class="rc-label">ROOM TYPES</div><div class="rc-value" style="color:#B8962E;">${roomTypes.length}</div><div class="rc-sub">Configured</div></div>
+      <div class="result-card"><div class="rc-label">REAL LABOUR RATE</div><div class="rc-value" style="color:#B8962E;">${fmt(realRate)}</div><div class="rc-sub">Per hour incl. employer cost</div></div>
+      <div class="result-card"><div class="rc-label">LOWEST HSK/NIGHT</div><div class="rc-value" style="color:#55AA55;">${fmt(minCostPerNight)}</div><div class="rc-sub">${allResults.find(r=>r.calc.costPerNight===minCostPerNight)?.rt.name||''}</div></div>
+      <div class="result-card"><div class="rc-label">HIGHEST HSK/NIGHT</div><div class="rc-value" style="color:#D4903A;">${fmt(maxCostPerNight)}</div><div class="rc-sub">${allResults.find(r=>r.calc.costPerNight===maxCostPerNight)?.rt.name||''}</div></div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-head" style="background:#1A1A1A;"><span class="card-title">COST PER CLEAN — BY ROOM TYPE</span></div>
+      <div style="overflow-x:auto;">
+        <table class="res-table">
+          <thead><tr>
+            <th>ROOM TYPE</th>
+            <th>DEP. LABOUR</th>
+            <th>STAY LABOUR</th>
+            <th>LINEN / CHANGE</th>
+            <th>LINEN CHANGES</th>
+            <th>LINEN TOTAL</th>
+            <th>SUPPLIES TOTAL</th>
+            <th style="background:#1A1A1A;color:#B8962E;">TOTAL / STAY</th>
+            <th style="background:#1A1A1A;color:#B8962E;">HSK / NIGHT ★</th>
+          </tr></thead>
+          <tbody>
+            ${allResults.map(({rt,calc})=>`
+              <tr>
+                <td class="bold">${rt.name}</td>
+                <td>${fmt(calc.labourDep)}</td>
+                <td>${fmt(calc.labourStay)} × ${rt.stayCleans} = ${fmt(calc.labourStay*(rt.stayCleans||0))}</td>
+                <td>${fmt(calc.linenPerChange)}</td>
+                <td style="text-align:center;">${rt.linenChanges}</td>
+                <td>${fmt(calc.linenTotal)}</td>
+                <td>${fmt(calc.supplyTotal)}</td>
+                <td class="gold" style="background:#F8F5F0;">${fmt(calc.totalStayCost)}</td>
+                <td class="gold" style="background:#F8F5F0;">${fmt(calc.costPerNight)}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(${Math.min(roomTypes.length,2)},1fr);gap:16px;margin-bottom:16px;">
+      ${allResults.map(({rt,calc})=>`
+        <div class="card">
+          <div class="card-head" style="background:#1A1A1A;"><span class="card-title">${rt.name.toUpperCase()}</span><span style="font-size:12px;font-family:system-ui;color:#B8962E;font-weight:700;">${fmt(calc.costPerNight)}/night</span></div>
+          <div style="padding:0;">
+            <div style="display:flex;justify-content:space-between;padding:8px 16px;border-bottom:1px solid #F0EBE3;font-size:12px;font-family:system-ui;"><span style="color:#8A8070;">Stay length</span><span style="font-weight:700;">${rt.stayLength} nights</span></div>
+            <div style="display:flex;justify-content:space-between;padding:8px 16px;border-bottom:1px solid #F0EBE3;font-size:12px;font-family:system-ui;"><span style="color:#8A8070;">Departure clean labour</span><span style="font-weight:700;">${fmt(calc.labourDep)} (${rt.depTime} min)</span></div>
+            <div style="display:flex;justify-content:space-between;padding:8px 16px;border-bottom:1px solid #F0EBE3;font-size:12px;font-family:system-ui;"><span style="color:#8A8070;">Stayover cleans (${rt.stayCleans} × ${fmt(calc.labourStay)})</span><span style="font-weight:700;">${fmt(calc.labourStay*(rt.stayCleans||0))}</span></div>
+            <div style="display:flex;justify-content:space-between;padding:8px 16px;border-bottom:1px solid #F0EBE3;font-size:12px;font-family:system-ui;"><span style="color:#8A8070;">Linen changes (${rt.linenChanges} × ${fmt(calc.linenPerChange)})</span><span style="font-weight:700;">${fmt(calc.linenTotal)}</span></div>
+            <div style="display:flex;justify-content:space-between;padding:8px 16px;border-bottom:1px solid #F0EBE3;font-size:12px;font-family:system-ui;"><span style="color:#8A8070;">Supplies (${rt.stayLength} nights × ${fmt(rt.supplyPerNight)})</span><span style="font-weight:700;">${fmt(calc.supplyTotal)}</span></div>
+            <div style="display:flex;justify-content:space-between;padding:10px 16px;background:#1A1A1A;font-size:13px;font-family:system-ui;"><span style="color:#8A8070;">TOTAL PER STAY</span><span style="font-weight:700;color:#B8962E;">${fmt(calc.totalStayCost)}</span></div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="card">
+      <div class="card-head" style="background:#1A1A1A;"><span class="card-title">LINEN POLICY IMPACT — WHAT IF?</span></div>
+      <div style="padding:14px 18px;">
+        <p style="font-size:12px;font-family:system-ui;color:#8A8070;margin-bottom:14px;line-height:1.6;">How does changing your linen change frequency affect cost per stay? The table below shows the linen cost impact of 1, 2, or 3 linen changes per stay for each room type.</p>
+        <div style="overflow-x:auto;">
+          <table class="res-table">
+            <thead><tr>
+              <th>ROOM TYPE</th>
+              <th>LINEN COST / CHANGE</th>
+              <th>1 CHANGE / STAY</th>
+              <th>2 CHANGES / STAY</th>
+              <th>3 CHANGES / STAY</th>
+            </tr></thead>
+            <tbody>
+              ${allResults.map(({rt,calc})=>`
+                <tr>
+                  <td class="bold">${rt.name}</td>
+                  <td>${fmt(calc.linenPerChange)}</td>
+                  <td ${rt.linenChanges===1?'style="background:#FFF8F0;font-weight:700;"':''}>${fmt(calc.linenPerChange*1)}</td>
+                  <td ${rt.linenChanges===2?'style="background:#FFF8F0;font-weight:700;"':''}>${fmt(calc.linenPerChange*2)}</td>
+                  <td ${rt.linenChanges===3?'style="background:#FFF8F0;font-weight:700;"':''}>${fmt(calc.linenPerChange*3)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+        <div style="font-size:11px;color:#8A8070;font-family:system-ui;margin-top:8px;">Highlighted column = your current setting per room type.</div>
+      </div>
+    </div>
+  `;
+}
+
+// ═══ EXPORTS ═══
+function exportCSV() {
+  const esc=val=>{ const s=String(val||''); return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; };
+  const hotel=document.getElementById('s-hotel')?.value||'';
+  const realRate=getRealRate();
+  let csv=`HSK ROOM COST CALCULATOR\r\nHotel,${esc(hotel)}\r\nReal Labour Rate,${fmt(realRate)}\r\nLaundry Model,${laundryMode==='piece'?'Per piece':'Per kg'}\r\nExported,${new Date().toLocaleDateString('en-GB')}\r\n\r\n`;
+  csv+=`ROOM TYPE,DEP TIME (min),STAY TIME (min),STAY LENGTH,STAYOVER CLEANS,LINEN CHANGES,SUPPLY/NIGHT,DEP LABOUR,STAY LABOUR,LINEN/CHANGE,LINEN TOTAL,SUPPLY TOTAL,TOTAL/STAY,HSK/NIGHT\r\n`;
+  roomTypes.forEach(rt=>{
+    const c=calcRoom(rt);
+    csv+=`${esc(rt.name)},${rt.depTime},${rt.stayTime},${rt.stayLength},${rt.stayCleans},${rt.linenChanges},${rt.supplyPerNight},${c.labourDep.toFixed(2)},${c.labourStay.toFixed(2)},${c.linenPerChange.toFixed(2)},${c.linenTotal.toFixed(2)},${c.supplyTotal.toFixed(2)},${c.totalStayCost.toFixed(2)},${c.costPerNight.toFixed(2)}\r\n`;
+  });
+  if(laundryMode==='piece') {
+    csv+=`\r\nLINEN ITEMS\r\nITEM,PRICE/PIECE\r\n`;
+    linenItems.forEach(li=>{ csv+=`${esc(li.name)},${li.pricePerPiece}\r\n`; });
+  }
+  const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download=`hsk-room-cost-${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+function emailReport() {
+  const hotel=document.getElementById('s-hotel')?.value||'My Hotel';
+  const realRate=getRealRate();
+  let body=`HSK ROOM COST BY DESIGN — ${hotel}\nDate: ${new Date().toLocaleDateString('en-GB')}\n===============================\n\n`;
+  body+=`Real labour rate: ${fmt(realRate)}/hr\nLaundry model: ${laundryMode==='piece'?'Per piece':'Per kg'}\n\n`;
+  roomTypes.forEach(rt=>{
+    const c=calcRoom(rt);
+    body+=`${rt.name.toUpperCase()}\n`;
+    body+=`  HSK cost per room night: ${fmt(c.costPerNight)}\n`;
+    body+=`  Total per stay (${rt.stayLength} nights): ${fmt(c.totalStayCost)}\n`;
+    body+=`  Departure clean: ${fmt(c.labourDep)} · Linen/change: ${fmt(c.linenPerChange)}\n\n`;
+  });
+  body+=`--\nHotel Mastery Hub — HSK Room Cost Calculator`;
+  window.location.href=`mailto:?subject=${encodeURIComponent('HSK Room Cost — '+hotel)}&body=${encodeURIComponent(body)}`;
+}
+
+function backupData() {
+  const data={
+    tool:'HMH HSK Room Cost Calculator', version:'1.0', exported:new Date().toISOString(),
+    laundryMode, roomTypes, linenItems, linenCounter, roomCounter, kgRate,
+    hotel:document.getElementById('s-hotel')?.value||'',
+    manager:document.getElementById('s-manager')?.value||'',
+    date:document.getElementById('s-date')?.value||'',
+    rate:document.getElementById('s-rate')?.value||'12',
+    mult:document.getElementById('s-mult')?.value||'1.28',
+  };
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download=`hsk-room-cost-backup-${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+function restoreData(input) {
+  const file=input.files[0]; if(!file) return;
+  if(!confirm('This will replace ALL current data. Continue?')) { input.value=''; return; }
+  const reader=new FileReader();
+  reader.onload=function(e){
+    try {
+      const d=JSON.parse(e.target.result);
+      if(!d.tool||!d.tool.includes('HSK Room Cost')) { alert('This does not appear to be an HSK Room Cost Calculator backup.'); return; }
+      if(d.laundryMode) laundryMode=d.laundryMode;
+      if(d.roomTypes) roomTypes=d.roomTypes;
+      if(d.linenItems) linenItems=d.linenItems;
+      if(d.linenCounter) linenCounter=d.linenCounter;
+      if(d.roomCounter) roomCounter=d.roomCounter;
+      if(d.kgRate) kgRate=d.kgRate;
+      ['hotel','manager','date','rate','mult'].forEach(f=>{
+        const id='s-'+f; if(d[f]&&document.getElementById(id)) document.getElementById(id).value=d[f];
+      });
+      save(); setTab('results');
+      alert('Backup restored. Exported: '+new Date(d.exported).toLocaleDateString('en-GB'));
+    } catch(err) { alert('Could not read file. Make sure it is a valid HSK Room Cost Calculator backup.'); }
+    input.value='';
+  };
+  reader.readAsText(file);
+}
+
+// ═══ INIT ═══
+(function(){
+  try {
+    const saved=localStorage.getItem(LS_KEY);
+    if(saved){
+      const d=JSON.parse(saved);
+      if(d.laundryMode) laundryMode=d.laundryMode;
+      if(d.roomTypes) roomTypes=d.roomTypes;
+      if(d.linenItems) linenItems=d.linenItems;
+      if(d.linenCounter) linenCounter=d.linenCounter;
+      if(d.roomCounter) roomCounter=d.roomCounter;
+      if(d.kgRate!==undefined) kgRate=d.kgRate;
+      ['hotel','manager','date','rate','mult'].forEach(f=>{
+        const id='s-'+f; if(d[f]&&document.getElementById(id)) document.getElementById(id).value=d[f];
+      });
+    } else { save(); }
+  } catch(e){}
+  updateRealRateDisplay();
+  updateLaundryModeHint();
+  document.getElementById('mode-piece').classList.toggle('active',laundryMode==='piece');
+  document.getElementById('mode-kg').classList.toggle('active',laundryMode==='kg');
+})();
+</script>
+</body>
+</html>
