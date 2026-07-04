@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F&B Shift Planner -- Hotel Mastery Hub</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:Georgia,serif; background:#F8F5F0; min-height:100vh; color:#1A1A1A; }
+.header { background:#1A1A1A; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+.hb { color:#B8962E; font-size:10px; letter-spacing:4px; font-family:system-ui; font-weight:600; }
+.hs { color:#8A8070; font-size:10px; letter-spacing:3px; font-family:system-ui; margin-left:10px; }
+.header-btns { display:flex; gap:6px; flex-wrap:wrap; }
+.btn-hdr { padding:5px 12px; font-size:10px; letter-spacing:1px; cursor:pointer; font-family:system-ui; font-weight:600; border:1px solid rgba(184,150,46,0.4); color:#D4AF5A; background:transparent; }
+.btn-hdr.gold { background:#B8962E; color:#1A1A1A; border-color:#B8962E; }
+.tabs { background:#111; display:flex; overflow-x:auto; border-bottom:2px solid #2A2A2A; }
+.tab { padding:11px 16px; font-size:10px; letter-spacing:2px; font-family:system-ui; font-weight:600; color:#8A8070; cursor:pointer; white-space:nowrap; border-bottom:3px solid transparent; margin-bottom:-2px; flex-shrink:0; }
+.tab:hover { color:#F5F0E8; }
+.tab.active { color:#B8962E; border-bottom-color:#B8962E; }
+.wrap { max-width:1060px; margin:0 auto; padding:24px 16px 60px; }
+.section { display:none; }
+.section.active { display:block; }
+/* CARDS */
+.card { background:#fff; border:1px solid #E5DDD0; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:16px; }
+.card-head { padding:10px 18px; display:flex; align-items:center; justify-content:space-between; }
+.card-title { font-size:11px; font-weight:700; color:#F5F0E8; letter-spacing:1px; font-family:system-ui; }
+.card-body { padding:16px 18px; }
+label { display:block; font-size:10px; color:#8A8070; letter-spacing:2px; font-family:system-ui; font-weight:600; margin-bottom:5px; }
+input[type=text],input[type=number] { width:100%; padding:8px 10px; border:1px solid #E5DDD0; font-size:13px; font-family:system-ui; background:#FAFAFA; color:#1A1A1A; outline:none; }
+input[type=text]:focus,input[type=number]:focus { border-color:#B8962E; }
+/* INFO BUTTON */
+.info-btn { background:#B8962E; border:none; color:#1A1A1A; width:18px; height:18px; border-radius:50%; font-size:11px; font-weight:700; cursor:pointer; font-family:system-ui; vertical-align:middle; margin-left:4px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; }
+.info-btn:hover { background:#D4AF5A; }
+/* BUTTONS */
+.btn-gold { background:#B8962E; border:none; color:#1A1A1A; padding:9px 18px; font-size:11px; font-family:system-ui; font-weight:700; letter-spacing:1px; cursor:pointer; }
+.btn-gold:hover { background:#D4AF5A; }
+.btn-dark { background:#1A1A1A; border:none; color:#B8962E; padding:9px 18px; font-size:11px; font-family:system-ui; font-weight:700; letter-spacing:1px; cursor:pointer; }
+.btn-sec { background:#fff; border:1px solid #E5DDD0; color:#8A8070; padding:7px 14px; font-size:11px; font-family:system-ui; font-weight:600; cursor:pointer; }
+.btn-sec:hover { border-color:#B8962E; color:#B8962E; }
+.del-btn { background:transparent; border:none; color:#CCC; cursor:pointer; font-size:16px; padding:2px 6px; }
+.del-btn:hover { color:#CC5555; }
+.add-btn { background:#F8F5F0; border:1px dashed #E5DDD0; color:#8A8070; padding:9px; font-size:11px; font-family:system-ui; cursor:pointer; width:100%; text-align:center; margin-top:8px; }
+.add-btn:hover { border-color:#B8962E; color:#B8962E; }
+.action-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:16px; }
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+.field { margin-bottom:12px; }
+/* RESULT CARDS */
+.result-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px; }
+.result-card { background:#1A1A1A; padding:14px 16px; }
+.rc-label { font-size:9px; color:#8A8070; letter-spacing:3px; font-family:system-ui; font-weight:600; margin-bottom:5px; display:flex; align-items:center; gap:4px; }
+.rc-value { font-size:24px; font-weight:700; line-height:1; margin-bottom:3px; }
+.rc-sub { font-size:11px; color:#8A8070; font-family:system-ui; }
+/* SERVICE SECTIONS */
+.service-section { background:#fff; border:1px solid #E5DDD0; margin-bottom:16px; }
+.service-head { padding:12px 18px; display:flex; align-items:center; justify-content:space-between; }
+.service-title { font-size:14px; font-weight:700; color:#F5F0E8; }
+.service-subtitle { font-size:10px; color:#8A8070; font-family:system-ui; letter-spacing:1px; }
+.input-block { padding:14px 18px; border-bottom:1px solid #F0EBE3; }
+.input-block:last-child { border-bottom:none; }
+.input-block-title { font-size:10px; color:#B8962E; letter-spacing:3px; font-family:system-ui; font-weight:600; margin-bottom:10px; display:flex; align-items:center; gap:4px; }
+.calc-row { display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid #F8F5F0; }
+.calc-row:last-child { border-bottom:none; }
+.calc-label { font-size:12px; font-family:system-ui; color:#8A8070; display:flex; align-items:center; gap:4px; }
+.calc-value { font-size:13px; font-family:system-ui; font-weight:700; color:#1A1A1A; }
+/* RATE DISPLAY */
+.rate-display { background:#F8F5F0; padding:8px 12px; font-size:11px; font-family:system-ui; color:#8A8070; margin-top:6px; display:flex; gap:16px; }
+.rate-display strong { color:#1A1A1A; }
+/* SUMMARY TABLE */
+.summary-table { width:100%; border-collapse:collapse; }
+.summary-table th { padding:8px 12px; font-size:9px; color:#8A8070; letter-spacing:2px; font-family:system-ui; font-weight:600; background:#F0EBE3; border-right:1px solid #E5DDD0; text-align:left; white-space:nowrap; }
+.summary-table th:last-child { border-right:none; }
+.summary-table td { padding:8px 12px; border-bottom:1px solid #F0EBE3; border-right:1px solid #F0EBE3; font-size:12px; font-family:system-ui; }
+.summary-table td:last-child { border-right:none; }
+.summary-table tr:last-child td { border-bottom:none; font-weight:700; background:#F8F5F0; }
+/* WEEKLY */
+.week-table { width:100%; border-collapse:collapse; }
+.week-table th { padding:7px 10px; font-size:9px; color:#8A8070; letter-spacing:1px; font-family:system-ui; font-weight:600; background:#F0EBE3; border-right:1px solid #E5DDD0; text-align:left; white-space:nowrap; }
+.week-table td { padding:0; border-bottom:1px solid #F0EBE3; border-right:1px solid #F0EBE3; }
+.week-table td:last-child { border-right:none; }
+.week-inp { width:100%; padding:7px 8px; border:none; font-size:12px; font-family:system-ui; background:transparent; outline:none; text-align:right; }
+.week-inp:focus { background:#FFFDF5; }
+.week-day { padding:7px 10px; font-size:12px; font-family:system-ui; font-weight:700; }
+.week-calc { padding:7px 10px; font-size:12px; font-family:system-ui; font-weight:700; text-align:right; }
+/* GUIDE */
+.guide-step { display:flex; border-bottom:1px solid #F0EBE3; padding:13px 16px; align-items:flex-start; }
+.guide-step:last-child { border-bottom:none; }
+.guide-circle { width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:system-ui; flex-shrink:0; margin-right:12px; background:#B8962E; color:#1A1A1A; }
+/* INFO MODAL */
+.info-modal { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); z-index:999; align-items:center; justify-content:center; padding:20px; }
+.info-modal.open { display:flex; }
+.info-box { background:#fff; max-width:420px; width:100%; padding:24px; position:relative; }
+.footer-note { text-align:center; margin-top:28px; color:#8A8070; font-size:11px; font-family:system-ui; letter-spacing:2px; }
+@media print {
+  .header,.tabs,.header-btns,.action-row,.add-btn,.del-btn,.btn-sec,.btn-gold,.btn-dark,.info-modal { display:none !important; }
+  .section { display:block !important; }
+  body { background:#fff; }
+  .wrap { padding:8px; }
+  input { border:none !important; background:transparent !important; }
+}
+@media (max-width:700px) {
+  .result-grid { grid-template-columns:1fr 1fr; }
+  .grid2,.grid3 { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div style="display:flex;align-items:center;">
+    <span class="hb">HOTEL MASTERY HUB</span>
+    <span class="hs">&middot; F&amp;B SHIFT PLANNER</span>
+  </div>
+  <div class="header-btns">
+    <button class="btn-hdr" onclick="exportCSV()">CSV</button>
+    <button class="btn-hdr" onclick="emailReport()">&#9993;</button>
+    <button class="btn-hdr gold" onclick="window.print()">PDF</button>
+    <button class="btn-hdr" onclick="backupData()">BACKUP &#8595;</button>
+    <button class="btn-hdr" onclick="document.getElementById('restore-input').click()">RESTORE &#8593;</button>
+    <input type="file" id="restore-input" accept=".json" style="display:none" onchange="restoreData(this)">
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" id="tab-guide" onclick="setTab('guide')">HOW TO USE</div>
+  <div class="tab" id="tab-setup" onclick="setTab('setup')">SETUP</div>
+  <div class="tab" id="tab-breakfast" onclick="setTab('breakfast')">&#9749; BREAKFAST</div>
+  <div class="tab" id="tab-lunch" onclick="setTab('lunch')">&#127869; LUNCH</div>
+  <div class="tab" id="tab-dinner" onclick="setTab('dinner')">&#127769; DINNER</div>
+  <div class="tab" id="tab-bar" onclick="setTab('bar')">&#127864; BAR</div>
+  <div class="tab" id="tab-summary" onclick="setTab('summary')">DAILY SUMMARY</div>
+  <div class="tab" id="tab-weekly" onclick="setTab('weekly')">WEEKLY TRACKER</div>
+</div>
+
+<!-- INFO MODAL -->
+<div class="info-modal" id="info-modal">
+  <div class="info-box">
+    <button onclick="closeInfo()" style="position:absolute;top:12px;right:14px;background:transparent;border:none;font-size:20px;cursor:pointer;color:#8A8070;">×</button>
+    <div id="info-title" style="font-size:10px;color:#B8962E;letter-spacing:3px;font-family:system-ui;font-weight:600;margin-bottom:8px;padding-right:20px;"></div>
+    <div id="info-body" style="font-size:13px;color:#1A1A1A;font-family:system-ui;line-height:1.7;"></div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- HOW TO USE -->
+<div class="section active" id="section-guide">
+  <div style="background:#1A1A1A;padding:18px 24px;margin-bottom:20px;">
+    <div style="font-size:10px;color:#B8962E;letter-spacing:4px;font-family:system-ui;font-weight:600;margin-bottom:5px;">HOTEL MASTERY HUB</div>
+    <div style="font-size:20px;color:#F5F0E8;font-weight:700;margin-bottom:3px;">F&amp;B Shift Planner</div>
+    <div style="font-size:12px;color:#8A8070;font-family:system-ui;">Plan each service shift. See if your staffing level breaks even for the volume you expect.</div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#1A1A1A;"><span class="card-title">WHAT THIS TOOL DOES — AND WHAT IT DOES NOT</span></div>
+    <div class="card-body">
+      <p style="font-size:14px;font-family:system-ui;line-height:1.8;color:#1A1A1A;margin-bottom:12px;">This tool answers one question: <strong>for the staff I am putting on this shift and the covers I expect to sell, does this service break even on its daily fixed cost share and labour cost?</strong></p>
+      <p style="font-size:14px;font-family:system-ui;line-height:1.8;color:#1A1A1A;margin-bottom:12px;">It is a <strong>shift planning and break-even tool</strong> — not a full F&B profit and loss statement. It does not track monthly food purchasing costs, beverage stock, or full salary overheads. For the complete monthly F&B profitability picture, use the F&B Monthly P&L tool.</p>
+      <p style="font-size:14px;font-family:system-ui;line-height:1.8;color:#1A1A1A;">Use this tool before each service to decide: how many staff do I need? Is it worth running the full service today? What is the minimum covers to cover costs?</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#1A3A5C;"><span class="card-title">KEY CONCEPTS</span></div>
+    <div class="card-body" style="padding:0;">
+      <div style="padding:12px 16px;border-bottom:1px solid #F0EBE3;"><div style="font-size:12px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Real labour cost per hour</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.5;">What the employee earns is not what the business pays. Add employer social contributions, holiday pay accrual, pension, and insurance — typically 20–35% on top of gross pay. Enter the gross hourly rate and the employer cost multiplier in Setup. The tool uses the real cost in all calculations.</div></div>
+      <div style="padding:12px 16px;border-bottom:1px solid #F0EBE3;"><div style="font-size:12px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Contribution per labour hour ★ Primary KPI</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.5;">Total contribution (revenue minus food cost) divided by total labour hours. Must exceed your real cost per hour for the shift to pay for its labour. Industry benchmark: 2–3× real hourly rate for a healthy shift.</div></div>
+      <div style="padding:12px 16px;border-bottom:1px solid #F0EBE3;"><div style="font-size:12px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Fixed cost share per service</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.5;">Your monthly fixed costs (manager salary, other salaried staff) divided by 30 days and 4 services. This is what each service must contribute before it is truly breaking even.</div></div>
+      <div style="padding:12px 16px;border-bottom:1px solid #F0EBE3;"><div style="font-size:12px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Break-even covers</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.5;">The minimum covers you need to sell in this service, with this staffing, to cover all costs. Share this with your team before the service starts. It converts the financial target into a simple operational goal.</div></div>
+      <div style="padding:12px 16px;"><div style="font-size:12px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Replacement ratio</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.5;">If a guest chooses the cheaper product instead of the premium one, how many extra units do you need to sell to break even? Above 3× is a risk signal — your product mix matters.</div></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#1E4620;"><span class="card-title">HOW TO USE — DAILY WORKFLOW</span></div>
+    <div class="card-body" style="padding:0;">
+      <div class="guide-step"><div class="guide-circle">1</div><div><div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Setup — do this once, update when prices change</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Enter fixed monthly costs, gross hourly rate and employer cost multiplier per service, and your products with selling price and food cost. The real cost per hour calculates automatically.</div></div></div>
+      <div class="guide-step"><div class="guide-circle">2</div><div><div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Before each shift — enter staff and expected covers</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Enter kitchen and floor staff count and shift hours. Enter how many covers you expect. See your break-even, shift result, and contribution per labour hour before the service starts.</div></div></div>
+      <div class="guide-step"><div class="guide-circle">3</div><div><div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">After each shift — update actual covers sold</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Replace expected with actual covers sold per product. All KPIs recalculate instantly — compare planned vs actual.</div></div></div>
+      <div class="guide-step"><div class="guide-circle">4</div><div><div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">End of day — check the Daily Summary</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">All 4 services side by side. Net daily result, total covers, avg contribution per cover. Copy the net result into the Weekly Tracker.</div></div></div>
+      <div class="guide-step" style="border-bottom:none;"><div class="guide-circle">5</div><div><div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Weekly Tracker — enter daily totals</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Enter each day's net result, covers, and labour hours. Best and worst day, days profitable, and weekly averages calculate automatically.</div></div></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#2A2A2A;"><span class="card-title">EXPORT OPTIONS</span></div>
+    <div class="card-body" style="padding:0;">
+      <div style="padding:13px 16px;border-bottom:1px solid #F0EBE3;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:5px;"><span style="background:#1A1A1A;color:#B8962E;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">CSV</span><span style="font-size:13px;font-weight:700;color:#1A1A1A;">Export all shift data</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Downloads setup, all four service inputs and calculated KPIs, and weekly tracker as a .csv file. Good for monthly archives or sharing with an accountant.</p></div>
+      <div style="padding:13px 16px;border-bottom:1px solid #F0EBE3;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:5px;"><span style="background:#1A1A1A;color:#B8962E;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">&#9993;</span><span style="font-size:13px;font-weight:700;color:#1A1A1A;">Email a daily summary</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Sends a plain text daily summary — net result per service, total covers, contribution per labour hour. Good for updating a GM or owner at end of day.</p></div>
+      <div style="padding:13px 16px;border-bottom:1px solid #F0EBE3;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:5px;"><span style="background:#B8962E;color:#1A1A1A;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">PDF</span><span style="font-size:13px;font-weight:700;color:#1A1A1A;">Print the full report</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Prints all tabs — setup, all service shifts, daily summary, and weekly tracker. Good for a weekly review or printed monthly record.</p></div>
+      <div style="padding:13px 16px;border-bottom:1px solid #F0EBE3;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:5px;"><span style="background:#B8962E;color:#1A1A1A;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">BACKUP &#8595;</span><span style="font-size:13px;font-weight:700;color:#1A1A1A;">Save everything as a JSON file</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Downloads a complete backup of all setup, service inputs, and weekly tracker. Store it somewhere safe. Restore from this file if your browser data is cleared or you switch devices.</p></div>
+      <div style="padding:13px 16px;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:5px;"><span style="background:#B8962E;color:#1A1A1A;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">RESTORE &#8593;</span><span style="font-size:13px;font-weight:700;color:#1A1A1A;">Load from a backup file</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Select a .json backup to restore all data. You will be asked to confirm before anything is replaced.</p></div>
+    </div>
+  </div>
+
+  <div style="background:#1A1A1A;padding:13px 18px;margin-bottom:20px;">
+    <div style="font-size:10px;color:#B8962E;letter-spacing:3px;font-family:system-ui;font-weight:600;margin-bottom:6px;">ONE RULE</div>
+    <p style="font-size:13px;color:#F5F0E8;font-family:system-ui;line-height:1.7;">Know your break-even before the service starts. A full dining room means nothing if the shift is losing money. Share the cover target with your team every day.</p>
+  </div>
+
+  <div class="action-row"><button class="btn-gold" onclick="setTab('setup')">GO TO SETUP &rarr;</button></div>
+  <div class="footer-note">HOTEL MASTERY HUB &middot; F&amp;B SHIFT PLANNER</div>
+</div>
+
+<!-- SETUP -->
+<div class="section" id="section-setup">
+  <div style="margin-bottom:16px;">
+    <h2 style="font-size:20px;font-weight:700;color:#1A1A1A;">Setup</h2>
+    <p style="font-size:12px;color:#8A8070;font-family:system-ui;margin-top:2px;">Update when prices, food costs, or staff rates change. All service tabs pull from here.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-head" style="background:#1A1A1A;"><span class="card-title">FIXED MONTHLY COSTS</span></div>
+    <div class="card-body">
+      <div class="grid3">
+        <div class="field"><label>F&amp;B MANAGER / HEAD CHEF SALARY (€/month) <button class="info-btn" onclick="showInfo('fixedManager')">?</button></label><input type="number" id="fixed-manager" value="3000" step="50" oninput="save();renderSetup()"></div>
+        <div class="field"><label>OTHER FIXED SALARIED STAFF (€/month) <button class="info-btn" onclick="showInfo('fixedOther')">?</button></label><input type="number" id="fixed-other" value="1500" step="50" oninput="save();renderSetup()"></div>
+        <div class="field"><label>OTHER FIXED COSTS (€/month) <button class="info-btn" onclick="showInfo('fixedExtra')">?</button></label><input type="number" id="fixed-extra" value="0" step="50" oninput="save();renderSetup()"></div>
+      </div>
+      <div id="fixed-summary" style="background:#F8F5F0;padding:10px 14px;margin-top:4px;font-size:12px;font-family:system-ui;"></div>
+    </div>
+  </div>
+
+  <div id="setup-services"></div>
+
+  <div class="action-row"><button class="btn-gold" onclick="setTab('breakfast')">GO TO BREAKFAST &rarr;</button></div>
+  <div class="footer-note">HOTEL MASTERY HUB &middot; F&amp;B SHIFT PLANNER</div>
+</div>
+
+<!-- SERVICE TABS -->
+<div class="section" id="section-breakfast"><div id="svc-breakfast"></div></div>
+<div class="section" id="section-lunch"><div id="svc-lunch"></div></div>
+<div class="section" id="section-dinner"><div id="svc-dinner"></div></div>
+<div class="section" id="section-bar"><div id="svc-bar"></div></div>
+
+<!-- DAILY SUMMARY -->
+<div class="section" id="section-summary">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+    <div>
+      <h2 style="font-size:20px;font-weight:700;color:#1A1A1A;">Daily F&amp;B Summary</h2>
+      <p style="font-size:12px;color:#8A8070;font-family:system-ui;margin-top:2px;">All services side by side. Full day shift result.</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <label style="margin:0;font-size:10px;color:#8A8070;">DATE</label>
+      <input type="text" id="summary-date" style="width:140px;" placeholder="e.g. Mon 2 Jun" oninput="save()">
+    </div>
+  </div>
+  <div id="summary-container"></div>
+  <div class="footer-note">HOTEL MASTERY HUB &middot; F&amp;B SHIFT PLANNER</div>
+</div>
+
+<!-- WEEKLY TRACKER -->
+<div class="section" id="section-weekly">
+  <div style="margin-bottom:14px;">
+    <h2 style="font-size:20px;font-weight:700;color:#1A1A1A;">Weekly F&amp;B Tracker</h2>
+    <p style="font-size:12px;color:#8A8070;font-family:system-ui;margin-top:2px;">Enter daily totals from the Daily Summary. Weekly performance calculates automatically.</p>
+  </div>
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#1A1A1A;"><span class="card-title">WEEK REFERENCE</span></div>
+    <div class="card-body">
+      <div class="grid3">
+        <div class="field"><label>WEEK OF</label><input type="text" id="week-of" placeholder="e.g. 2 Jun 2026" oninput="save()"></div>
+        <div class="field"><label>HOTEL NAME</label><input type="text" id="week-hotel" placeholder="Hotel name" oninput="save()"></div>
+        <div class="field"><label>F&amp;B MANAGER</label><input type="text" id="week-manager" placeholder="Name" oninput="save()"></div>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#1A1A1A;"><span class="card-title">7-DAY ROLLING PERFORMANCE</span></div>
+    <div style="overflow-x:auto;" id="weekly-table-wrap"></div>
+  </div>
+  <div id="weekly-summary"></div>
+  <div class="footer-note">HOTEL MASTERY HUB &middot; F&amp;B SHIFT PLANNER</div>
+</div>
+
+</div>
+
+<script>
+const LS_KEY = 'hmh-fb-shift-planner';
+const DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+const SERVICES = ['breakfast','lunch','dinner','bar'];
+const SVC_LABELS = {breakfast:'Breakfast',lunch:'Lunch',dinner:'Dinner',bar:'Bar'};
+const SVC_ICONS = {breakfast:'☕',lunch:'🍽',dinner:'🌙',bar:'🍸'};
+const SVC_COLORS = {breakfast:'#1E4620',lunch:'#1A3A5C',dinner:'#2A1A5C',bar:'#5C1A1A'};
+
+// ═══ INFO CONTENT ═══
+const INFO = {
+  fixedManager: { title:'F&B MANAGER / HEAD CHEF SALARY', text:'The monthly gross salary of your F&B manager or head chef. This is a fixed cost — it does not change with the number of covers served. It is split across 30 days and 4 services to calculate each shift\'s fixed cost share.' },
+  fixedOther: { title:'OTHER FIXED SALARIED STAFF', text:'Any other staff on a fixed monthly salary who work across F&B — e.g. a senior chef, assistant manager. Hourly casual staff go in each service tab, not here.' },
+  fixedExtra: { title:'OTHER FIXED COSTS', text:'Any other fixed monthly F&B costs — equipment leases, licences, subscriptions. Not food purchasing (that goes in the Monthly P&L tool). Only truly fixed costs that don\'t change with volume.' },
+  rate: { title:'GROSS HOURLY RATE', text:'What the staff member earns per hour before tax. This is their gross pay — not what they take home. The real cost to the business is higher once you add employer contributions. Use the multiplier field to get the true cost.' },
+  multiplier: { title:'EMPLOYER COST MULTIPLIER', text:'The business pays more than just the employee\'s gross hourly rate. Add: employer social security contributions (typically 8–15%), holiday pay accrual (typically 8–12%), pension contributions, and insurance. In most EU countries the total multiplier is between 1.20 and 1.35. For example: gross rate €12/hr × multiplier 1.28 = real cost €15.36/hr. Ask your accountant for the exact figure for your country.' },
+  realCost: { title:'REAL COST PER HOUR', text:'Gross hourly rate × employer cost multiplier. This is what each labour hour actually costs the business — not just the take-home pay. All shift calculations use this figure. If you use the gross rate without the multiplier, you will underestimate your labour cost by 20–35%.' },
+  contribHr: { title:'CONTRIBUTION PER LABOUR HOUR ★', text:'Total contribution (revenue minus food cost for all products sold) divided by total labour hours on shift. This is the primary KPI. It must exceed your real cost per hour for the shift to cover its labour. Industry benchmark: 2–3× your real hourly rate for a healthy, well-run service. Below 1× means the shift is losing money on labour alone.' },
+  shiftResult: { title:'SHIFT RESULT (BREAK-EVEN P&L)', text:'Total contribution minus total labour cost minus this service\'s fixed cost share. Green = this shift covered its costs. Red = it did not. This is the break-even measure for the shift — not a full P&L. It does not include food purchasing costs, beverage stock, or full overheads. Use the F&B Monthly P&L for the complete picture.' },
+  breakeven: { title:'BREAK-EVEN COVERS', text:'The minimum number of covers you need to sell in this service, with this staffing level, to cover all costs. Share this number with your team before the service starts. It turns the financial target into a simple operational goal: "we need X covers today to break even."' },
+  replacement: { title:'REPLACEMENT RATIO', text:'If a guest chooses product 2 instead of product 1, how many extra covers of product 2 do you need to make up the same contribution? If the ratio is above 3× it means your cheaper product is a significant revenue risk. Either price it up or push product 1 harder.' },
+};
+
+function showInfo(key) {
+  const info = INFO[key];
+  if(!info) return;
+  document.getElementById('info-title').textContent = info.title;
+  document.getElementById('info-body').textContent = info.text;
+  document.getElementById('info-modal').classList.add('open');
+}
+function closeInfo() { document.getElementById('info-modal').classList.remove('open'); }
+
+// ═══ DATA ═══
+let setup = {
+  breakfast: { rate:12, multiplier:1.28, products:[{name:'Buffet',price:17,cost:5,sold:13},{name:'Breakfast Bag',price:6,cost:1.7,sold:10}] },
+  lunch:     { rate:12, multiplier:1.28, products:[{name:'Set Menu',price:22,cost:8,sold:13},{name:'À La Carte',price:14,cost:5,sold:10}] },
+  dinner:    { rate:12, multiplier:1.28, products:[{name:'Set Menu',price:35,cost:12,sold:13},{name:'À La Carte',price:22,cost:8,sold:10}] },
+  bar:       { rate:12, multiplier:1.28, products:[{name:'Cocktail',price:12,cost:4,sold:13},{name:'Soft Drink',price:4,cost:1,sold:10}] },
+};
+
+let shifts = {
+  breakfast: { kitchenCount:1, kitchenHours:5, floorCount:1, floorHours:4 },
+  lunch:     { kitchenCount:1, kitchenHours:5, floorCount:1, floorHours:4 },
+  dinner:    { kitchenCount:2, kitchenHours:6, floorCount:2, floorHours:5 },
+  bar:       { kitchenCount:1, kitchenHours:5, floorCount:1, floorHours:4 },
+};
+
+let weekly = DAYS.map(d => ({ day:d, covers:0, contribution:0, labour:0, fixed:0, net:0, contribPerHr:0, hours:0 }));
+
+function save() {
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify({
+      setup, shifts, weekly,
+      fixedManager: document.getElementById('fixed-manager')?.value||'3000',
+      fixedOther: document.getElementById('fixed-other')?.value||'1500',
+      fixedExtra: document.getElementById('fixed-extra')?.value||'0',
+      summaryDate: document.getElementById('summary-date')?.value||'',
+      weekOf: document.getElementById('week-of')?.value||'',
+      weekHotel: document.getElementById('week-hotel')?.value||'',
+      weekManager: document.getElementById('week-manager')?.value||'',
+    }));
+  } catch(e) {}
+}
+
+function getFixed() {
+  const m = parseFloat(document.getElementById('fixed-manager')?.value)||0;
+  const o = parseFloat(document.getElementById('fixed-other')?.value)||0;
+  const e = parseFloat(document.getElementById('fixed-extra')?.value)||0;
+  const total = m+o+e;
+  return { total, perDay: total/30, perService: total/30/4 };
+}
+
+function calcService(svc) {
+  const s = setup[svc]; const sh = shifts[svc];
+  const rate = parseFloat(s.rate)||0;
+  const multiplier = parseFloat(s.multiplier)||1;
+  const realRate = rate * multiplier;
+  const kitchenHours = (parseFloat(sh.kitchenCount)||0)*(parseFloat(sh.kitchenHours)||0);
+  const floorHours = (parseFloat(sh.floorCount)||0)*(parseFloat(sh.floorHours)||0);
+  const totalHours = kitchenHours + floorHours;
+  const kitchenLabour = kitchenHours * realRate;
+  const floorLabour = floorHours * realRate;
+  const totalLabour = kitchenLabour + floorLabour;
+  const fixed = getFixed().perService;
+  const products = s.products||[];
+  let totalContrib = 0; let totalCovers = 0;
+  products.forEach(p => {
+    const contrib = (parseFloat(p.price)||0)-(parseFloat(p.cost)||0);
+    totalContrib += contrib * (parseFloat(p.sold)||0);
+    totalCovers += parseFloat(p.sold)||0;
+  });
+  const shiftResult = totalContrib - totalLabour - fixed;
+  const contribPerHr = totalHours>0 ? totalContrib/totalHours : 0;
+  const fullyLoadedPerHr = totalHours>0 ? (totalLabour+fixed)/totalHours : 0;
+  const revPerCover = totalCovers>0 ? totalContrib/totalCovers : 0;
+  const avgContrib = products.length>0 ? products.reduce((s,p)=>s+((parseFloat(p.price)||0)-(parseFloat(p.cost)||0)),0)/products.length : 0;
+  const beMixed = avgContrib>0 ? (totalLabour+fixed)/avgContrib : 0;
+  const p1c = products.length>0 ? (parseFloat(products[0].price)||0)-(parseFloat(products[0].cost)||0) : 0;
+  const p2c = products.length>1 ? (parseFloat(products[1].price)||0)-(parseFloat(products[1].cost)||0) : 0;
+  const beP1 = p1c>0 ? (totalLabour+fixed)/p1c : 0;
+  const beP2 = p2c>0 ? (totalLabour+fixed)/p2c : 0;
+  const replRatio = p2c>0 ? p1c/p2c : 0;
+  const gainPerHr = totalHours>0 ? contribPerHr - realRate : 0;
+  return { rate,multiplier,realRate,kitchenLabour,floorLabour,totalLabour,totalHours,fixed,totalContrib,totalCovers,shiftResult,contribPerHr,fullyLoadedPerHr,revPerCover,beMixed,beP1,beP2,replRatio,gainPerHr,p1c,p2c,products };
+}
+
+function fmt(n) { return '€'+(Math.abs(n)).toFixed(2); }
+function fmtSigned(n) { return (n>=0?'€':'−€')+(Math.abs(n)).toFixed(2); }
+function fmtRound(n) { return Math.round(n); }
+
+function setTab(tab) {
+  ['guide','setup','breakfast','lunch','dinner','bar','summary','weekly'].forEach(t => {
+    document.getElementById('section-'+t).classList.toggle('active', t===tab);
+    document.getElementById('tab-'+t).classList.toggle('active', t===tab);
+  });
+  if(tab==='setup') renderSetup();
+  if(SERVICES.includes(tab)) renderService(tab);
+  if(tab==='summary') renderSummary();
+  if(tab==='weekly') renderWeekly();
+}
+
+// ═══ SETUP ═══
+function renderSetup() {
+  const f = getFixed();
+  document.getElementById('fixed-summary').innerHTML =
+    `Total fixed monthly: <strong>${fmt(f.total)}</strong> &nbsp;|&nbsp; Per day (÷30): <strong>${fmt(f.perDay)}</strong> &nbsp;|&nbsp; Per service (÷4): <strong>${fmt(f.perService)}</strong>`;
+
+  document.getElementById('setup-services').innerHTML = SERVICES.map(svc => {
+    const s = setup[svc];
+    const realRate = (parseFloat(s.rate)||0) * (parseFloat(s.multiplier)||1);
+    const products = s.products||[];
+    return `
+      <div class="card" style="margin-bottom:14px;">
+        <div class="card-head" style="background:${SVC_COLORS[svc]};"><span class="card-title">${SVC_ICONS[svc]} ${SVC_LABELS[svc].toUpperCase()}</span></div>
+        <div class="card-body">
+          <div class="grid3" style="margin-bottom:4px;">
+            <div class="field">
+              <label>GROSS HOURLY RATE (€) <button class="info-btn" onclick="showInfo('rate')">?</button></label>
+              <input type="number" value="${s.rate}" step="0.05" data-svc="${svc}" data-field="rate" oninput="updateSetupRate(this)">
+            </div>
+            <div class="field">
+              <label>EMPLOYER COST MULTIPLIER <button class="info-btn" onclick="showInfo('multiplier')">?</button></label>
+              <input type="number" value="${s.multiplier}" step="0.01" min="1" max="2" data-svc="${svc}" data-field="multiplier" oninput="updateSetupRate(this)">
+            </div>
+            <div class="field">
+              <label>REAL COST PER HOUR <button class="info-btn" onclick="showInfo('realCost')">?</button></label>
+              <div style="padding:9px 10px;background:#1A1A1A;font-size:15px;font-weight:700;font-family:system-ui;color:#B8962E;">${fmt(realRate)}<span style="font-size:11px;color:#8A8070;font-weight:400;margin-left:6px;">gross × multiplier</span></div>
+            </div>
+          </div>
+          <div style="font-size:11px;font-family:system-ui;color:#8A8070;margin-bottom:14px;padding:6px 10px;background:#F8F5F0;">Real cost includes employer social contributions, holiday pay accrual, pension, and insurance. In most EU countries the multiplier is between 1.20 and 1.35. Ask your accountant for the exact figure.</div>
+
+          <div style="font-size:10px;color:#B8962E;letter-spacing:2px;font-family:system-ui;font-weight:600;margin-bottom:10px;">PRODUCTS</div>
+          <div style="overflow-x:auto;">
+            <table style="width:100%;border-collapse:collapse;margin-bottom:8px;">
+              <thead><tr style="background:#F0EBE3;">
+                <th style="padding:6px 10px;font-size:9px;color:#8A8070;letter-spacing:1px;font-family:system-ui;font-weight:600;text-align:left;border-right:1px solid #E5DDD0;min-width:150px;">PRODUCT NAME</th>
+                <th style="padding:6px 10px;font-size:9px;color:#8A8070;letter-spacing:1px;font-family:system-ui;font-weight:600;text-align:right;border-right:1px solid #E5DDD0;min-width:110px;">SELLING PRICE €</th>
+                <th style="padding:6px 10px;font-size:9px;color:#8A8070;letter-spacing:1px;font-family:system-ui;font-weight:600;text-align:right;border-right:1px solid #E5DDD0;min-width:110px;">FOOD COST €</th>
+                <th style="padding:6px 10px;font-size:9px;color:#8A8070;letter-spacing:1px;font-family:system-ui;font-weight:600;text-align:right;border-right:1px solid #E5DDD0;min-width:110px;">CONTRIBUTION €</th>
+                <th style="width:36px;"></th>
+              </tr></thead>
+              <tbody>
+                ${products.map((p,i)=>{
+                  const contrib = (parseFloat(p.price)||0)-(parseFloat(p.cost)||0);
+                  return `<tr style="border-bottom:1px solid #F0EBE3;background:${i%2===0?'#fff':'#FAFAFA'};">
+                    <td style="padding:4px 6px;border-right:1px solid #F0EBE3;"><input type="text" value="${p.name}" data-svc="${svc}" data-idx="${i}" data-field="name" oninput="updateProduct(this)" style="width:100%;border:none;border-bottom:1px solid #E5DDD0;background:transparent;font-size:12px;font-family:system-ui;outline:none;padding:4px 2px;"></td>
+                    <td style="padding:4px 6px;border-right:1px solid #F0EBE3;"><input type="number" value="${p.price}" step="0.5" data-svc="${svc}" data-idx="${i}" data-field="price" oninput="updateProduct(this)" style="width:100%;border:none;border-bottom:1px solid #E5DDD0;background:transparent;font-size:12px;font-family:system-ui;outline:none;padding:4px 2px;text-align:right;"></td>
+                    <td style="padding:4px 6px;border-right:1px solid #F0EBE3;"><input type="number" value="${p.cost}" step="0.1" data-svc="${svc}" data-idx="${i}" data-field="cost" oninput="updateProduct(this)" style="width:100%;border:none;border-bottom:1px solid #E5DDD0;background:transparent;font-size:12px;font-family:system-ui;outline:none;padding:4px 2px;text-align:right;"></td>
+                    <td style="padding:8px 10px;border-right:1px solid #F0EBE3;font-size:13px;font-family:system-ui;font-weight:700;color:#55AA55;text-align:right;" id="contrib-${svc}-${i}">${fmt(contrib)}</td>
+                    <td style="padding:4px;text-align:center;">${products.length>1?`<button class="del-btn" data-svc="${svc}" data-idx="${i}" onclick="deleteProduct(this)">x</button>`:''}</td>
+                  </tr>`;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+          <button class="add-btn" data-svc="${svc}" onclick="addProduct(this)">+ ADD PRODUCT</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function updateSetupRate(el) {
+  const svc = el.getAttribute('data-svc');
+  const field = el.getAttribute('data-field');
+  setup[svc][field] = parseFloat(el.value)||0;
+  save(); renderSetup();
+}
+
+function updateProduct(el) {
+  const svc = el.getAttribute('data-svc');
+  const idx = parseInt(el.getAttribute('data-idx'));
+  const field = el.getAttribute('data-field');
+  setup[svc].products[idx][field] = field==='name' ? el.value : parseFloat(el.value)||0;
+  save();
+  if(field!=='name') {
+    const p = setup[svc].products[idx];
+    const contrib = (parseFloat(p.price)||0)-(parseFloat(p.cost)||0);
+    const cell = document.getElementById('contrib-'+svc+'-'+idx);
+    if(cell) cell.textContent = fmt(contrib);
+  }
+}
+
+function addProduct(el) {
+  const svc = el.getAttribute('data-svc');
+  setup[svc].products.push({name:'New Product',price:0,cost:0,sold:0});
+  save(); renderSetup();
+}
+
+function deleteProduct(el) {
+  const svc = el.getAttribute('data-svc');
+  const idx = parseInt(el.getAttribute('data-idx'));
+  if(setup[svc].products.length<=1) return;
+  setup[svc].products.splice(idx,1);
+  save(); renderSetup();
+}
+
+// ═══ SERVICE TAB ═══
+function renderService(svc) {
+  const s = setup[svc]; const sh = shifts[svc];
+  const r = calcService(svc);
+  const resultColor = r.shiftResult>=0?'#55AA55':'#CC5555';
+  const kpiColor = r.contribPerHr>=r.realRate?'#55AA55':r.contribPerHr>=r.realRate*0.8?'#D4903A':'#CC5555';
+
+  document.getElementById('svc-'+svc).innerHTML = `
+    <div style="margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+      <div>
+        <h2 style="font-size:20px;font-weight:700;color:#1A1A1A;">${SVC_ICONS[svc]} ${SVC_LABELS[svc]} Shift</h2>
+        <p style="font-size:12px;color:#8A8070;font-family:system-ui;margin-top:2px;">Enter staff and covers. All KPIs calculate automatically.</p>
+      </div>
+      <button class="btn-sec" onclick="setTab('summary')">VIEW DAILY SUMMARY &rarr;</button>
+    </div>
+
+    <div class="result-grid">
+      <div class="result-card">
+        <div class="rc-label">CONTRIB / LABOUR HR &#9733; <button class="info-btn" style="background:#2A2A2A;color:#B8962E;" onclick="showInfo('contribHr')">?</button></div>
+        <div class="rc-value" style="color:${kpiColor};">${fmt(r.contribPerHr)}</div>
+        <div class="rc-sub">Real cost: ${fmt(r.realRate)}/hr &middot; ${r.contribPerHr>=r.realRate?'Covers labour ✓':'Below rate ✗'}</div>
+      </div>
+      <div class="result-card">
+        <div class="rc-label">SHIFT RESULT <button class="info-btn" style="background:#2A2A2A;color:#B8962E;" onclick="showInfo('shiftResult')">?</button></div>
+        <div class="rc-value" style="color:${resultColor};">${fmtSigned(r.shiftResult)}</div>
+        <div class="rc-sub">${r.shiftResult>=0?'Break-even reached ✓':'Did not break even ✗'}</div>
+      </div>
+      <div class="result-card">
+        <div class="rc-label">BREAK-EVEN COVERS <button class="info-btn" style="background:#2A2A2A;color:#B8962E;" onclick="showInfo('breakeven')">?</button></div>
+        <div class="rc-value" style="color:#B8962E;">${fmtRound(r.beMixed)}</div>
+        <div class="rc-sub">Mixed product avg — share with team</div>
+      </div>
+      <div class="result-card">
+        <div class="rc-label">REPLACEMENT RATIO <button class="info-btn" style="background:#2A2A2A;color:#B8962E;" onclick="showInfo('replacement')">?</button></div>
+        <div class="rc-value" style="color:${r.replRatio>3?'#CC5555':'#B8962E'};">${r.replRatio.toFixed(1)}×</div>
+        <div class="rc-sub">${s.products.length>1?s.products[1].name+'s per '+s.products[0].name:'Set products in Setup'}</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div>
+        <div class="service-section">
+          <div class="service-head" style="background:${SVC_COLORS[svc]};"><div><div class="service-title">STAFF &amp; HOURS</div><div class="service-subtitle">Real cost per hour: ${fmt(r.realRate)} (gross ${fmt(r.rate)} × ${r.multiplier})</div></div></div>
+          <div class="input-block">
+            <div class="input-block-title">KITCHEN STAFF</div>
+            <div class="grid2">
+              <div class="field"><label>COUNT</label><input type="number" value="${sh.kitchenCount}" min="0" step="1" data-svc="${svc}" data-field="kitchenCount" oninput="updateShift(this)"></div>
+              <div class="field"><label>SHIFT HOURS</label><input type="number" value="${sh.kitchenHours}" min="0" step="0.5" data-svc="${svc}" data-field="kitchenHours" oninput="updateShift(this)"></div>
+            </div>
+            <div class="calc-row"><span class="calc-label">Kitchen labour cost</span><span class="calc-value">${fmt(r.kitchenLabour)}</span></div>
+          </div>
+          <div class="input-block">
+            <div class="input-block-title">FLOOR STAFF</div>
+            <div class="grid2">
+              <div class="field"><label>COUNT</label><input type="number" value="${sh.floorCount}" min="0" step="1" data-svc="${svc}" data-field="floorCount" oninput="updateShift(this)"></div>
+              <div class="field"><label>SHIFT HOURS</label><input type="number" value="${sh.floorHours}" min="0" step="0.5" data-svc="${svc}" data-field="floorHours" oninput="updateShift(this)"></div>
+            </div>
+            <div class="calc-row"><span class="calc-label">Floor labour cost</span><span class="calc-value">${fmt(r.floorLabour)}</span></div>
+          </div>
+          <div class="input-block" style="background:#F8F5F0;">
+            <div class="calc-row"><span class="calc-label">Total labour hours</span><span class="calc-value">${r.totalHours} hrs</span></div>
+            <div class="calc-row"><span class="calc-label">Total labour cost</span><span class="calc-value">${fmt(r.totalLabour)}</span></div>
+            <div class="calc-row"><span class="calc-label">Fixed cost share <button class="info-btn" onclick="showInfo('fixedManager')" style="font-size:9px;width:15px;height:15px;">?</button></span><span class="calc-value">${fmt(r.fixed)}</span></div>
+            <div class="calc-row"><span class="calc-label" style="font-weight:700;">Fully-loaded cost</span><span class="calc-value" style="color:#CC5555;">${fmt(r.totalLabour+r.fixed)}</span></div>
+          </div>
+        </div>
+
+        <div class="service-section">
+          <div class="service-head" style="background:${SVC_COLORS[svc]};"><div><div class="service-title">COVERS SOLD</div><div class="service-subtitle">Enter actual after shift or estimate before</div></div></div>
+          <div class="input-block">
+            ${s.products.map((p,i)=>{
+              const contrib = (parseFloat(p.price)||0)-(parseFloat(p.cost)||0);
+              return `<div class="grid2" style="align-items:end;margin-bottom:10px;">
+                <div class="field" style="margin-bottom:0;"><label>${p.name.toUpperCase()} SOLD</label><input type="number" value="${parseFloat(p.sold)||0}" min="0" step="1" data-svc="${svc}" data-pidx="${i}" oninput="updateProductSold(this)"></div>
+                <div style="font-size:11px;font-family:system-ui;color:#8A8070;padding-bottom:10px;">Contribution: <strong style="color:#55AA55;">${fmt(contrib*(parseFloat(p.sold)||0))}</strong></div>
+              </div>`;
+            }).join('')}
+            <div class="calc-row"><span class="calc-label" style="font-weight:700;">Total contribution</span><span class="calc-value" style="color:#55AA55;">${fmt(r.totalContrib)}</span></div>
+            <div class="calc-row"><span class="calc-label">Total covers</span><span class="calc-value">${r.totalCovers}</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="service-section">
+          <div class="service-head" style="background:${SVC_COLORS[svc]};"><div><div class="service-title">SHIFT RESULT</div><div class="service-subtitle">Break-even P&L for this service</div></div></div>
+          <div class="input-block">
+            <div class="calc-row"><span class="calc-label">Total contribution</span><span class="calc-value" style="color:#55AA55;">${fmt(r.totalContrib)}</span></div>
+            <div class="calc-row"><span class="calc-label">Labour cost (real rate)</span><span class="calc-value" style="color:#CC5555;">−${fmt(r.totalLabour)}</span></div>
+            <div class="calc-row"><span class="calc-label">Fixed cost share</span><span class="calc-value" style="color:#CC5555;">−${fmt(r.fixed)}</span></div>
+            <div class="calc-row" style="padding-top:10px;border-top:2px solid #1A1A1A;"><span class="calc-label" style="font-weight:700;font-size:14px;">SHIFT RESULT</span><span class="calc-value" style="color:${resultColor};font-size:16px;">${fmtSigned(r.shiftResult)}</span></div>
+          </div>
+          <div class="input-block">
+            <div class="input-block-title">KPIs <button class="info-btn" onclick="showInfo('contribHr')" style="font-size:9px;width:15px;height:15px;">?</button></div>
+            <div class="calc-row"><span class="calc-label">Contrib / labour hr ★</span><span class="calc-value" style="color:${kpiColor};">${fmt(r.contribPerHr)}</span></div>
+            <div class="calc-row"><span class="calc-label">Real cost per hr</span><span class="calc-value">${fmt(r.realRate)}</span></div>
+            <div class="calc-row"><span class="calc-label">Gain / loss per labour hr</span><span class="calc-value" style="color:${r.gainPerHr>=0?'#55AA55':'#CC5555'};">${fmtSigned(r.gainPerHr)}</span></div>
+            <div class="calc-row"><span class="calc-label">Revenue per cover (avg)</span><span class="calc-value">${fmt(r.revPerCover)}</span></div>
+            <div class="calc-row"><span class="calc-label">Fully-loaded cost per hr</span><span class="calc-value">${fmt(r.fullyLoadedPerHr)}</span></div>
+          </div>
+        </div>
+
+        <div class="service-section">
+          <div class="service-head" style="background:${SVC_COLORS[svc]};"><div><div class="service-title">BREAK-EVEN</div><div class="service-subtitle">Min covers to cover all costs</div></div></div>
+          <div class="input-block">
+            ${s.products.length>0?`<div class="calc-row"><span class="calc-label">Break-even — ${s.products[0].name} only</span><span class="calc-value">${fmtRound(r.beP1)} covers</span></div>`:''}
+            ${s.products.length>1?`<div class="calc-row"><span class="calc-label">Break-even — ${s.products[1].name} only</span><span class="calc-value">${fmtRound(r.beP2)} covers</span></div>`:''}
+            <div class="calc-row"><span class="calc-label" style="font-weight:700;">Break-even — mixed avg</span><span class="calc-value" style="font-weight:700;">${fmtRound(r.beMixed)} covers</span></div>
+          </div>
+          ${s.products.length>1?`<div class="input-block" style="background:#F8F5F0;">
+            <div class="calc-row"><span class="calc-label">Replacement ratio <button class="info-btn" onclick="showInfo('replacement')" style="font-size:9px;width:15px;height:15px;">?</button></span><span class="calc-value" style="color:${r.replRatio>3?'#CC5555':'#1A1A1A'};">${r.replRatio.toFixed(1)}× (${s.products[0].name} → ${s.products[1].name})</span></div>
+          </div>`:''}
+        </div>
+      </div>
+    </div>
+    <div class="footer-note">HOTEL MASTERY HUB &middot; F&amp;B SHIFT PLANNER</div>
+  `;
+}
+
+function updateShift(el) {
+  const svc = el.getAttribute('data-svc');
+  const field = el.getAttribute('data-field');
+  shifts[svc][field] = parseFloat(el.value)||0;
+  save(); renderService(svc);
+}
+
+function updateProductSold(el) {
+  const svc = el.getAttribute('data-svc');
+  const pidx = parseInt(el.getAttribute('data-pidx'));
+  setup[svc].products[pidx].sold = parseFloat(el.value)||0;
+  save(); renderService(svc);
+}
+
+// ═══ DAILY SUMMARY ═══
+function renderSummary() {
+  const results = {};
+  SERVICES.forEach(svc => { results[svc] = calcService(svc); });
+  const totalContrib = SERVICES.reduce((s,svc)=>s+results[svc].totalContrib,0);
+  const totalLabour = SERVICES.reduce((s,svc)=>s+results[svc].totalLabour,0);
+  const totalFixed = SERVICES.reduce((s,svc)=>s+results[svc].fixed,0);
+  const totalNet = totalContrib - totalLabour - totalFixed;
+  const totalCovers = SERVICES.reduce((s,svc)=>s+results[svc].totalCovers,0);
+  const totalHours = SERVICES.reduce((s,svc)=>s+results[svc].totalHours,0);
+  const avgContrib = totalCovers>0?totalContrib/totalCovers:0;
+  const avgContribHr = totalHours>0?totalContrib/totalHours:0;
+
+  document.getElementById('summary-container').innerHTML = `
+    <div style="overflow-x:auto;margin-bottom:16px;">
+      <table class="summary-table">
+        <thead><tr>
+          <th>METRIC</th>
+          ${SERVICES.map(svc=>`<th>${SVC_ICONS[svc]} ${SVC_LABELS[svc].toUpperCase()}</th>`).join('')}
+          <th style="background:#1A1A1A;color:#B8962E;">TOTAL</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>Covers sold</td>${SERVICES.map(svc=>`<td>${results[svc].totalCovers}</td>`).join('')}<td>${totalCovers}</td></tr>
+          <tr><td>Total contribution €</td>${SERVICES.map(svc=>`<td>${fmt(results[svc].totalContrib)}</td>`).join('')}<td>${fmt(totalContrib)}</td></tr>
+          <tr><td>Labour cost (real) €</td>${SERVICES.map(svc=>`<td style="color:#CC5555;">−${fmt(results[svc].totalLabour)}</td>`).join('')}<td style="color:#CC5555;">−${fmt(totalLabour)}</td></tr>
+          <tr><td>Fixed cost share €</td>${SERVICES.map(svc=>`<td style="color:#CC5555;">−${fmt(results[svc].fixed)}</td>`).join('')}<td style="color:#CC5555;">−${fmt(totalFixed)}</td></tr>
+          <tr><td style="font-weight:700;">SHIFT RESULT €</td>${SERVICES.map(svc=>`<td style="font-weight:700;color:${results[svc].shiftResult>=0?'#55AA55':'#CC5555'};">${fmtSigned(results[svc].shiftResult)}</td>`).join('')}<td style="font-weight:700;font-size:14px;color:${totalNet>=0?'#55AA55':'#CC5555'};">${fmtSigned(totalNet)}</td></tr>
+          <tr><td>Contrib / labour hr ★</td>${SERVICES.map(svc=>`<td style="color:${results[svc].contribPerHr>=results[svc].realRate?'#55AA55':'#CC5555'};">${fmt(results[svc].contribPerHr)}</td>`).join('')}<td>${fmt(avgContribHr)}</td></tr>
+          <tr><td>Real cost per hr</td>${SERVICES.map(svc=>`<td>${fmt(results[svc].realRate)}</td>`).join('')}<td>—</td></tr>
+          <tr><td>Labour hours</td>${SERVICES.map(svc=>`<td>${results[svc].totalHours}</td>`).join('')}<td>${totalHours}</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+      <div class="result-card"><div class="rc-label">NET DAY SHIFT RESULT</div><div class="rc-value" style="color:${totalNet>=0?'#55AA55':'#CC5555'};">${fmtSigned(totalNet)}</div><div class="rc-sub">${totalNet>=0?'All services covered costs':'Not all services covered costs'}</div></div>
+      <div class="result-card"><div class="rc-label">TOTAL COVERS</div><div class="rc-value" style="color:#B8962E;">${totalCovers}</div><div class="rc-sub">Avg contribution: ${fmt(avgContrib)}/cover</div></div>
+      <div class="result-card"><div class="rc-label">AVG CONTRIB / LABOUR HR</div><div class="rc-value" style="color:#B8962E;">${fmt(avgContribHr)}</div><div class="rc-sub">All services combined</div></div>
+    </div>
+  `;
+}
+
+// ═══ WEEKLY TRACKER ═══
+function renderWeekly() {
+  document.getElementById('weekly-table-wrap').innerHTML = `
+    <table class="week-table">
+      <thead><tr>
+        <th style="min-width:100px;">DAY</th>
+        <th style="min-width:80px;">COVERS</th>
+        <th style="min-width:110px;">CONTRIBUTION €</th>
+        <th style="min-width:110px;">LABOUR €</th>
+        <th style="min-width:100px;">FIXED €</th>
+        <th style="min-width:110px;">NET RESULT €</th>
+        <th style="min-width:120px;">CONTRIB/HR €</th>
+        <th style="min-width:80px;">HOURS</th>
+      </tr></thead>
+      <tbody>
+        ${weekly.map((row,i)=>`
+          <tr>
+            <td><div class="week-day">${row.day}</div></td>
+            <td><input class="week-inp" type="number" value="${row.covers||''}" min="0" step="1" placeholder="0" data-idx="${i}" data-field="covers" oninput="updateWeekly(this)"></td>
+            <td><input class="week-inp" type="number" value="${row.contribution||''}" min="0" step="0.01" placeholder="0.00" data-idx="${i}" data-field="contribution" oninput="updateWeekly(this)"></td>
+            <td><input class="week-inp" type="number" value="${row.labour||''}" min="0" step="0.01" placeholder="0.00" data-idx="${i}" data-field="labour" oninput="updateWeekly(this)"></td>
+            <td><input class="week-inp" type="number" value="${row.fixed||''}" min="0" step="0.01" placeholder="0.00" data-idx="${i}" data-field="fixed" oninput="updateWeekly(this)"></td>
+            <td><div class="week-calc" id="net-${i}" style="color:${(row.contribution-row.labour-row.fixed)>=0?'#55AA55':'#CC5555'};">${row.contribution||row.labour||row.fixed?fmtSigned(row.contribution-row.labour-row.fixed):'—'}</div></td>
+            <td><input class="week-inp" type="number" value="${row.contribPerHr||''}" min="0" step="0.01" placeholder="0.00" data-idx="${i}" data-field="contribPerHr" oninput="updateWeekly(this)"></td>
+            <td><input class="week-inp" type="number" value="${row.hours||''}" min="0" step="0.5" placeholder="0" data-idx="${i}" data-field="hours" oninput="updateWeekly(this)"></td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+  renderWeeklySummary();
+}
+
+function updateWeekly(el) {
+  const idx = parseInt(el.getAttribute('data-idx'));
+  const field = el.getAttribute('data-field');
+  weekly[idx][field] = parseFloat(el.value)||0;
+  save();
+  const w = weekly[idx];
+  const net = w.contribution-w.labour-w.fixed;
+  const netEl = document.getElementById('net-'+idx);
+  if(netEl) { netEl.textContent = (w.contribution||w.labour||w.fixed)?fmtSigned(net):'—'; netEl.style.color = net>=0?'#55AA55':'#CC5555'; }
+  renderWeeklySummary();
+}
+
+function renderWeeklySummary() {
+  const nets = weekly.map(r=>r.contribution-r.labour-r.fixed);
+  if(!weekly.some(r=>r.covers||r.contribution)) { document.getElementById('weekly-summary').innerHTML=''; return; }
+  const totalCovers = weekly.reduce((s,r)=>s+(r.covers||0),0);
+  const totalContrib = weekly.reduce((s,r)=>s+(r.contribution||0),0);
+  const totalLabour = weekly.reduce((s,r)=>s+(r.labour||0),0);
+  const totalFixed = weekly.reduce((s,r)=>s+(r.fixed||0),0);
+  const totalNet = totalContrib-totalLabour-totalFixed;
+  const profDays = nets.filter(n=>n>0).length;
+  const lossDays = nets.filter(n=>n<0).length;
+  const bestIdx = nets.indexOf(Math.max(...nets));
+  const worstIdx = nets.indexOf(Math.min(...nets));
+
+  document.getElementById('weekly-summary').innerHTML = `
+    <div class="result-grid" style="margin-bottom:16px;">
+      <div class="result-card"><div class="rc-label">WEEK NET RESULT</div><div class="rc-value" style="color:${totalNet>=0?'#55AA55':'#CC5555'};">${fmtSigned(totalNet)}</div><div class="rc-sub">All shifts this week</div></div>
+      <div class="result-card"><div class="rc-label">DAYS COVERING COSTS</div><div class="rc-value" style="color:${profDays>=5?'#55AA55':profDays>=3?'#D4903A':'#CC5555'};">${profDays}/7</div><div class="rc-sub">Target: 5+ days</div></div>
+      <div class="result-card"><div class="rc-label">BEST DAY</div><div class="rc-value" style="color:#55AA55;">${weekly[bestIdx].day.slice(0,3)}</div><div class="rc-sub">${fmtSigned(nets[bestIdx])}</div></div>
+      <div class="result-card"><div class="rc-label">WORST DAY</div><div class="rc-value" style="color:#CC5555;">${weekly[worstIdx].day.slice(0,3)}</div><div class="rc-sub">${fmtSigned(nets[worstIdx])}</div></div>
+    </div>
+    <div class="card">
+      <div class="card-head" style="background:#1A1A1A;"><span class="card-title">WEEK TOTALS</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;padding:14px 16px;gap:12px;">
+        <div><div style="font-size:9px;color:#8A8070;letter-spacing:2px;font-family:system-ui;font-weight:600;margin-bottom:4px;">TOTAL COVERS</div><div style="font-size:16px;font-weight:700;">${totalCovers}</div><div style="font-size:11px;color:#8A8070;font-family:system-ui;">Avg ${Math.round(totalCovers/7)}/day</div></div>
+        <div><div style="font-size:9px;color:#8A8070;letter-spacing:2px;font-family:system-ui;font-weight:600;margin-bottom:4px;">TOTAL CONTRIBUTION</div><div style="font-size:16px;font-weight:700;color:#55AA55;">${fmt(totalContrib)}</div><div style="font-size:11px;color:#8A8070;font-family:system-ui;">Avg ${fmt(totalContrib/7)}/day</div></div>
+        <div><div style="font-size:9px;color:#8A8070;letter-spacing:2px;font-family:system-ui;font-weight:600;margin-bottom:4px;">TOTAL LABOUR</div><div style="font-size:16px;font-weight:700;color:#CC5555;">${fmt(totalLabour)}</div><div style="font-size:11px;color:#8A8070;font-family:system-ui;">Avg ${fmt(totalLabour/7)}/day</div></div>
+        <div><div style="font-size:9px;color:#8A8070;letter-spacing:2px;font-family:system-ui;font-weight:600;margin-bottom:4px;">AVG DAILY NET</div><div style="font-size:16px;font-weight:700;color:${totalNet/7>=0?'#55AA55':'#CC5555'};">${fmtSigned(totalNet/7)}</div><div style="font-size:11px;color:#8A8070;font-family:system-ui;">${lossDays} loss day${lossDays!==1?'s':''}</div></div>
+      </div>
+    </div>
+  `;
+}
+
+// ═══ EXPORTS ═══
+function exportCSV() {
+  const esc = val => { const s=String(val||''); return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; };
+  const f = getFixed();
+  let csv = `F&B SHIFT PLANNER EXPORT\r\nExported,${new Date().toLocaleDateString('en-GB')}\r\n\r\n`;
+  csv += `FIXED COSTS\r\nTotal Monthly,${fmt(f.total)}\r\nPer Day,${fmt(f.perDay)}\r\nPer Service,${fmt(f.perService)}\r\n\r\n`;
+  SERVICES.forEach(svc => {
+    const r = calcService(svc); const s = setup[svc]; const sh = shifts[svc];
+    csv += `${SVC_LABELS[svc].toUpperCase()}\r\n`;
+    csv += `Gross Rate,${fmt(r.rate)},Multiplier,${r.multiplier},Real Rate,${fmt(r.realRate)}\r\n`;
+    csv += `Kitchen Staff,${sh.kitchenCount},Floor Staff,${sh.floorCount}\r\n`;
+    csv += s.products.map(p=>`${esc(p.name)} Sold,${p.sold}`).join(',') + '\r\n';
+    csv += `Total Contribution,${fmt(r.totalContrib)},Total Labour (real),${fmt(r.totalLabour)}\r\n`;
+    csv += `Shift Result,${fmtSigned(r.shiftResult)},Contrib/Labour Hr,${fmt(r.contribPerHr)}\r\n`;
+    csv += `Break-Even (mixed),${fmtRound(r.beMixed)},Replacement Ratio,${r.replRatio.toFixed(1)}\r\n\r\n`;
+  });
+  csv += `WEEKLY TRACKER\r\n`;
+  csv += ['DAY','COVERS','CONTRIBUTION','LABOUR','FIXED','NET RESULT','CONTRIB/HR','HOURS'].map(esc).join(',') + '\r\n';
+  weekly.forEach(row => {
+    const net = row.contribution-row.labour-row.fixed;
+    csv += [row.day,row.covers,row.contribution,row.labour,row.fixed,net.toFixed(2),row.contribPerHr,row.hours].map(esc).join(',') + '\r\n';
+  });
+  const blob = new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download=`fb-shift-planner-${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+function emailReport() {
+  const results = {}; SERVICES.forEach(svc=>{results[svc]=calcService(svc);});
+  const totalNet = SERVICES.reduce((s,svc)=>s+results[svc].shiftResult,0);
+  const totalCovers = SERVICES.reduce((s,svc)=>s+results[svc].totalCovers,0);
+  const hotel = document.getElementById('week-hotel')?.value||'My Hotel';
+  const date = document.getElementById('summary-date')?.value||new Date().toLocaleDateString('en-GB');
+  let body = `F&B SHIFT REPORT — ${hotel}\nDate: ${date}\n===============================\n\n`;
+  SERVICES.forEach(svc => {
+    const r = results[svc];
+    body += `${SVC_ICONS[svc]} ${SVC_LABELS[svc].toUpperCase()}\n`;
+    body += `  Covers: ${r.totalCovers}  |  Result: ${fmtSigned(r.shiftResult)}  |  Contrib/hr: ${fmt(r.contribPerHr)} (real rate: ${fmt(r.realRate)})\n\n`;
+  });
+  body += `TOTAL\nCovers: ${totalCovers}  |  Net Day Shift Result: ${fmtSigned(totalNet)}\n\n--\nHotel Mastery Hub — F&B Shift Planner`;
+  window.location.href=`mailto:?subject=${encodeURIComponent('F&B Shift Report — '+hotel+' — '+date)}&body=${encodeURIComponent(body)}`;
+}
+
+function backupData() {
+  const data = {
+    tool:'HMH F&B Shift Planner', version:'1.0', exported:new Date().toISOString(),
+    setup, shifts, weekly,
+    fixedManager:document.getElementById('fixed-manager')?.value||'',
+    fixedOther:document.getElementById('fixed-other')?.value||'',
+    fixedExtra:document.getElementById('fixed-extra')?.value||'',
+    summaryDate:document.getElementById('summary-date')?.value||'',
+    weekOf:document.getElementById('week-of')?.value||'',
+    weekHotel:document.getElementById('week-hotel')?.value||'',
+    weekManager:document.getElementById('week-manager')?.value||'',
+  };
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download=`fb-shift-planner-backup-${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+function restoreData(input) {
+  const file=input.files[0]; if(!file) return;
+  if(!confirm('This will replace ALL current data. Continue?')) { input.value=''; return; }
+  const reader=new FileReader();
+  reader.onload=function(e){
+    try {
+      const d=JSON.parse(e.target.result);
+      if(!d.tool||!d.tool.includes('Shift Planner')) { alert('This does not appear to be an F&B Shift Planner backup.'); return; }
+      if(d.setup) setup=d.setup;
+      if(d.shifts) shifts=d.shifts;
+      if(d.weekly) weekly=d.weekly;
+      ['fixedManager','fixedOther','fixedExtra','summaryDate','weekOf','weekHotel','weekManager'].forEach(k=>{
+        const id=k.replace(/([A-Z])/g,'-$1').toLowerCase();
+        if(d[k]&&document.getElementById(id)) document.getElementById(id).value=d[k];
+      });
+      save(); setTab('summary');
+      alert('Backup restored. Exported: '+new Date(d.exported).toLocaleDateString('en-GB'));
+    } catch(err) { alert('Could not read file. Make sure it is a valid F&B Shift Planner backup.'); }
+    input.value='';
+  };
+  reader.readAsText(file);
+}
+
+// ═══ INIT ═══
+(function(){
+  try {
+    const saved=localStorage.getItem(LS_KEY);
+    if(saved){
+      const d=JSON.parse(saved);
+      if(d.setup) setup=d.setup;
+      if(d.shifts) shifts=d.shifts;
+      if(d.weekly) weekly=d.weekly;
+      ['fixedManager','fixedOther','fixedExtra','summaryDate','weekOf','weekHotel','weekManager'].forEach(k=>{
+        const id=k.replace(/([A-Z])/g,'-$1').toLowerCase();
+        if(d[k]&&document.getElementById(id)) document.getElementById(id).value=d[k];
+      });
+    }
+  } catch(e){}
+})();
+</script>
+</body>
+</html>
