@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maintenance Checklist Generator -- Hotel Mastery Hub</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:Georgia,serif; background:#F8F5F0; min-height:100vh; color:#1A1A1A; }
+.header { background:#1A1A1A; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+.hb { color:#B8962E; font-size:10px; letter-spacing:4px; font-family:system-ui; font-weight:600; }
+.hs { color:#8A8070; font-size:10px; letter-spacing:3px; font-family:system-ui; margin-left:10px; }
+.header-btns { display:flex; gap:6px; flex-wrap:wrap; }
+.btn-hdr { padding:5px 12px; font-size:10px; letter-spacing:1px; cursor:pointer; font-family:system-ui; font-weight:600; border:1px solid rgba(184,150,46,0.4); color:#D4AF5A; background:transparent; }
+.btn-hdr.gold { background:#B8962E; color:#1A1A1A; border-color:#B8962E; }
+.tabs { background:#111; display:flex; overflow-x:auto; border-bottom:2px solid #2A2A2A; }
+.tab { padding:11px 16px; font-size:10px; letter-spacing:2px; font-family:system-ui; font-weight:600; color:#8A8070; cursor:pointer; white-space:nowrap; border-bottom:3px solid transparent; margin-bottom:-2px; flex-shrink:0; }
+.tab:hover { color:#F5F0E8; }
+.tab.active { color:#B8962E; border-bottom-color:#B8962E; }
+.wrap { max-width:960px; margin:0 auto; padding:24px 16px 60px; }
+.section { display:none; }
+.section.active { display:block; }
+.card { background:#fff; border:1px solid #E5DDD0; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:16px; }
+.card-head { padding:10px 18px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:6px; }
+.card-title { font-size:11px; font-weight:700; color:#F5F0E8; letter-spacing:1px; font-family:system-ui; }
+.card-body { padding:16px 18px; }
+label { display:block; font-size:10px; color:#8A8070; letter-spacing:2px; font-family:system-ui; font-weight:600; margin-bottom:5px; }
+input[type=text] { width:100%; padding:8px 10px; border:1px solid #E5DDD0; font-size:13px; font-family:system-ui; background:#FAFAFA; color:#1A1A1A; outline:none; }
+input[type=text]:focus { border-color:#B8962E; }
+.btn-gold { background:#B8962E; border:none; color:#1A1A1A; padding:9px 18px; font-size:11px; font-family:system-ui; font-weight:700; letter-spacing:1px; cursor:pointer; }
+.btn-gold:hover { background:#D4AF5A; }
+.btn-sec { background:#fff; border:1px solid #E5DDD0; color:#8A8070; padding:7px 14px; font-size:11px; font-family:system-ui; font-weight:600; cursor:pointer; }
+.btn-sec:hover { border-color:#B8962E; color:#B8962E; }
+.btn-freq { padding:6px 14px; font-size:11px; font-family:system-ui; font-weight:600; cursor:pointer; border:1px solid #E5DDD0; background:#fff; color:#8A8070; }
+.btn-freq.active { background:#1A1A1A; color:#B8962E; border-color:#1A1A1A; }
+.del-btn { background:transparent; border:none; color:#CCC; cursor:pointer; font-size:14px; padding:2px 6px; }
+.del-btn:hover { color:#CC5555; }
+.add-btn { background:#F8F5F0; border:1px dashed #E5DDD0; color:#8A8070; padding:7px; font-size:11px; font-family:system-ui; cursor:pointer; width:100%; text-align:center; margin-top:4px; }
+.add-btn:hover { border-color:#B8962E; color:#B8962E; }
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.field { margin-bottom:12px; }
+/* FREQ BADGE */
+.freq-badge { display:inline-block; font-size:9px; font-weight:700; font-family:system-ui; padding:2px 7px; letter-spacing:1px; }
+/* AREA TOGGLE */
+.area-toggle { padding:10px 14px; cursor:pointer; border:2px solid transparent; transition:border-color 0.15s; display:flex; align-items:center; justify-content:space-between; background:#fff; border-bottom:1px solid #F0EBE3; }
+.area-toggle.selected { border-left:3px solid #B8962E; background:#FFFDF5; }
+/* CHECKLIST ITEM */
+.cl-item { display:flex; align-items:center; gap:10px; padding:9px 14px; border-bottom:1px solid #F0EBE3; font-size:13px; font-family:system-ui; }
+.cl-item:last-child { border-bottom:none; }
+.cl-item input[type=checkbox] { width:16px; height:16px; accent-color:#B8962E; flex-shrink:0; }
+.cl-item .item-text { flex:1; }
+.cl-item.checked .item-text { text-decoration:line-through; color:#8A8070; }
+/* STEP INDICATOR */
+.step-bar { background:#111; padding:8px 16px; display:flex; gap:16px; border-bottom:1px solid #2A2A2A; }
+.step-dot { display:flex; align-items:center; gap:6px; font-size:10px; font-family:system-ui; letter-spacing:1px; color:#8A8070; }
+.step-dot.active { color:#B8962E; }
+.step-dot.done { color:#55AA55; }
+.step-num { width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; font-family:system-ui; flex-shrink:0; }
+/* GUIDE */
+.guide-step { display:flex; border-bottom:1px solid #F0EBE3; padding:13px 16px; align-items:flex-start; }
+.guide-step:last-child { border-bottom:none; }
+.guide-circle { width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:system-ui; flex-shrink:0; margin-right:12px; background:#B8962E; color:#1A1A1A; }
+.info-modal { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); z-index:999; align-items:center; justify-content:center; padding:20px; }
+.info-modal.open { display:flex; }
+.info-box { background:#fff; max-width:440px; width:100%; padding:24px; position:relative; }
+.example-notice { background:#1A3A5C; padding:10px 16px; font-size:12px; color:#fff; font-family:system-ui; margin-bottom:14px; }
+.dl-bar { background:#F8F5F0; border-top:2px solid #E5DDD0; padding:12px 18px; display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:16px; }
+.footer-note { text-align:center; margin-top:28px; color:#8A8070; font-size:11px; font-family:system-ui; letter-spacing:2px; }
+@media (max-width:700px) { .grid2 { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div style="display:flex;align-items:center;">
+    <span class="hb">HOTEL MASTERY HUB</span>
+    <span class="hs">&middot; MAINTENANCE CHECKLIST GENERATOR</span>
+  </div>
+  <div class="header-btns">
+    <button class="btn-hdr" onclick="exportCSV()">CSV</button>
+    <button class="btn-hdr" onclick="emailCurrentTab()">&#9993;</button>
+    <button class="btn-hdr gold" onclick="printCurrentTab()">PDF</button>
+    <button class="btn-hdr" onclick="backupData()">BACKUP &#8595;</button>
+    <button class="btn-hdr" onclick="document.getElementById('restore-input').click()">RESTORE &#8593;</button>
+    <input type="file" id="restore-input" accept=".json" style="display:none" onchange="restoreData(this)">
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" id="tab-guide" onclick="setTab('guide')">HOW TO USE</div>
+  <div class="tab" id="tab-build" onclick="setTab('build')">BUILD</div>
+  <div class="tab" id="tab-checklist" onclick="setTab('checklist')">YOUR CHECKLIST</div>
+</div>
+
+<div class="info-modal" id="info-modal">
+  <div class="info-box">
+    <button onclick="closeInfo()" style="position:absolute;top:12px;right:14px;background:transparent;border:none;font-size:20px;cursor:pointer;color:#8A8070;">×</button>
+    <div id="info-title" style="font-size:10px;color:#B8962E;letter-spacing:3px;font-family:system-ui;font-weight:600;margin-bottom:8px;padding-right:20px;"></div>
+    <div id="info-body" style="font-size:13px;color:#1A1A1A;font-family:system-ui;line-height:1.7;"></div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- HOW TO USE -->
+<div class="section active" id="section-guide">
+  <div style="background:#1A1A1A;padding:18px 24px;margin-bottom:20px;">
+    <div style="font-size:10px;color:#B8962E;letter-spacing:4px;font-family:system-ui;font-weight:600;margin-bottom:5px;">HOTEL MASTERY HUB</div>
+    <div style="font-size:20px;color:#F5F0E8;font-weight:700;margin-bottom:3px;">Maintenance Checklist Generator</div>
+    <div style="font-size:12px;color:#8A8070;font-family:system-ui;">Build daily, weekly, and monthly maintenance checklists for every area of your property.</div>
+  </div>
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#1E4620;"><span class="card-title">HOW TO USE</span></div>
+    <div class="card-body" style="padding:0;">
+      <div class="guide-step"><div class="guide-circle">1</div><div><div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">BUILD tab — select areas and customise items</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Choose which hotel areas apply to your property. Add or remove items from daily, weekly, and monthly checklists. Add custom areas if needed.</div></div></div>
+      <div class="guide-step"><div class="guide-circle">2</div><div><div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">YOUR CHECKLIST tab — use and tick off</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Switch between Daily, Weekly, and Monthly view. Tick items as you complete them. Download the active checklist as a PDF reference card.</div></div></div>
+      <div class="guide-step" style="border-bottom:none;"><div class="guide-circle">3</div><div><div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Download your checklist</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Use DOWNLOAD THIS PAGE ↓ on the checklist tab to print the active frequency as a standalone reference card for your maintenance team.</div></div></div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#2A2A2A;"><span class="card-title">EXPORT OPTIONS</span></div>
+    <div class="card-body" style="padding:0;">
+      <div style="padding:12px 16px;border-bottom:1px solid #F0EBE3;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:4px;"><span style="background:#1A1A1A;color:#B8962E;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">CSV</span><span style="font-size:13px;font-weight:700;">All areas and frequencies</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Downloads the complete checklist across all selected areas and all three frequencies.</p></div>
+      <div style="padding:12px 16px;border-bottom:1px solid #F0EBE3;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:4px;"><span style="background:#1A1A1A;color:#B8962E;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">&#9993;</span><span style="font-size:13px;font-weight:700;">Email — active frequency</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Sends the currently active checklist frequency (daily/weekly/monthly) as plain text.</p></div>
+      <div style="padding:12px 16px;border-bottom:1px solid #F0EBE3;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:4px;"><span style="background:#B8962E;color:#1A1A1A;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">PDF</span><span style="font-size:13px;font-weight:700;">Print — current tab</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Prints the current tab. On the checklist tab it prints the active frequency.</p></div>
+      <div style="padding:12px 16px;border-bottom:1px solid #F0EBE3;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:4px;"><span style="background:#B8962E;color:#1A1A1A;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">BACKUP &#8595;</span><span style="font-size:13px;font-weight:700;">Save all data as JSON</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Complete backup of all areas, items, and customisations.</p></div>
+      <div style="padding:12px 16px;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:4px;"><span style="background:#B8962E;color:#1A1A1A;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">RESTORE &#8593;</span><span style="font-size:13px;font-weight:700;">Load from backup</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Select a .json backup. Confirms before replacing.</p></div>
+    </div>
+  </div>
+  <div style="background:#1A1A1A;padding:13px 18px;margin-bottom:20px;">
+    <div style="font-size:10px;color:#B8962E;letter-spacing:3px;font-family:system-ui;font-weight:600;margin-bottom:6px;">ONE RULE</div>
+    <p style="font-size:13px;color:#F5F0E8;font-family:system-ui;line-height:1.7;">A maintenance issue found on a checklist costs a few minutes to fix. The same issue found by a guest costs a review, a refund, and a reputation.</p>
+  </div>
+  <div class="dl-bar"><button class="btn-gold" onclick="setTab('build')">GO TO BUILD &rarr;</button></div>
+  <div class="footer-note">HOTEL MASTERY HUB &middot; MAINTENANCE CHECKLIST GENERATOR</div>
+</div>
+
+<!-- BUILD -->
+<div class="section" id="section-build">
+  <div style="margin-bottom:14px;">
+    <h2 style="font-size:20px;font-weight:700;">Build Your Checklist</h2>
+    <p style="font-size:12px;color:#8A8070;font-family:system-ui;margin-top:2px;">Select areas and customise items for each frequency.</p>
+  </div>
+  <div class="example-notice">&#9432; Pre-filled with standard hotel maintenance items — add, edit, or remove to match your property.</div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#1A1A1A;"><span class="card-title">PROPERTY</span></div>
+    <div class="card-body">
+      <div class="grid2">
+        <div class="field"><label>HOTEL NAME</label><input type="text" id="b-hotel" value="Hotel Bella Vista" oninput="save()"></div>
+        <div class="field"><label>MANAGER</label><input type="text" id="b-manager" value="Anna Kovacs" oninput="save()"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#1A1A1A;"><span class="card-title">AREAS — click to select/deselect</span></div>
+    <div id="area-list"></div>
+    <div style="padding:10px 14px;border-top:1px solid #E5DDD0;">
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input type="text" id="new-area-input" placeholder="Add custom area..." style="flex:1;padding:7px 10px;border:1px solid #E5DDD0;font-size:12px;font-family:system-ui;background:#FAFAFA;outline:none;">
+        <button class="btn-sec" onclick="addCustomArea()" style="white-space:nowrap;">+ ADD AREA</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="items-editor"></div>
+
+  <div class="dl-bar">
+    <button class="btn-gold" onclick="setTab('checklist')">VIEW YOUR CHECKLIST &rarr;</button>
+    <button class="btn-sec" onclick="printCurrentTab()">DOWNLOAD THIS PAGE &#8595;</button>
+    <button class="btn-sec" onclick="emailCurrentTab()">&#9993; EMAIL THIS PAGE</button>
+  </div>
+  <div class="footer-note">HOTEL MASTERY HUB &middot; MAINTENANCE CHECKLIST GENERATOR</div>
+</div>
+
+<!-- YOUR CHECKLIST -->
+<div class="section" id="section-checklist">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+    <div>
+      <h2 style="font-size:20px;font-weight:700;">Your Checklist</h2>
+      <p style="font-size:12px;color:#8A8070;font-family:system-ui;margin-top:2px;">Tick items as you complete them. Switch frequency using the buttons below.</p>
+    </div>
+    <div style="display:flex;gap:6px;">
+      <button class="btn-freq active" id="freq-daily" onclick="setFreq('daily')">DAILY</button>
+      <button class="btn-freq" id="freq-weekly" onclick="setFreq('weekly')">WEEKLY</button>
+      <button class="btn-freq" id="freq-monthly" onclick="setFreq('monthly')">MONTHLY</button>
+    </div>
+  </div>
+  <div id="checklist-container"></div>
+  <div class="dl-bar">
+    <button class="btn-sec" onclick="printCurrentTab()">DOWNLOAD THIS PAGE &#8595;</button>
+    <button class="btn-sec" onclick="exportCSV()">DOWNLOAD ALL AS CSV &#8595;</button>
+    <button class="btn-sec" onclick="emailCurrentTab()">&#9993; EMAIL THIS PAGE</button>
+    <button class="btn-sec" onclick="resetChecks()" style="margin-left:auto;">RESET TICKS</button>
+  </div>
+  <div class="footer-note">HOTEL MASTERY HUB &middot; MAINTENANCE CHECKLIST GENERATOR</div>
+</div>
+
+</div>
+
+<script>
+const LS_KEY = 'hmh-checklist-gen-v2';
+let currentTab = 'guide';
+let activeFreq = 'daily';
+
+const FREQ_COLORS = {daily:'#2E7D32',weekly:'#1A6B8A',monthly:'#6A1F6E'};
+
+const DEFAULT_AREAS = ['Rooms','Bathrooms','Public Areas','Kitchen / Breakfast','Technical Systems'];
+const DEFAULT_ITEMS = {
+  'Rooms':{ daily:['Working lights in all fixtures','No visible leaks or water damage','Door locks and handles functioning','Basic room condition — no obvious damage'], weekly:['Door closing and latching properly','Window operation and seals','Furniture for wear or damage','Small defects not visible during daily clean'], monthly:['Ventilation and extractor fans','Bathroom seals and grout','Furniture stability check','Curtain rails and blackout blinds'] },
+  'Bathrooms':{ daily:['No dripping taps or leaks','Extractor fan working','Toilet flush functioning','Flooring — no loose tiles'], weekly:['Water pressure check','Shower seals and silicone','Drain flow speed','Tile grout condition'], monthly:['Silicone resealing if needed','Showerhead descaling','Pipe connections under sinks','Ventilation filter cleaning'] },
+  'Public Areas':{ daily:['Lighting in corridors and lobby','No trip hazards','Exit signs illuminated','Entrance doors operating smoothly'], weekly:['Lift operation and indicators','Fire door closers functioning','Floor surfaces for wear or damage','Signage legibility'], monthly:['Emergency lighting test','CCTV camera views clear','Outdoor areas and drainage','Parking area surfaces'] },
+  'Kitchen / Breakfast':{ daily:['Fridge and freezer temperatures logged','Extraction fan running','No unusual smells or leaks','Equipment surfaces — no damage'], weekly:['Equipment seals and gaskets','Drainage and grease traps','Gas connections visual check','Dishwasher spray arms and filters'], monthly:['Deep clean of extraction canopy','Refrigeration coil check','Gas equipment service log','Pest inspection walk-through'] },
+  'Technical Systems':{ daily:['WiFi connectivity — test in guest areas','TV systems working in rooms','PMS and booking system accessible','Phone lines functioning'], weekly:['Key card system — test all door readers','CCTV recording check','Heating/cooling — test a sample room','Alarm system indicator lights'], monthly:['Boiler and water heater service log','Electrical consumer unit visual check','Fire alarm test','Emergency generator run test'] },
+};
+
+let selectedAreas = ['Rooms','Bathrooms','Public Areas','Kitchen / Breakfast','Technical Systems'];
+let customAreas = [];
+let checklists = {};
+let checked = {};
+
+function allAreas() { return [...DEFAULT_AREAS, ...customAreas]; }
+
+function initChecklists() {
+  allAreas().forEach(area => {
+    if(!checklists[area]) {
+      checklists[area] = JSON.parse(JSON.stringify(DEFAULT_ITEMS[area]||{daily:[],weekly:[],monthly:[]}));
+    }
+  });
+}
+
+function save() {
+  try { localStorage.setItem(LS_KEY, JSON.stringify({
+    selectedAreas, customAreas, checklists, checked, activeFreq,
+    hotel: document.getElementById('b-hotel')?.value||'',
+    manager: document.getElementById('b-manager')?.value||'',
+  })); } catch(e) {}
+}
+
+function closeInfo() { document.getElementById('info-modal').classList.remove('open'); }
+
+function setTab(tab) {
+  currentTab = tab;
+  ['guide','build','checklist'].forEach(t => {
+    document.getElementById('section-'+t).classList.toggle('active', t===tab);
+    document.getElementById('tab-'+t).classList.toggle('active', t===tab);
+  });
+  if(tab==='build') renderBuild();
+  if(tab==='checklist') renderChecklist();
+}
+
+function setFreq(freq) {
+  activeFreq = freq;
+  ['daily','weekly','monthly'].forEach(f => {
+    document.getElementById('freq-'+f).classList.toggle('active', f===freq);
+  });
+  save(); renderChecklist();
+}
+
+// ═══ BUILD ═══
+function renderBuild() {
+  renderAreaList();
+  renderItemsEditor();
+}
+
+function renderAreaList() {
+  const el = document.getElementById('area-list'); if(!el) return;
+  el.innerHTML = allAreas().map(area => `
+    <div class="area-toggle ${selectedAreas.includes(area)?'selected':''}" onclick="toggleArea('${area.replace(/'/g,"\\'")}')">
+      <span style="font-size:13px;font-family:system-ui;font-weight:${selectedAreas.includes(area)?'700':'400'};">${area}</span>
+      <div style="display:flex;align-items:center;gap:8px;">
+        ${customAreas.includes(area)?`<button class="del-btn" onclick="event.stopPropagation();deleteCustomArea('${area.replace(/'/g,"\\'")}')">x</button>`:''}
+        <span style="font-size:11px;font-family:system-ui;color:${selectedAreas.includes(area)?'#B8962E':'#8A8070'};">${selectedAreas.includes(area)?'SELECTED':'click to select'}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleArea(area) {
+  if(selectedAreas.includes(area)) selectedAreas = selectedAreas.filter(a=>a!==area);
+  else selectedAreas.push(area);
+  save(); renderBuild();
+}
+
+function addCustomArea() {
+  const input = document.getElementById('new-area-input');
+  const name = input?.value?.trim(); if(!name) return;
+  if(allAreas().includes(name)) return;
+  customAreas.push(name);
+  selectedAreas.push(name);
+  checklists[name] = {daily:[],weekly:[],monthly:[]};
+  input.value = '';
+  save(); renderBuild();
+}
+
+function deleteCustomArea(area) {
+  customAreas = customAreas.filter(a=>a!==area);
+  selectedAreas = selectedAreas.filter(a=>a!==area);
+  delete checklists[area];
+  save(); renderBuild();
+}
+
+function renderItemsEditor() {
+  const el = document.getElementById('items-editor'); if(!el) return;
+  el.innerHTML = selectedAreas.map(area => `
+    <div class="card" style="margin-bottom:14px;">
+      <div class="card-head" style="background:#1A1A1A;"><span class="card-title">${area.toUpperCase()}</span></div>
+      ${['daily','weekly','monthly'].map(freq => `
+        <div style="border-top:1px solid #E5DDD0;">
+          <div style="padding:8px 14px;background:#F8F5F0;display:flex;align-items:center;justify-content:space-between;">
+            <span style="font-size:10px;font-weight:700;font-family:system-ui;color:${FREQ_COLORS[freq]};letter-spacing:2px;">${freq.toUpperCase()}</span>
+          </div>
+          <div id="items-${slugify(area)}-${freq}">
+            ${(checklists[area]?.[freq]||[]).map((item,i) => `
+              <div style="display:flex;align-items:center;gap:8px;padding:6px 14px;border-bottom:1px solid #F0EBE3;background:${i%2===0?'#fff':'#FAFAFA'};">
+                <span style="font-size:12px;font-family:system-ui;flex:1;">${item}</span>
+                <button class="del-btn" data-area="${area}" data-freq="${freq}" data-idx="${i}" onclick="deleteItem(this)">x</button>
+              </div>
+            `).join('')}
+          </div>
+          <div style="display:flex;gap:6px;padding:8px 14px;border-top:1px solid #F0EBE3;">
+            <input type="text" id="new-item-${slugify(area)}-${freq}" placeholder="Add item..." style="flex:1;padding:6px 8px;border:1px solid #E5DDD0;font-size:12px;font-family:system-ui;background:#FAFAFA;outline:none;" onkeydown="if(event.key==='Enter')addItem('${area}','${freq}')">
+            <button class="btn-sec" style="font-size:10px;padding:4px 10px;" data-area="${area}" data-freq="${freq}" onclick="addItem('${area}','${freq}')">+ ADD</button>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+}
+
+function slugify(s) { return s.toLowerCase().replace(/[^a-z0-9]/g,'_'); }
+
+function addItem(area, freq) {
+  const inputId = `new-item-${slugify(area)}-${freq}`;
+  const input = document.getElementById(inputId);
+  const val = input?.value?.trim(); if(!val) return;
+  if(!checklists[area]) checklists[area] = {daily:[],weekly:[],monthly:[]};
+  if(!checklists[area][freq]) checklists[area][freq] = [];
+  checklists[area][freq].push(val);
+  input.value = '';
+  save(); renderItemsEditor();
+}
+
+function deleteItem(el) {
+  const area = el.getAttribute('data-area');
+  const freq = el.getAttribute('data-freq');
+  const idx = parseInt(el.getAttribute('data-idx'));
+  checklists[area][freq].splice(idx,1);
+  save(); renderItemsEditor();
+}
+
+// ═══ CHECKLIST ═══
+function renderChecklist() {
+  const hotel = document.getElementById('b-hotel')?.value||'My Hotel';
+  const container = document.getElementById('checklist-container'); if(!container) return;
+  const freq = activeFreq;
+  const date = new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+  container.innerHTML = `
+    <div style="background:#1A1A1A;padding:12px 18px;margin-bottom:14px;">
+      <div style="font-size:9px;color:#B8962E;letter-spacing:3px;font-family:system-ui;font-weight:600;margin-bottom:3px;">MAINTENANCE CHECKLIST</div>
+      <div style="font-size:15px;color:#F5F0E8;font-weight:700;">${hotel} · ${freq.charAt(0).toUpperCase()+freq.slice(1)} Checks</div>
+      <div style="font-size:11px;color:#8A8070;font-family:system-ui;margin-top:2px;">${date}</div>
+    </div>
+    ${selectedAreas.map(area => {
+      const items = checklists[area]?.[freq]||[];
+      if(!items.length) return '';
+      return `
+        <div class="card" style="margin-bottom:12px;">
+          <div style="padding:8px 14px;background:#1A1A1A;display:flex;align-items:center;justify-content:space-between;">
+            <span style="font-size:11px;font-weight:700;color:#fff;letter-spacing:1px;font-family:system-ui;">${area.toUpperCase()}</span>
+            <span style="font-size:9px;font-weight:700;font-family:system-ui;padding:2px 8px;background:${FREQ_COLORS[freq]};color:#fff;">${freq.toUpperCase()}</span>
+          </div>
+          ${items.map((item,i) => {
+            const key = `${area}-${freq}-${i}`;
+            return `<div class="cl-item ${checked[key]?'checked':''}">
+              <input type="checkbox" ${checked[key]?'checked':''} data-key="${key}" onchange="toggleCheck(this)">
+              <span class="item-text">${item}</span>
+            </div>`;
+          }).join('')}
+        </div>
+      `;
+    }).join('')}
+  `;
+}
+
+function toggleCheck(el) {
+  const key = el.getAttribute('data-key');
+  checked[key] = el.checked;
+  el.closest('.cl-item').classList.toggle('checked', el.checked);
+  save();
+}
+
+function resetChecks() {
+  if(!confirm('Reset all ticks for the current frequency?')) return;
+  Object.keys(checked).forEach(k => { if(k.includes('-'+activeFreq+'-')) delete checked[k]; });
+  save(); renderChecklist();
+}
+
+// ═══ PDF ═══
+function printCurrentTab() {
+  const el = document.getElementById('section-'+currentTab); if(!el) return;
+  const css = Array.from(document.styleSheets).map(s=>{ try { return Array.from(s.cssRules).map(r=>r.cssText).join('\n'); } catch(e){return '';} }).join('\n');
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>${css} .section{display:block!important;} .dl-bar,.btn-gold,.btn-sec,.add-btn,.del-btn{display:none!important;} @media print{body{margin:0;padding:12px;}}</style></head><body>${el.innerHTML}</body></html>`;
+  const blob = new Blob([html],{type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const win = window.open(url,'_blank');
+  if(win) { win.onload=()=>{ win.print(); setTimeout(()=>URL.revokeObjectURL(url),1000); }; }
+}
+
+// ═══ EMAIL ═══
+function emailCurrentTab() {
+  const hotel = document.getElementById('b-hotel')?.value||'My Hotel';
+  let subject = `Maintenance Checklist — ${hotel}`;
+  let body = `MAINTENANCE CHECKLIST — ${hotel}\n${activeFreq.toUpperCase()} CHECKS\n${new Date().toLocaleDateString('en-GB')}\n===============================\n\n`;
+  selectedAreas.forEach(area => {
+    const items = checklists[area]?.[activeFreq]||[];
+    if(!items.length) return;
+    body += `${area.toUpperCase()}\n`;
+    items.forEach((item,i) => { body += `  ${i+1}. ${item}\n`; });
+    body += '\n';
+  });
+  body += `--\nHotel Mastery Hub — Maintenance Checklist Generator`;
+  window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+// ═══ CSV ═══
+function exportCSV() {
+  const esc = val => { const s=String(val||''); return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; };
+  const hotel = document.getElementById('b-hotel')?.value||'';
+  let csv = `MAINTENANCE CHECKLIST\r\nHotel,${esc(hotel)}\r\nExported,${new Date().toLocaleDateString('en-GB')}\r\n\r\n`;
+  ['daily','weekly','monthly'].forEach(freq => {
+    csv += `${freq.toUpperCase()} CHECKS\r\nAREA,ITEM\r\n`;
+    selectedAreas.forEach(area => {
+      (checklists[area]?.[freq]||[]).forEach(item => { csv += `${esc(area)},${esc(item)}\r\n`; });
+    });
+    csv += '\r\n';
+  });
+  const blob = new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download=`maintenance-checklist-${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+// ═══ BACKUP / RESTORE ═══
+function backupData() {
+  const data = { tool:'HMH Maintenance Checklist Generator', version:'2.0', exported:new Date().toISOString(),
+    selectedAreas, customAreas, checklists, checked, activeFreq,
+    hotel: document.getElementById('b-hotel')?.value||'', manager: document.getElementById('b-manager')?.value||'' };
+  const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download=`checklist-backup-${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+function restoreData(input) {
+  const file = input.files[0]; if(!file) return;
+  if(!confirm('This will replace ALL current data. Continue?')) { input.value=''; return; }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const d = JSON.parse(e.target.result);
+      if(!d.tool||!d.tool.includes('Checklist Generator')) { alert('This does not appear to be a Checklist Generator backup.'); return; }
+      if(d.selectedAreas) selectedAreas=d.selectedAreas;
+      if(d.customAreas) customAreas=d.customAreas;
+      if(d.checklists) checklists=d.checklists;
+      if(d.checked) checked=d.checked;
+      if(d.activeFreq) activeFreq=d.activeFreq;
+      if(d.hotel && document.getElementById('b-hotel')) document.getElementById('b-hotel').value=d.hotel;
+      if(d.manager && document.getElementById('b-manager')) document.getElementById('b-manager').value=d.manager;
+      save(); setTab('checklist');
+      alert('Backup restored. Exported: '+new Date(d.exported).toLocaleDateString('en-GB'));
+    } catch(err) { alert('Could not read file.'); }
+    input.value='';
+  };
+  reader.readAsText(file);
+}
+
+// ═══ INIT ═══
+(function(){
+  try {
+    const saved = localStorage.getItem(LS_KEY);
+    if(saved) {
+      const d = JSON.parse(saved);
+      if(d.selectedAreas) selectedAreas=d.selectedAreas;
+      if(d.customAreas) customAreas=d.customAreas;
+      if(d.checklists) checklists=d.checklists;
+      if(d.checked) checked=d.checked;
+      if(d.activeFreq) activeFreq=d.activeFreq;
+      if(d.hotel && document.getElementById('b-hotel')) document.getElementById('b-hotel').value=d.hotel;
+      if(d.manager && document.getElementById('b-manager')) document.getElementById('b-manager').value=d.manager;
+    } else {
+      initChecklists();
+      save();
+    }
+  } catch(e) { initChecklists(); }
+  initChecklists();
+  renderBuild();
+})();
+</script>
+</body>
+</html>
