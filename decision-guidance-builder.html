@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Decision Guidance Builder -- Hotel Mastery Hub</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:Georgia,serif; background:#F8F5F0; min-height:100vh; color:#1A1A1A; }
+.header { background:#1A1A1A; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+.hb { color:#B8962E; font-size:10px; letter-spacing:4px; font-family:system-ui; font-weight:600; }
+.hs { color:#8A8070; font-size:10px; letter-spacing:3px; font-family:system-ui; margin-left:10px; }
+.header-btns { display:flex; gap:6px; flex-wrap:wrap; }
+.btn-hdr { padding:5px 12px; font-size:10px; letter-spacing:1px; cursor:pointer; font-family:system-ui; font-weight:600; border:1px solid rgba(184,150,46,0.4); color:#D4AF5A; background:transparent; }
+.btn-hdr.gold { background:#B8962E; color:#1A1A1A; border-color:#B8962E; }
+.tabs { background:#111; display:flex; overflow-x:auto; border-bottom:2px solid #2A2A2A; }
+.tab { padding:11px 16px; font-size:10px; letter-spacing:2px; font-family:system-ui; font-weight:600; color:#8A8070; cursor:pointer; white-space:nowrap; border-bottom:3px solid transparent; margin-bottom:-2px; flex-shrink:0; }
+.tab:hover { color:#F5F0E8; }
+.tab.active { color:#B8962E; border-bottom-color:#B8962E; }
+.wrap { max-width:1100px; margin:0 auto; padding:24px 16px 60px; }
+.section { display:none; }
+.section.active { display:block; }
+.card { background:#fff; border:1px solid #E5DDD0; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:16px; }
+.card-head { padding:10px 18px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:6px; }
+.card-title { font-size:11px; font-weight:700; color:#F5F0E8; letter-spacing:1px; font-family:system-ui; }
+.card-body { padding:16px 18px; }
+label { display:block; font-size:10px; color:#8A8070; letter-spacing:2px; font-family:system-ui; font-weight:600; margin-bottom:5px; }
+input[type=text] { width:100%; padding:8px 10px; border:1px solid #E5DDD0; font-size:13px; font-family:system-ui; background:#FAFAFA; color:#1A1A1A; outline:none; }
+input[type=text]:focus { border-color:#B8962E; }
+textarea { width:100%; padding:7px 9px; border:none; font-size:12px; font-family:system-ui; background:transparent; color:#1A1A1A; outline:none; resize:none; min-height:54px; line-height:1.5; }
+textarea:focus { background:#FFFDF5; outline:1px solid #B8962E; }
+.info-btn { background:#B8962E; border:none; color:#1A1A1A; width:18px; height:18px; border-radius:50%; font-size:11px; font-weight:700; cursor:pointer; font-family:system-ui; vertical-align:middle; margin-left:4px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; }
+.info-btn:hover { background:#D4AF5A; }
+.btn-gold { background:#B8962E; border:none; color:#1A1A1A; padding:9px 18px; font-size:11px; font-family:system-ui; font-weight:700; letter-spacing:1px; cursor:pointer; }
+.btn-gold:hover { background:#D4AF5A; }
+.btn-sec { background:#fff; border:1px solid #E5DDD0; color:#8A8070; padding:7px 14px; font-size:11px; font-family:system-ui; font-weight:600; cursor:pointer; }
+.btn-sec:hover { border-color:#B8962E; color:#B8962E; }
+.del-btn { background:transparent; border:none; color:#CCC; cursor:pointer; font-size:14px; padding:2px 6px; line-height:1; }
+.del-btn:hover { color:#CC5555; }
+.add-btn { background:#F8F5F0; border:1px dashed #E5DDD0; color:#8A8070; padding:8px; font-size:11px; font-family:system-ui; cursor:pointer; width:100%; text-align:center; margin-top:6px; }
+.add-btn:hover { border-color:#B8962E; color:#B8962E; }
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.field { margin-bottom:12px; }
+/* SEVERITY */
+.sev { display:inline-block; font-size:10px; font-weight:700; font-family:system-ui; padding:2px 8px; border-radius:2px; }
+.sev-l1 { background:#E8F5E9; color:#2E7D32; }
+.sev-l2 { background:#FFF3E0; color:#E65100; }
+.sev-l3 { background:#FFEBEE; color:#C62828; }
+/* GUIDANCE ROW */
+.gr { display:grid; grid-template-columns:1fr 1fr 140px 80px 32px; border-bottom:1px solid #F0EBE3; background:#fff; }
+.gr:nth-child(even) { background:#FAFAFA; }
+.gr-cell { border-right:1px solid #F0EBE3; padding:2px; }
+.gr-cell:last-child { border-right:none; display:flex; align-items:center; justify-content:center; }
+.sev-select { width:100%; padding:5px 6px; border:none; font-size:11px; font-family:system-ui; font-weight:700; background:transparent; outline:none; cursor:pointer; }
+/* GUIDE */
+.guide-step { display:flex; border-bottom:1px solid #F0EBE3; padding:13px 16px; align-items:flex-start; }
+.guide-step:last-child { border-bottom:none; }
+.guide-circle { width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:system-ui; flex-shrink:0; margin-right:12px; background:#B8962E; color:#1A1A1A; }
+/* INFO MODAL */
+.info-modal { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); z-index:999; align-items:center; justify-content:center; padding:20px; }
+.info-modal.open { display:flex; }
+.info-box { background:#fff; max-width:440px; width:100%; padding:24px; position:relative; }
+.example-notice { background:#1A3A5C; padding:10px 16px; font-size:12px; color:#fff; font-family:system-ui; margin-bottom:14px; }
+.dl-bar { background:#F8F5F0; border-top:2px solid #E5DDD0; padding:12px 18px; display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:16px; }
+.footer-note { text-align:center; margin-top:28px; color:#8A8070; font-size:11px; font-family:system-ui; letter-spacing:2px; }
+@media (max-width:700px) { .gr { grid-template-columns:1fr; } .grid2 { grid-template-columns:1fr; } }
+/* MODE TOGGLE */
+.mode-toggle { display:flex; gap:0; border:1px solid #E5DDD0; }
+.mode-btn { padding:7px 16px; font-size:10px; letter-spacing:2px; font-family:system-ui; font-weight:700; cursor:pointer; background:#fff; color:#8A8070; border:none; }
+.mode-btn.active-view { background:#1A1A1A; color:#F5F0E8; }
+.mode-btn.active-edit { background:#D4903A; color:#1A1A1A; }
+.mode-banner { padding:9px 16px; font-size:11px; font-family:system-ui; font-weight:600; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+.mode-banner.view-mode { background:#EFEAE0; color:#8A8070; }
+.mode-banner.edit-mode { background:#FFF3E0; color:#E65100; border:1px solid #D4903A; }
+/* VIEW LIST (clean, print-friendly) */
+.view-row { border-bottom:1px solid #F0EBE3; padding:14px 18px; }
+.view-row:last-child { border-bottom:none; }
+.view-row:nth-child(even) { background:#FAFAFA; }
+.view-head { display:flex; align-items:center; gap:10px; margin-bottom:6px; flex-wrap:wrap; }
+.view-sit { font-size:14px; font-weight:700; color:#1A1A1A; font-family:system-ui; }
+.view-line { font-size:12.5px; color:#1A1A1A; font-family:system-ui; line-height:1.7; margin-bottom:3px; }
+.view-line b { color:#8A8070; font-weight:700; letter-spacing:0.5px; }
+.view-meta { font-size:11.5px; color:#8A8070; font-family:system-ui; line-height:1.6; }
+@media print { .mode-toggle, .mode-banner { display:none!important; } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div style="display:flex;align-items:center;">
+    <span class="hb">HOTEL MASTERY HUB</span>
+    <span class="hs">&middot; DECISION GUIDANCE BUILDER</span>
+  </div>
+  <div class="header-btns">
+    <button class="btn-hdr" onclick="exportCSV()">CSV</button>
+    <button class="btn-hdr" onclick="emailCurrentTab()">&#9993;</button>
+    <button class="btn-hdr gold" onclick="printCurrentTab()">PDF</button>
+    <button class="btn-hdr" onclick="backupData()">BACKUP &#8595;</button>
+    <button class="btn-hdr" onclick="document.getElementById('restore-input').click()">RESTORE &#8593;</button>
+    <input type="file" id="restore-input" accept=".json" style="display:none" onchange="restoreData(this)">
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" id="tab-guide" onclick="setTab('guide')">HOW TO USE</div>
+  <div class="tab" id="tab-arrival" onclick="setTab('arrival')">ARRIVAL</div>
+  <div class="tab" id="tab-stay" onclick="setTab('stay')">STAY</div>
+  <div class="tab" id="tab-departure" onclick="setTab('departure')">DEPARTURE</div>
+  <div class="tab" id="tab-maintenance" onclick="setTab('maintenance')">MAINTENANCE</div>
+  <div class="tab" id="tab-hsk" onclick="setTab('hsk')">HOUSEKEEPING</div>
+  <div class="tab" id="tab-fnb" onclick="setTab('fnb')">F&amp;B</div>
+</div>
+
+<div class="info-modal" id="info-modal">
+  <div class="info-box">
+    <button onclick="closeInfo()" style="position:absolute;top:12px;right:14px;background:transparent;border:none;font-size:20px;cursor:pointer;color:#8A8070;">×</button>
+    <div id="info-title" style="font-size:10px;color:#B8962E;letter-spacing:3px;font-family:system-ui;font-weight:600;margin-bottom:8px;padding-right:20px;"></div>
+    <div id="info-body" style="font-size:13px;color:#1A1A1A;font-family:system-ui;line-height:1.7;"></div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- HOW TO USE -->
+<div class="section active" id="section-guide">
+  <div style="background:#1A1A1A;padding:18px 24px;margin-bottom:20px;">
+    <div style="font-size:10px;color:#B8962E;letter-spacing:4px;font-family:system-ui;font-weight:600;margin-bottom:5px;">HOTEL MASTERY HUB</div>
+    <div style="font-size:20px;color:#F5F0E8;font-weight:700;margin-bottom:3px;">Decision Guidance Builder</div>
+    <div style="font-size:12px;color:#8A8070;font-family:system-ui;">Processes tell people what normally happens. Decision guidance tells people what to do when reality changes.</div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#1A1A1A;"><span class="card-title">WHAT THIS TOOL DOES</span></div>
+    <div class="card-body">
+      <p style="font-size:14px;font-family:system-ui;line-height:1.8;color:#1A1A1A;margin-bottom:12px;">This tool builds your hotel's decision guidance library — what staff should do when situations fall outside the normal process. For each situation, you define the standard response, who handles it, and who to escalate to.</p>
+      <p style="font-size:14px;font-family:system-ui;line-height:1.8;color:#1A1A1A;margin-bottom:12px;">Each situation is marked with a severity level — L1 Low, L2 Medium, L3 High. L3 situations require immediate manager involvement. L1 situations staff can handle independently. Pre-filled with realistic hotel scenarios across six categories.</p>
+      <p style="font-size:14px;font-family:system-ui;line-height:1.8;color:#1A1A1A;">Add, edit, or remove situations freely. Each tab covers one department or phase. Download each tab separately as a clean reference card.</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#5C1A1A;"><span class="card-title">VIEW MODE &amp; EDIT MODE</span></div>
+    <div class="card-body" style="padding:0;">
+      <div style="padding:12px 16px;border-bottom:1px solid #F0EBE3;display:flex;align-items:center;gap:12px;"><span style="background:#1A1A1A;color:#F5F0E8;font-size:10px;font-weight:700;font-family:system-ui;padding:4px 12px;letter-spacing:1px;">VIEW</span><div><div style="font-size:12px;font-weight:700;color:#1A1A1A;margin-bottom:2px;">Default mode — clean, read-only</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;">Every category tab opens in VIEW mode. All situations are shown clearly as a reference list — nothing can be accidentally changed. This is the version that prints and emails cleanly.</div></div></div>
+      <div style="padding:12px 16px;display:flex;align-items:center;gap:12px;"><span style="background:#D4903A;color:#1A1A1A;font-size:10px;font-weight:700;font-family:system-ui;padding:4px 12px;letter-spacing:1px;">EDIT</span><div><div style="font-size:12px;font-weight:700;color:#1A1A1A;margin-bottom:2px;">Switch on deliberately to make changes</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;">Click ✎ EDIT at the top of any category tab to add, rewrite, or delete situations. An orange banner reminds you that you're editing. Switch back to VIEW when done — nothing is lost, VIEW just shows the same data cleanly.</div></div></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#1A1A1A;"><span class="card-title">SEVERITY LEVELS</span></div>
+    <div class="card-body" style="padding:0;">
+      <div style="padding:12px 16px;border-bottom:1px solid #F0EBE3;display:flex;align-items:center;gap:12px;"><span class="sev sev-l1" style="font-size:11px;width:80px;text-align:center;">L1 LOW</span><div><div style="font-size:12px;font-weight:700;color:#1A1A1A;margin-bottom:2px;">Staff can handle independently</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;">No manager involvement needed unless situation escalates. Document for review.</div></div></div>
+      <div style="padding:12px 16px;border-bottom:1px solid #F0EBE3;display:flex;align-items:center;gap:12px;"><span class="sev sev-l2" style="font-size:11px;width:80px;text-align:center;">L2 MEDIUM</span><div><div style="font-size:12px;font-weight:700;color:#1A1A1A;margin-bottom:2px;">Inform manager — handle with guidance</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;">Staff take first action but manager is informed. May need manager sign-off on resolution.</div></div></div>
+      <div style="padding:12px 16px;display:flex;align-items:center;gap:12px;"><span class="sev sev-l3" style="font-size:11px;width:80px;text-align:center;">L3 HIGH</span><div><div style="font-size:12px;font-weight:700;color:#1A1A1A;margin-bottom:2px;">Manager involved immediately</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;">Do not attempt to resolve alone. Contact manager immediately. Document everything.</div></div></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#1E4620;"><span class="card-title">HOW TO USE</span></div>
+    <div class="card-body" style="padding:0;">
+      <div class="guide-step"><div class="guide-circle">1</div><div><div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Open a category tab — it starts in VIEW mode</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Each tab covers one area — Arrival, Stay, Departure, Maintenance, Housekeeping, F&B. VIEW mode shows every situation clearly, laid out for reading or printing. Nothing can be changed by accident here.</div></div></div>
+      <div class="guide-step"><div class="guide-circle">2</div><div><div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Click ✎ EDIT only when you want to make changes</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">EDIT mode shows an orange warning banner and turns every field into an editable box. Rewrite responses, add situations, delete rows, or change the severity dropdown. Click ✓ VIEW when you're done — your changes are saved automatically.</div></div></div>
+      <div class="guide-step"><div class="guide-circle">3</div><div><div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Set the severity level for each situation</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">In EDIT mode, use the dropdown to mark each situation L1, L2, or L3. This tells staff instantly how urgently they need to act and whether to involve a manager.</div></div></div>
+      <div class="guide-step" style="border-bottom:none;"><div class="guide-circle">4</div><div><div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Download each tab as a reference card</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Use DOWNLOAD THIS PAGE ↓ at the bottom of each tab. It always prints the clean VIEW layout — even if you happen to be in EDIT mode when you click it. Print it and keep it at the front desk, in the housekeeping room, or wherever staff need it.</div></div></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#2A2A2A;"><span class="card-title">EXPORT OPTIONS</span></div>
+    <div class="card-body" style="padding:0;">
+      <div style="padding:12px 16px;border-bottom:1px solid #F0EBE3;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:4px;"><span style="background:#1A1A1A;color:#B8962E;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">CSV</span><span style="font-size:13px;font-weight:700;">Full guidance library</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">All categories — every situation, response, escalation, and severity level.</p></div>
+      <div style="padding:12px 16px;border-bottom:1px solid #F0EBE3;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:4px;"><span style="background:#1A1A1A;color:#B8962E;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">&#9993;</span><span style="font-size:13px;font-weight:700;">Email — current tab only</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Sends all situations in the current category as plain text.</p></div>
+      <div style="padding:12px 16px;border-bottom:1px solid #F0EBE3;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:4px;"><span style="background:#B8962E;color:#1A1A1A;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">PDF</span><span style="font-size:13px;font-weight:700;">Print — current tab only</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Prints current category as a clean reference card. Use DOWNLOAD THIS PAGE ↓ at the bottom of each tab.</p></div>
+      <div style="padding:12px 16px;border-bottom:1px solid #F0EBE3;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:4px;"><span style="background:#B8962E;color:#1A1A1A;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">BACKUP &#8595;</span><span style="font-size:13px;font-weight:700;">Save all categories as JSON</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Complete backup of all situations across all tabs.</p></div>
+      <div style="padding:12px 16px;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:4px;"><span style="background:#B8962E;color:#1A1A1A;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">RESTORE &#8593;</span><span style="font-size:13px;font-weight:700;">Load from backup</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Select a .json backup. Confirms before replacing.</p></div>
+    </div>
+  </div>
+
+  <div style="background:#1A1A1A;padding:13px 18px;margin-bottom:20px;">
+    <div style="font-size:10px;color:#B8962E;letter-spacing:3px;font-family:system-ui;font-weight:600;margin-bottom:6px;">ONE RULE</div>
+    <p style="font-size:13px;color:#F5F0E8;font-family:system-ui;line-height:1.7;">A process tells staff what to do when everything goes normally. Decision guidance tells them what to do when it doesn't. Most problems in hotels happen because the second part was never written down.</p>
+  </div>
+
+  <div class="dl-bar"><button class="btn-gold" onclick="setTab('arrival')">START WITH ARRIVAL &rarr;</button></div>
+  <div class="footer-note">HOTEL MASTERY HUB &middot; DECISION GUIDANCE BUILDER</div>
+</div>
+
+<!-- CATEGORY TABS -->
+<div class="section" id="section-arrival"></div>
+<div class="section" id="section-stay"></div>
+<div class="section" id="section-departure"></div>
+<div class="section" id="section-maintenance"></div>
+<div class="section" id="section-hsk"></div>
+<div class="section" id="section-fnb"></div>
+
+</div>
+
+<script>
+const LS_KEY = 'hmh-decision-guidance';
+let currentTab = 'guide';
+
+const CATS = ['arrival','stay','departure','maintenance','hsk','fnb'];
+const CAT_LABELS = {arrival:'Arrival & Check-In',stay:'During the Stay',departure:'Departure & Check-Out',maintenance:'Maintenance & Facilities',hsk:'Housekeeping',fnb:'Food & Beverage'};
+const CAT_COLORS = {arrival:'#1A3A5C',stay:'#1E4620',departure:'#2A1A5C',maintenance:'#5C1A1A',hsk:'#1A4A4A',fnb:'#4A3A1A'};
+const CAT_ICONS = {arrival:'✈',stay:'🏨',departure:'🚪',maintenance:'🔧',hsk:'🧹',fnb:'☕'};
+
+const DEFAULTS = {
+  arrival:[
+    {sit:'Guest arrives and room is not ready',resp:'Apologise sincerely. Store luggage securely. Offer waiting area and refreshment. Give realistic ready time. Call guest when room is ready.',who:'Receptionist',esc:'Manager if wait exceeds 2 hours',sev:'L2'},
+    {sit:'Reservation not found at check-in',resp:'Ask guest for booking confirmation email. Search by name, date, and booking source. Do not turn guest away without manager consultation.',who:'Receptionist',esc:'Manager immediately',sev:'L2'},
+    {sit:'Guest payment fails at check-in',resp:'Try alternative payment method. Allow time to resolve with bank. Do not embarrass the guest. Offer to hold room for 30 minutes.',who:'Receptionist',esc:'Manager if unresolved after 30 min',sev:'L2'},
+    {sit:'Guest arrives significantly earlier than check-in time',resp:'Check if any rooms are already cleaned and available. If not, store luggage and offer early check-in if possible for a fee.',who:'Receptionist / HSK Supervisor',esc:'Manager for early check-in decisions',sev:'L1'},
+    {sit:'Walk-in guest arrives with no reservation — no rooms available',resp:'Apologise. Offer to check for availability at nearby hotels. Provide contact numbers. Never turn a guest away without attempting to help.',who:'Receptionist',esc:'Manager to authorise any exceptions',sev:'L1'},
+    {sit:'Guest is aggressive or abusive at check-in',resp:'Stay calm. Use professional language. Call manager immediately. Do not engage in argument.',who:'Receptionist',esc:'Manager immediately — do not handle alone',sev:'L3'},
+  ],
+  stay:[
+    {sit:'Guest reports maintenance issue in room',resp:'Apologise. Log issue immediately in maintenance system. Give realistic time estimate. Follow up within agreed time.',who:'Receptionist → Maintenance',esc:'Manager if affects room habitability',sev:'L2'},
+    {sit:'Guest makes noise complaint about another guest',resp:'Log the complaint. Contact the room causing noise by phone first. Visit if no response. Offer quiet room move if unresolved.',who:'Receptionist / Duty Manager',esc:'Manager if noise continues after warning',sev:'L2'},
+    {sit:'Guest requests early checkout',resp:'Process checkout normally. Confirm any outstanding charges. Release pre-authorisation. Inform housekeeping immediately.',who:'Receptionist',esc:'Manager for billing disputes',sev:'L1'},
+    {sit:'Guest complains about cleanliness of room',resp:'Apologise. Offer to have room re-serviced immediately or offer room change. Log the complaint and follow up.',who:'Receptionist → HSK Supervisor',esc:'Manager for compensation decisions',sev:'L2'},
+    {sit:'Guest requests refund or compensation during stay',resp:'Acknowledge the issue. Explain what you can offer as a goodwill gesture. Do not commit to refunds without manager approval.',who:'Receptionist',esc:'Manager for any financial compensation',sev:'L2'},
+    {sit:'Medical emergency involving a guest',resp:'Call emergency services immediately. Stay with guest if safe. Notify manager. Do not move injured person unless in danger.',who:'All staff — first on scene',esc:'Manager immediately — call 112/999',sev:'L3'},
+  ],
+  departure:[
+    {sit:'Guest disputes charge at checkout',resp:'Listen without arguing. Check the booking details and extra charges log. Explain each charge clearly. Involve manager if guest remains unhappy.',who:'Receptionist',esc:'Manager for any waiving of charges',sev:'L2'},
+    {sit:'Guest requests late checkout',resp:'Check room availability for that day. Offer late checkout if available — free until agreed time, fee after. Inform housekeeping of late checkout.',who:'Receptionist',esc:'Manager to confirm late checkout policy exceptions',sev:'L1'},
+    {sit:'Guest has not vacated room by checkout time',resp:'Call the room. If no response, knock on door. Check if guest is still in hotel. Inform manager before entering room.',who:'Receptionist / Housekeeping',esc:'Manager before entering any occupied room',sev:'L2'},
+    {sit:'Guest leaves without checking out',resp:'Attempt to contact guest by phone. Check if payment method on file covers any outstanding charges. Run checkout if unreachable.',who:'Receptionist',esc:'Manager if outstanding charges cannot be processed',sev:'L2'},
+    {sit:'Damage found in room after guest departure',resp:'Photograph everything before cleaning. Log damage with photos in system. Contact guest by email within 24 hours. Refer to damage policy.',who:'Housekeeping → Receptionist',esc:'Manager to authorise any damage charge',sev:'L2'},
+    {sit:'Guest reports lost property after departure',resp:'Search room immediately if not yet re-let. Log in lost property system. Contact guest. Send found items by recorded delivery.',who:'Housekeeping → Reception',esc:'Manager if item is of significant value',sev:'L1'},
+  ],
+  maintenance:[
+    {sit:'Boiler or heating failure affecting guest rooms',resp:'Contact maintenance immediately. Inform all affected guests. Offer portable heaters. Consider room moves. Escalate to manager.',who:'Maintenance → Manager',esc:'Manager immediately',sev:'L3'},
+    {sit:'Lift out of service',resp:'Post clear notice at lift. Offer assistance with luggage. Inform guests with mobility needs. Contact service provider for repair timeline.',who:'Maintenance → Reception',esc:'Manager to inform guests and arrange support',sev:'L2'},
+    {sit:'WiFi down across hotel',resp:'Contact IT or ISP provider. Post notice in lobby and at reception. Provide estimated restoration time to guests.',who:'Maintenance → Reception',esc:'Manager within 15 minutes',sev:'L2'},
+    {sit:'Flooding or leak in guest room or corridor',resp:'Make area safe. Move guests if affected. Shut off water if possible. Contact plumber. Log and photograph.',who:'Maintenance → Manager',esc:'Manager immediately',sev:'L3'},
+    {sit:'Key card system failure',resp:'Contact supplier support line immediately. Assess which rooms are affected. Inform manager. Provide manual key access where possible.',who:'Maintenance → Manager',esc:'Manager immediately',sev:'L3'},
+    {sit:'Minor damage found in room before guest arrival',resp:'Log with photos. Assess if room is still usable. Arrange repair. If room cannot be used, reassign guest and inform reception.',who:'Housekeeping → Maintenance',esc:'Manager to confirm room reassignment',sev:'L1'},
+  ],
+  hsk:[
+    {sit:'Room not cleaned by agreed time — guest waiting',resp:'Prioritise room immediately. Give guest realistic time estimate. Offer luggage storage. Update reception.',who:'HSK Supervisor',esc:'Manager if guest is upset',sev:'L2'},
+    {sit:'Housekeeper discovers guest belongings left behind',resp:'Do not remove. Log in lost property system with description, room number, and date. Inform supervisor.',who:'Housekeeper → Supervisor',esc:'Supervisor — never handle alone',sev:'L1'},
+    {sit:'Housekeeper discovers damage in room during clean',resp:'Stop cleaning. Photograph damage. Report to supervisor with room number and description. Do not attempt repair.',who:'Housekeeper → Supervisor → Reception',esc:'Manager to review and decide on guest charge',sev:'L2'},
+    {sit:'Guest refuses room service / DND sign but room has not been cleaned for multiple days',resp:'Leave note under door explaining hygiene requirements. Inform supervisor. Manager to contact guest if no response.',who:'HSK Supervisor → Manager',esc:'Manager to contact guest directly',sev:'L2'},
+    {sit:'Housekeeper discovers guest in room unexpectedly',resp:'Apologise and exit immediately. Do not re-enter without explicit permission. Log the situation and inform supervisor.',who:'Housekeeper → Supervisor',esc:'Supervisor — always',sev:'L1'},
+    {sit:'Suspicious items found in guest room during clean',resp:'Do not touch. Exit room and secure. Inform manager immediately. Do not inform other staff or guests.',who:'Housekeeper → Manager only',esc:'Manager immediately — confidentially',sev:'L3'},
+  ],
+  fnb:[
+    {sit:'Guest complains food is cold or incorrectly prepared',resp:'Apologise and offer to replace immediately. Do not argue. Note complaint. Offer alternative if replacement takes time.',who:'Waiter → Chef',esc:'Manager if guest is still unhappy after replacement',sev:'L2'},
+    {sit:'Guest has allergic reaction to food',resp:'Call emergency services immediately. Stay with guest. Inform manager. Note exactly what was served and when.',who:'All F&B staff',esc:'Manager immediately — call emergency services first',sev:'L3'},
+    {sit:'Breakfast items run out',resp:'Offer available alternatives. Inform kitchen immediately. Do not let guests discover empty stations without a response.',who:'F&B Staff → Kitchen',esc:'Manager if multiple items unavailable',sev:'L1'},
+    {sit:'Guest disputes F&B charge on final bill',resp:'Review the order record. Explain each item. If error on our side, correct immediately. Involve manager for larger disputes.',who:'Receptionist / F&B Staff',esc:'Manager for any charge waiving',sev:'L2'},
+    {sit:'Guest requests meal outside service hours',resp:'Explain service hours politely. Offer available alternatives — room service menu if available, nearby restaurant recommendations.',who:'Reception / F&B Staff',esc:'Manager to authorise exceptions',sev:'L1'},
+    {sit:'Health and safety issue in kitchen or dining area',resp:'Resolve immediately if minor. Close area if safety risk. Inform manager. Do not continue service until resolved.',who:'Kitchen / F&B Manager',esc:'Manager immediately',sev:'L3'},
+  ],
+};
+
+let guidance = {};
+CATS.forEach(c => { guidance[c] = []; });
+
+let sectionMode = {};
+CATS.forEach(c => { sectionMode[c] = 'view'; }); // safer default — every tab opens read-only
+
+function save() {
+  try { localStorage.setItem(LS_KEY, JSON.stringify({
+    guidance,
+    hotel: document.getElementById('s-hotel')?.value||'',
+    date: document.getElementById('s-date')?.value||'',
+  })); } catch(e) {}
+}
+
+function sevColor(sev) { return sev==='L1'?'#55AA55':sev==='L3'?'#CC5555':'#D4903A'; }
+function sevBg(sev) { return sev==='L1'?'#E8F5E9':sev==='L3'?'#FFEBEE':'#FFF3E0'; }
+function sevLabel(sev) { return sev==='L1'?'L1 LOW':sev==='L3'?'L3 HIGH':'L2 MEDIUM'; }
+
+// guidance[cat] is the single source of truth. Edit-mode inputs write straight into it.
+function fieldUpdate(cat, idx, field, value) {
+  if(!guidance[cat][idx]) return;
+  guidance[cat][idx][field] = value;
+  save();
+}
+
+function sevUpdate(cat, idx, selectEl) {
+  if(!guidance[cat][idx]) return;
+  guidance[cat][idx].sev = selectEl.value;
+  updateSevStyle(selectEl);
+  save();
+}
+
+function updateSevStyle(sel) {
+  const sev = sel.value;
+  sel.style.color = sevColor(sev);
+  sel.style.background = sevBg(sev);
+}
+
+// Clean, read-only rows — used for VIEW mode display AND always used for PDF/print, regardless of mode.
+function viewRowsHTML(cat) {
+  const rows = guidance[cat]||[];
+  if(!rows.length) return `<div style="padding:16px;font-size:12px;color:#8A8070;font-family:system-ui;">No situations yet. Switch to ✎ EDIT to add some.</div>`;
+  return rows.map(r => `
+    <div class="view-row">
+      <div class="view-head"><span class="sev" style="background:${sevBg(r.sev||'L2')};color:${sevColor(r.sev||'L2')};">${sevLabel(r.sev||'L2')}</span><span class="view-sit">${(r.sit||'(no situation set)')}</span></div>
+      <div class="view-line"><b>RESPONSE — </b>${r.resp||''}</div>
+      <div class="view-meta">${r.who||''}${r.esc?' &middot; Escalate: '+r.esc:''}</div>
+    </div>
+  `).join('');
+}
+
+// Editable rows — only used while sectionMode[cat] === 'edit'.
+function editRowsHTML(cat) {
+  const rows = guidance[cat]||[];
+  return rows.map((r,i) => `
+    <div class="gr gr-row" style="background:${i%2===0?'#fff':'#FAFAFA'};">
+      <div class="gr-cell"><textarea data-field="sit" oninput="fieldUpdate('${cat}',${i},'sit',this.value)" placeholder="If this happens...">${r.sit||''}</textarea></div>
+      <div class="gr-cell"><textarea data-field="resp" oninput="fieldUpdate('${cat}',${i},'resp',this.value)" placeholder="Then do this...">${r.resp||''}</textarea></div>
+      <div class="gr-cell"><textarea data-field="who" oninput="fieldUpdate('${cat}',${i},'who',this.value)" placeholder="Who handles..." style="min-height:30px;">${r.who||''}</textarea><textarea data-field="esc" oninput="fieldUpdate('${cat}',${i},'esc',this.value)" placeholder="Escalate to..." style="min-height:24px;font-size:11px;color:#8A8070;">${r.esc||''}</textarea></div>
+      <div class="gr-cell" style="padding:8px;">
+        <select class="sev-select" onchange="sevUpdate('${cat}',${i},this)" style="color:${sevColor(r.sev||'L2')};background:${sevBg(r.sev||'L2')};border-radius:3px;font-weight:700;padding:4px 6px;">
+          <option value="L1" ${r.sev==='L1'?'selected':''}>L1 Low</option>
+          <option value="L2" ${(r.sev||'L2')==='L2'?'selected':''}>L2 Medium</option>
+          <option value="L3" ${r.sev==='L3'?'selected':''}>L3 High</option>
+        </select>
+      </div>
+      <div class="gr-cell" style="border-right:none;"><button class="del-btn" data-cat="${cat}" data-idx="${i}" onclick="deleteRow(this)">x</button></div>
+    </div>
+  `).join('');
+}
+
+function renderSection(cat) {
+  const el = document.getElementById('section-'+cat); if(!el) return;
+  const mode = sectionMode[cat];
+  el.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px;">
+      <div>
+        <h2 style="font-size:20px;font-weight:700;">${CAT_ICONS[cat]} ${CAT_LABELS[cat]}</h2>
+        <p style="font-size:12px;color:#8A8070;font-family:system-ui;margin-top:2px;">When these situations occur — what happens, who handles it, severity level.</p>
+      </div>
+      <div class="mode-toggle">
+        <button class="mode-btn ${mode==='view'?'active-view':''}" onclick="setMode('${cat}','view')">&#128065; VIEW</button>
+        <button class="mode-btn ${mode==='edit'?'active-edit':''}" onclick="setMode('${cat}','edit')">&#9998; EDIT</button>
+      </div>
+    </div>
+    ${mode==='edit'
+      ? `<div class="mode-banner edit-mode">&#9998; EDIT MODE — changes save automatically. Switch to VIEW when done.</div>`
+      : `<div class="mode-banner view-mode">&#128065; VIEW MODE — read-only, clean for printing. Click ✎ EDIT to make changes.</div>`}
+    <div class="example-notice">&#9432; Pre-filled with example scenarios — switch to EDIT to match your hotel's policy.</div>
+    ${mode==='edit' ? `
+    <div class="card">
+      <div class="card-head" style="background:${CAT_COLORS[cat]};">
+        <span class="card-title">${CAT_LABELS[cat].toUpperCase()}</span>
+        <button class="btn-sec" onclick="addRow('${cat}')" style="font-size:10px;padding:4px 10px;">+ ADD SITUATION</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 140px 80px 32px;background:#F0EBE3;border-bottom:1px solid #E5DDD0;">
+        <div style="padding:6px 8px;font-size:9px;color:#8A8070;letter-spacing:1px;font-family:system-ui;font-weight:600;border-right:1px solid #E5DDD0;">SITUATION / TRIGGER</div>
+        <div style="padding:6px 8px;font-size:9px;color:#8A8070;letter-spacing:1px;font-family:system-ui;font-weight:600;border-right:1px solid #E5DDD0;">STANDARD RESPONSE</div>
+        <div style="padding:6px 8px;font-size:9px;color:#8A8070;letter-spacing:1px;font-family:system-ui;font-weight:600;border-right:1px solid #E5DDD0;">WHO / ESCALATE TO</div>
+        <div style="padding:6px 8px;font-size:9px;color:#8A8070;letter-spacing:1px;font-family:system-ui;font-weight:600;border-right:1px solid #E5DDD0;">SEVERITY</div>
+        <div></div>
+      </div>
+      <div id="rows-${cat}">${editRowsHTML(cat)}</div>
+      <button class="add-btn" onclick="addRow('${cat}')">+ ADD SITUATION</button>
+    </div>
+    ` : `
+    <div class="card">
+      <div class="card-head" style="background:${CAT_COLORS[cat]};"><span class="card-title">${CAT_LABELS[cat].toUpperCase()}</span></div>
+      <div id="rows-${cat}">${viewRowsHTML(cat)}</div>
+    </div>
+    `}
+    <div class="dl-bar">
+      <button class="btn-sec" onclick="printCurrentTab()">DOWNLOAD THIS PAGE &#8595;</button>
+      <button class="btn-sec" onclick="emailCurrentTab()">&#9993; EMAIL THIS PAGE</button>
+    </div>
+    <div class="footer-note">HOTEL MASTERY HUB &middot; DECISION GUIDANCE BUILDER</div>
+  `;
+}
+
+function setMode(cat, mode) {
+  sectionMode[cat] = mode;
+  renderSection(cat);
+}
+
+function addRow(cat) {
+  guidance[cat] = guidance[cat]||[];
+  guidance[cat].push({sit:'',resp:'',who:'',esc:'',sev:'L2'});
+  save();
+  renderSection(cat);
+}
+
+function deleteRow(el) {
+  const cat = el.getAttribute('data-cat');
+  const idx = parseInt(el.getAttribute('data-idx'));
+  if(!confirm('Delete this situation?')) return;
+  guidance[cat].splice(idx,1);
+  save();
+  renderSection(cat);
+}
+
+function closeInfo() { document.getElementById('info-modal').classList.remove('open'); }
+
+function setTab(tab) {
+  currentTab = tab;
+  ['guide',...CATS].forEach(t => {
+    document.getElementById('section-'+t).classList.toggle('active', t===tab);
+    document.getElementById('tab-'+t).classList.toggle('active', t===tab);
+  });
+  if(CATS.includes(tab)) {
+    renderSection(tab);
+  }
+}
+
+// PDF/print ALWAYS renders the clean VIEW layout for category tabs, regardless of the
+// mode currently on screen — so a page can never be printed mid-edit.
+function printCurrentTab() {
+  let html;
+  const css = Array.from(document.styleSheets).map(s=>{ try { return Array.from(s.cssRules).map(r=>r.cssText).join('\n'); } catch(e){return '';} }).join('\n');
+  if(CATS.includes(currentTab)) {
+    const cat = currentTab;
+    const printable = `
+      <div style="margin-bottom:14px;">
+        <h2 style="font-size:20px;font-weight:700;">${CAT_ICONS[cat]} ${CAT_LABELS[cat]}</h2>
+        <p style="font-size:12px;color:#8A8070;font-family:system-ui;margin-top:2px;">When these situations occur — what happens, who handles it, severity level.</p>
+      </div>
+      <div class="card">
+        <div class="card-head" style="background:${CAT_COLORS[cat]};"><span class="card-title">${CAT_LABELS[cat].toUpperCase()}</span></div>
+        <div>${viewRowsHTML(cat)}</div>
+      </div>
+      <div class="footer-note">HOTEL MASTERY HUB &middot; DECISION GUIDANCE BUILDER</div>
+    `;
+    html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>${css} .section{display:block!important;} @media print{body{margin:0;padding:12px;}}</style></head><body>${printable}</body></html>`;
+    const blob = new Blob([html],{type:'text/html'});
+    const url = URL.createObjectURL(blob);
+    const win = window.open(url,'_blank');
+    if(win) { win.onload=()=>{ win.print(); setTimeout(()=>URL.revokeObjectURL(url),1000); }; }
+    return;
+  }
+  const el = document.getElementById('section-'+currentTab); if(!el) return;
+  const html2 = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>${css} .section{display:block!important;} .dl-bar,.btn-gold,.btn-sec,.add-btn,.del-btn,.mode-toggle,.mode-banner{display:none!important;} textarea{border:none!important;background:transparent!important;resize:none;} @media print{body{margin:0;padding:12px;}}</style></head><body>${el.innerHTML}</body></html>`;
+  const blob = new Blob([html2],{type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const win = window.open(url,'_blank');
+  if(win) { win.onload=()=>{ win.print(); setTimeout(()=>URL.revokeObjectURL(url),1000); }; }
+}
+
+function emailCurrentTab() {
+  const cat = CATS.includes(currentTab)?currentTab:'arrival';
+  const rows = guidance[cat]||[];
+  const label = CAT_LABELS[cat]||cat.toUpperCase();
+  let subject = `Decision Guidance — ${label}`;
+  let body = `DECISION GUIDANCE — ${label.toUpperCase()}\n===============================\n\n`;
+  rows.forEach((r,i) => {
+    const sev = r.sev||'L2';
+    body += `${i+1}. [${sev}] ${r.sit}\n   Response: ${r.resp}\n   Who: ${r.who}\n   Escalate: ${r.esc}\n\n`;
+  });
+  body += `--\nHotel Mastery Hub — Decision Guidance Builder`;
+  window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+function exportCSV() {
+  const esc = val => { const s=String(val||''); return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; };
+  let csv = `DECISION GUIDANCE LIBRARY\r\nExported,${new Date().toLocaleDateString('en-GB')}\r\n\r\n`;
+  CATS.forEach(cat => {
+    csv += `${CAT_LABELS[cat].toUpperCase()}\r\nSITUATION,RESPONSE,WHO HANDLES,ESCALATE TO,SEVERITY\r\n`;
+    (guidance[cat]||DEFAULTS[cat]).forEach(r => {
+      csv += `${esc(r.sit)},${esc(r.resp)},${esc(r.who)},${esc(r.esc)},${r.sev||'L2'}\r\n`;
+    });
+    csv += `\r\n`;
+  });
+  const blob = new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download=`decision-guidance-${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+function backupData() {
+  save();
+  const data = { tool:'HMH Decision Guidance Builder', version:'1.0', exported:new Date().toISOString(), guidance };
+  const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download=`decision-guidance-backup-${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+function restoreData(input) {
+  const file = input.files[0]; if(!file) return;
+  if(!confirm('This will replace ALL current data. Continue?')) { input.value=''; return; }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const d = JSON.parse(e.target.result);
+      if(!d.tool||!d.tool.includes('Decision Guidance')) { alert('This does not appear to be a Decision Guidance Builder backup.'); return; }
+      if(d.guidance) guidance = d.guidance;
+      CATS.forEach(c => { sectionMode[c] = 'view'; });
+      save(); setTab('arrival');
+      alert('Backup restored. Exported: '+new Date(d.exported).toLocaleDateString('en-GB'));
+    } catch(err) { alert('Could not read file.'); }
+    input.value='';
+  };
+  reader.readAsText(file);
+}
+
+(function(){
+  try {
+    const saved = localStorage.getItem(LS_KEY);
+    if(saved) {
+      const d = JSON.parse(saved);
+      if(d.guidance) guidance = d.guidance;
+    } else {
+      CATS.forEach(c => { guidance[c] = JSON.parse(JSON.stringify(DEFAULTS[c])); });
+      save();
+    }
+  } catch(e) {
+    CATS.forEach(c => { guidance[c] = JSON.parse(JSON.stringify(DEFAULTS[c])); });
+  }
+  // Add hotel/date inputs to HOW TO USE section
+  const guideSection = document.getElementById('section-guide');
+  const metaDiv = document.createElement('div');
+  metaDiv.style.cssText = 'display:none;';
+  metaDiv.innerHTML = '<input type="text" id="s-hotel" value="Hotel Bella Vista"><input type="text" id="s-date">';
+  document.body.appendChild(metaDiv);
+})();
+</script>
+</body>
+</html>
