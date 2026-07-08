@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>Room Cleaning Checklist — Hotel Mastery Hub</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#F8F5F0;font-family:Georgia,serif;color:#1A1A1A;min-height:100vh;}
+.header{background:#2F4B3E;padding:10px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:8px;}
+.header-left{flex:1;min-width:180px;}
+.header-title{font-size:16px;font-weight:700;color:#F5F0E8;font-family:Georgia,serif;}
+.header-sub{font-size:10px;color:#8A8070;font-family:system-ui;letter-spacing:2px;}
+.header-btns{display:flex;flex-wrap:wrap;gap:5px;align-items:center;}
+.btn-hdr{padding:5px 11px;font-size:10px;letter-spacing:1px;cursor:pointer;font-family:system-ui;font-weight:600;border:1px solid rgba(184,150,46,0.4);color:#D4AF5A;background:transparent;}
+.btn-hdr:hover{background:rgba(184,150,46,0.15);}
+.btn-hdr.gold{background:#B8962E;color:#1A1A1A;border-color:#B8962E;}
+.btn-hdr.gold:hover{background:#D4AF5A;}
+.tabs{background:#3E5F4F;display:flex;flex-wrap:wrap;border-bottom:2px solid #B8962E;}
+.tab{padding:10px 16px;font-size:10px;letter-spacing:2px;font-weight:700;font-family:system-ui;color:#8A8070;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;}
+.tab:hover{color:#D4AF5A;}
+.tab.active{color:#B8962E;border-bottom-color:#B8962E;}
+.wrap{max-width:900px;margin:0 auto;padding:20px;}
+.section{display:none;}
+.section.active{display:block;}
+.card{background:#fff;border:1px solid #E5DDD0;box-shadow:0 2px 8px rgba(0,0,0,0.06);margin-bottom:14px;}
+.sec-head{padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-radius:0;}
+label{font-size:10px;letter-spacing:2px;font-weight:600;font-family:system-ui;color:#8A8070;display:block;margin-bottom:4px;}
+input[type=text],input[type=date]{width:100%;padding:8px 10px;border:1px solid #E5DDD0;background:#F8F5F0;font-family:system-ui;font-size:13px;color:#1A1A1A;outline:none;}
+input:focus{border-color:#B8962E;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px;}
+.btn-gold{background:#B8962E;color:#1A1A1A;border:none;padding:8px 16px;font-size:11px;font-weight:700;letter-spacing:1px;font-family:system-ui;cursor:pointer;}
+.btn-gold:hover{background:#D4AF5A;}
+.btn-sec{background:transparent;border:1px solid #B8962E;color:#B8962E;padding:8px 16px;font-size:11px;font-weight:700;letter-spacing:1px;font-family:system-ui;cursor:pointer;}
+.btn-sec:hover{background:rgba(184,150,46,0.1);}
+.btn-mode{padding:6px 14px;font-size:10px;font-weight:700;letter-spacing:1px;font-family:system-ui;cursor:pointer;border:1px solid #E5DDD0;background:#fff;color:#8A8070;}
+.btn-mode.active{background:#2F4B3E;color:#B8962E;border-color:#2F4B3E;}
+.btn-danger{border:1px solid #CC5555;color:#CC5555;background:transparent;padding:6px 12px;font-size:10px;font-weight:700;font-family:system-ui;cursor:pointer;}
+.del-btn{background:#CC5555;color:#fff;border:none;padding:3px 8px;font-size:11px;cursor:pointer;font-family:system-ui;font-weight:700;}
+.del-btn:hover{background:#AA3333;}
+.use-item{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid #F0EBE3;cursor:pointer;transition:background 0.15s;}
+.use-item:hover{background:#FAFAFA;}
+.use-item:last-child{border-bottom:none;}
+.use-item.ticked .item-text{text-decoration:line-through;color:#8A8070;}
+.use-item input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:#B8962E;flex-shrink:0;}
+.item-text{font-size:13px;font-family:system-ui;line-height:1.5;}
+.edit-item{display:flex;align-items:center;gap:8px;padding:6px 14px;border-bottom:1px solid #F0EBE3;}
+.edit-item input{flex:1;padding:6px 8px;border:1px solid #E5DDD0;font-size:12px;font-family:system-ui;background:#FAFAFA;outline:none;}
+.edit-item input:focus{border-color:#B8962E;}
+.example-notice{background:#F0EBE3;border-left:3px solid #B8962E;padding:8px 12px;font-size:11px;color:#8A8070;font-family:system-ui;margin-bottom:12px;}
+.dl-bar{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-top:16px;padding-top:12px;border-top:1px solid #E5DDD0;}
+.footer-note{text-align:center;font-size:10px;color:#8A8070;font-family:system-ui;letter-spacing:2px;margin-top:16px;padding:8px;}
+/* Info modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1000;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;padding:24px;max-width:420px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,0.2);}
+.modal-title{font-size:11px;letter-spacing:3px;font-weight:700;font-family:system-ui;color:#B8962E;margin-bottom:10px;}
+.modal-body{font-size:13px;color:#1A1A1A;line-height:1.7;font-family:system-ui;}
+.modal-close{margin-top:16px;background:#2F4B3E;color:#B8962E;border:none;padding:8px 18px;font-size:11px;font-weight:700;font-family:system-ui;cursor:pointer;}
+/* History */
+.hist-entry{border:1px solid #E5DDD0;background:#fff;margin-bottom:8px;}
+.hist-head{padding:10px 14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;cursor:pointer;background:#F8F5F0;}
+.hist-head:hover{background:#F0EBE3;}
+.hist-body{display:none;padding:14px;border-top:1px solid #E5DDD0;}
+.hist-body.open{display:block;}
+.hist-cl-label{font-size:10px;letter-spacing:2px;font-weight:700;font-family:system-ui;margin-bottom:6px;}
+.hist-item{font-size:12px;font-family:system-ui;padding:3px 0;display:flex;align-items:center;gap:8px;}
+.tick-yes{color:#55AA55;font-weight:700;}
+.tick-no{color:#CC5555;font-weight:700;}
+.progress-bar-wrap{background:#F0EBE3;height:6px;border-radius:3px;margin-top:4px;}
+.progress-bar-fill{height:6px;border-radius:3px;background:#B8962E;}
+@media(max-width:700px){.grid3{grid-template-columns:1fr;}.header{padding:8px 10px;}.wrap{padding:12px;}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="header-sub">HOTEL MASTERY HUB</div>
+    <div class="header-title">Room Cleaning Checklist</div>
+  </div>
+  <div class="header-btns">
+    <button class="btn-hdr" onclick="exportCSV()">CSV</button>
+    <button class="btn-hdr" onclick="emailCurrentTab()">&#9993;</button>
+    <button class="btn-hdr" onclick="printCurrentTab()">PDF</button>
+    <button class="btn-hdr gold" onclick="backupData()">BACKUP &#8595;</button>
+    <button class="btn-hdr" onclick="document.getElementById('restore-input').click()">RESTORE &#8593;</button>
+    <input type="file" id="restore-input" accept=".json" style="display:none" onchange="restoreData(this)">
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" id="tab-guide" onclick="setTab('guide')">HOW TO USE</div>
+  <div class="tab" id="tab-checkout" onclick="setTab('checkout')">CHECKOUT CLEAN</div>
+  <div class="tab" id="tab-stayover" onclick="setTab('stayover')">STAYOVER SERVICE</div>
+  <div class="tab" id="tab-inspection" onclick="setTab('inspection')">INSPECTION</div>
+  <div class="tab" id="tab-history" onclick="setTab('history')">HISTORY</div>
+</div>
+
+<div class="modal-overlay" id="info-modal" onclick="if(event.target===this)closeInfo()">
+  <div class="modal">
+    <div class="modal-title" id="info-title"></div>
+    <div class="modal-body" id="info-body"></div>
+    <button class="modal-close" onclick="closeInfo()">CLOSE</button>
+  </div>
+</div>
+
+<!-- HOW TO USE -->
+<div class="section active" id="section-guide">
+<div class="wrap">
+  <div style="background:#2F4B3E;padding:18px 24px;margin-bottom:20px;">
+    <div style="font-size:10px;color:#B8962E;letter-spacing:4px;font-family:system-ui;font-weight:600;margin-bottom:5px;">HOTEL MASTERY HUB</div>
+    <div style="font-size:22px;color:#F5F0E8;font-weight:700;margin-bottom:4px;">Room Cleaning Checklist</div>
+    <div style="font-size:12px;color:#8A8070;font-family:system-ui;">Three checklists in one — Checkout Clean, Stayover Service, and Inspection. Archive every completed shift.</div>
+  </div>
+
+  <div class="card">
+    <div class="sec-head" style="background:#1E4620;"><span style="font-size:10px;letter-spacing:3px;font-weight:700;font-family:system-ui;color:#B8962E;">HOW TO USE</span></div>
+    <div style="padding:16px;">
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;gap:12px;"><div style="background:#B8962E;color:#1A1A1A;font-size:11px;font-weight:700;font-family:system-ui;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div><div><strong>Set the room details</strong> — enter the room number, housekeeper name, and today's date at the top of each checklist tab before starting.</div></div>
+        <div style="display:flex;gap:12px;"><div style="background:#B8962E;color:#1A1A1A;font-size:11px;font-weight:700;font-family:system-ui;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div><div><strong>USE mode</strong> — tick items as you clean. Click any row or the checkbox. Ticked items show with strikethrough. Use RESET TICKS to start fresh for the next room.</div></div>
+        <div style="display:flex;gap:12px;"><div style="background:#B8962E;color:#1A1A1A;font-size:11px;font-weight:700;font-family:system-ui;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div><div><strong>EDIT mode</strong> — customise the checklist for your hotel. Add, rename, or remove items and sections. Changes save automatically.</div></div>
+        <div style="display:flex;gap:12px;"><div style="background:#B8962E;color:#1A1A1A;font-size:11px;font-weight:700;font-family:system-ui;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">4</div><div><strong>SAVE TO HISTORY</strong> — after completing a checklist, click SAVE TO HISTORY at the bottom of the tab. The completed state (room number, housekeeper, date, ticked items) is archived. History keeps the last 90 days.</div></div>
+        <div style="display:flex;gap:12px;"><div style="background:#B8962E;color:#1A1A1A;font-size:11px;font-weight:700;font-family:system-ui;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">5</div><div><strong>HISTORY tab</strong> — browse all archived checklists from the last 90 days. Expand any entry to see the full item-by-item tick record. Download full history as CSV.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="sec-head" style="background:#1A3A5C;"><span style="font-size:10px;letter-spacing:3px;font-weight:700;font-family:system-ui;color:#B8962E;">EXPORTS — WHAT EACH BUTTON DOES</span></div>
+    <div style="padding:0;">
+      <div style="padding:13px 16px;border-bottom:1px solid #F0EBE3;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:5px;"><span style="background:#2F4B3E;color:#B8962E;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">PDF</span><span style="font-size:13px;font-weight:700;color:#1A1A1A;">Print the current tab</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">In the header — prints whichever checklist tab is open, never all three at once. Checkout Clean prints only Checkout Clean.</p></div>
+      <div style="padding:13px 16px;border-bottom:1px solid #F0EBE3;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:5px;"><span style="background:#2F4B3E;color:#B8962E;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">&#9993;</span><span style="font-size:13px;font-weight:700;color:#1A1A1A;">Email the current tab</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">In the header — sends the open checklist's room number, housekeeper, date, and every item as plain text. Current tab only.</p></div>
+      <div style="padding:13px 16px;border-bottom:1px solid #F0EBE3;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:5px;"><span style="background:#1A3A5C;color:#fff;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">CSV</span><span style="font-size:13px;font-weight:700;color:#1A1A1A;">Download all checklist items</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">In the header — exports the items in all three checklists as a spreadsheet. Structure only, not tick states — use BACKUP ↓ or the History tab for completed records.</p></div>
+      <div style="padding:13px 16px;border-bottom:1px solid #F0EBE3;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:5px;"><span style="background:#B8962E;color:#1A1A1A;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">&#9733; SAVE TO HISTORY</span><span style="font-size:13px;font-weight:700;color:#1A1A1A;">Archive a completed checklist</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">At the bottom of each checklist tab — archives the room number, housekeeper, date, and every tick state to the History tab. Kept for 90 days.</p></div>
+      <div style="padding:13px 16px;border-bottom:1px solid #F0EBE3;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:5px;"><span style="background:#1E4620;color:#fff;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">DOWNLOAD THIS PAGE &#8595;</span><span style="font-size:13px;font-weight:700;color:#1A1A1A;">Print or save this checklist</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">At the bottom of each checklist tab — same clean, current-tab-only print as the header PDF button, placed for convenience while you're working.</p></div>
+      <div style="padding:13px 16px;border-bottom:1px solid #F0EBE3;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:5px;"><span style="background:#2F4B3E;color:#B8962E;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">&#9993; EMAIL THIS CHECKLIST</span><span style="font-size:13px;font-weight:700;color:#1A1A1A;">Email this checklist directly</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">At the bottom of each checklist tab — same as the header email button, one click away while you're mid-clean.</p></div>
+      <div style="padding:13px 16px;border-bottom:1px solid #F0EBE3;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:5px;"><span style="background:#1A3A5C;color:#fff;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">PRINT / EMAIL THIS ENTRY</span><span style="font-size:13px;font-weight:700;color:#1A1A1A;">Export a single archived checklist</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Inside the History tab — expand any past entry to print or email that one completed checklist, ticks and all.</p></div>
+      <div style="padding:13px 16px;border-bottom:1px solid #F0EBE3;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:5px;"><span style="background:#B8962E;color:#1A1A1A;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">BACKUP &#8595;</span><span style="font-size:13px;font-weight:700;color:#1A1A1A;">Save everything</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">In the header — downloads a single .json file with all checklist content, current tick states, room/housekeeper/date fields, and the full 90-day history.</p></div>
+      <div style="padding:13px 16px;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:5px;"><span style="background:#B8962E;color:#1A1A1A;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">RESTORE &#8593;</span><span style="font-size:13px;font-weight:700;color:#1A1A1A;">Load a backup file</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">In the header — reads a BACKUP ↓ file back in. Asks for confirmation before replacing anything, and shows the date it was exported.</p></div>
+    </div>
+  </div>
+
+  <div style="background:#2F4B3E;padding:13px 18px;margin-bottom:16px;">
+    <div style="font-size:10px;color:#B8962E;letter-spacing:3px;font-family:system-ui;font-weight:600;margin-bottom:5px;">ONE RULE</div>
+    <p style="font-size:13px;color:#F5F0E8;font-family:system-ui;line-height:1.7;">A checklist that is not saved is a cleaning that cannot be proved. Save every completed room to history. When a guest disputes the condition of a room, you will have the record.</p>
+  </div>
+
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;">
+    <button class="btn-gold" onclick="setTab('checkout')">CHECKOUT CLEAN &rarr;</button>
+    <button class="btn-sec" onclick="setTab('stayover')">STAYOVER SERVICE</button>
+    <button class="btn-sec" onclick="setTab('inspection')">INSPECTION</button>
+    <button class="btn-sec" onclick="setTab('history')">HISTORY</button>
+  </div>
+  <div class="footer-note">HOTEL MASTERY HUB &middot; ROOM CLEANING CHECKLIST</div>
+</div>
+</div>
+
+<!-- CHECKLIST TABS — rendered by JS -->
+<div class="section" id="section-checkout"></div>
+<div class="section" id="section-stayover"></div>
+<div class="section" id="section-inspection"></div>
+
+<!-- HISTORY TAB -->
+<div class="section" id="section-history">
+<div class="wrap">
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
+    <div>
+      <div style="font-size:18px;font-weight:700;">Checklist History</div>
+      <div style="font-size:11px;color:#8A8070;font-family:system-ui;margin-top:2px;">Last 90 days — all archived checklists</div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn-sec" onclick="downloadHistoryCSV()">DOWNLOAD FULL HISTORY &#8595;</button>
+    </div>
+  </div>
+  <div id="history-kpis" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;"></div>
+  <div id="history-list"></div>
+  <div id="no-history" style="display:none;padding:32px;text-align:center;background:#fff;border:1px solid #E5DDD0;">
+    <div style="font-size:14px;font-weight:700;margin-bottom:6px;">No history yet</div>
+    <div style="font-size:12px;color:#8A8070;font-family:system-ui;">Complete a checklist and click SAVE TO HISTORY at the bottom of any checklist tab.</div>
+  </div>
+  <div class="dl-bar" style="border-top:none;">
+    <button class="btn-sec" onclick="downloadHistoryCSV()">DOWNLOAD FULL HISTORY &#8595;</button>
+    <button class="btn-sec" onclick="printCurrentTab()">DOWNLOAD THIS PAGE &#8595;</button>
+  </div>
+  <div class="footer-note">HOTEL MASTERY HUB &middot; ROOM CLEANING CHECKLIST</div>
+</div>
+</div>
+
+<script>
+const LS_KEY = 'hmh-room-cleaning-checklist';
+const HIST_DAYS = 90;
+let currentTab = 'guide';
+let modes = {checkout:'use', stayover:'use', inspection:'use'};
+let ticked = {};
+let history = [];
+
+// Per-checklist room details
+let roomDetails = {
+  checkout: {room:'', housekeeper:'', date:''},
+  stayover: {room:'', housekeeper:'', date:''},
+  inspection: {room:'', housekeeper:'', date:''},
+};
+
+const CHECKLISTS = {
+  checkout: {
+    label:'Checkout Clean', color:'#1E4620', icon:'🏠',
+    sections:[
+      {id:'s1',name:'Preparation', items:['Check room status in PMS — confirmed checkout','Gather trolley: correct linen, towels, amenities, products','Knock and announce twice before entering']},
+      {id:'s2',name:'Strip & Remove', items:['Strip all bed linen — check under pillows and mattress','Remove all used towels','Check all drawers, wardrobe, and bathroom for guest belongings','Remove rubbish from all bins','Remove used glasses, cups, and room service items']},
+      {id:'s3',name:'Bathroom', items:['Clean and disinfect toilet — bowl, seat, lid, base','Clean and disinfect sink and taps','Clean shower or bath — tiles, glass, taps','Clean mirror and all glass surfaces','Restock: toilet paper, soap, shampoo, amenities','Place fresh towels — bath, hand, face cloth if applicable','Mop bathroom floor']},
+      {id:'s4',name:'Bedroom & Living Area', items:['Dust all surfaces — headboard, bedside tables, desk, shelves','Wipe remote controls, phone, light switches','Make bed to hotel standard — check linen quality before use','Restock minibar or welcome items if applicable','Vacuum carpet or mop hard floor','Check all lights are working','Check TV and any in-room tech is working']},
+      {id:'s5',name:'Final Check', items:['All amenities restocked to standard','Room smells clean — no odour','Windows checked — closed and locked if required','Report any damage or missing items before leaving','Update room status in PMS']},
+    ]
+  },
+  stayover: {
+    label:'Stayover Service', color:'#1A3A5C', icon:'🛏',
+    sections:[
+      {id:'s1',name:'Entry', items:['Check DND sign before knocking','Knock and announce twice — "Housekeeping"','If no response, enter quietly. If occupied, apologise and return later']},
+      {id:'s2',name:'Bathroom Refresh', items:['Replace used towels — leave DND towels in place','Wipe sink and taps','Wipe toilet seat and handle','Restock toilet paper and amenities as needed','Empty bathroom bin']},
+      {id:'s3',name:'Bedroom Refresh', items:['Empty all visible bins','Wipe surfaces if obviously needed','Tidy any items left out (do not rearrange guest belongings)','Straighten bedding if undisturbed — do not turn bed if DND','Vacuum if required','Replace used glasses or cups if applicable']},
+      {id:'s4',name:'Exit Check', items:['Room left in same condition as found — guest belongings undisturbed','No guest items removed or moved unnecessarily','Report any damage or maintenance issues','Update room status']},
+    ]
+  },
+  inspection: {
+    label:'Room Inspection', color:'#2A1A5C', icon:'✅',
+    sections:[
+      {id:'s1',name:'Linen & Bedding', items:['Bed made correctly to standard','Linen clean — no marks, tears, or stains','Pillows positioned correctly','Duvet or bedspread straight and even']},
+      {id:'s2',name:'Bathroom', items:['Toilet clean — bowl, seat, lid, base, around base','Sink clean — no soap residue or marks','Shower/bath clean — no residue or hair','Mirror clean — no smears','Tiles and grout clean','All amenities in correct position','Fresh towels — no marks, folded to standard','Floor clean and dry']},
+      {id:'s3',name:'Room Condition', items:['All surfaces dust-free','Floor vacuumed or mopped — no debris','No odour','All lights working','TV and remote working','Windows clean — no marks on glass','No damage visible — report if found','Minibar/welcome items correct if applicable']},
+      {id:'s4',name:'Overall Standard', items:['Room meets hotel standard — ready for next guest','Nothing missing from standard setup','Maintenance issues logged if found','Room status updated in PMS']},
+    ]
+  }
+};
+
+let checklists = {};
+
+function initChecklists() {
+  ['checkout','stayover','inspection'].forEach(type => {
+    if(!checklists[type]) checklists[type] = JSON.parse(JSON.stringify(CHECKLISTS[type].sections));
+  });
+}
+
+function today() { return new Date().toISOString().slice(0,10); }
+
+function save() {
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify({
+      checklists, modes, ticked, roomDetails, history,
+      hotel: document.getElementById('s-hotel')?.value||'',
+    }));
+  } catch(e) { alert('Storage full — download Full History to free space.'); }
+}
+
+function closeInfo() { document.getElementById('info-modal').classList.remove('open'); }
+
+function setTab(tab) {
+  currentTab = tab;
+  ['guide','checkout','stayover','inspection','history'].forEach(t => {
+    document.getElementById('section-'+t).classList.toggle('active', t===tab);
+    document.getElementById('tab-'+t).classList.toggle('active', t===tab);
+  });
+  if(['checkout','stayover','inspection'].includes(tab)) renderChecklistTab(tab);
+  if(tab==='history') renderHistory();
+}
+
+function setMode(type, mode) {
+  modes[type] = mode; save(); renderChecklistTab(type);
+}
+
+function renderChecklistTab(type) {
+  const el = document.getElementById('section-'+type); if(!el) return;
+  const cl = CHECKLISTS[type];
+  const sections = checklists[type]||[];
+  const mode = modes[type]||'use';
+  const hotel = document.getElementById('s-hotel')?.value||'Hotel Bella Vista';
+  const rd = roomDetails[type]||{room:'',housekeeper:'',date:''};
+
+  // Count ticks
+  let totalItems=0, tickedItems=0;
+  sections.forEach((sec,si) => {
+    (sec.items||[]).forEach((_,ii) => {
+      totalItems++;
+      if(ticked[`${type}-${si}-${ii}`]) tickedItems++;
+    });
+  });
+  const pct = totalItems>0?Math.round(tickedItems/totalItems*100):0;
+
+  el.innerHTML = `<div class="wrap">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+      <div>
+        <h2 style="font-size:20px;font-weight:700;">${cl.icon} ${cl.label}</h2>
+        <p style="font-size:12px;color:#8A8070;font-family:system-ui;margin-top:2px;">${hotel}</p>
+      </div>
+      <div style="display:flex;gap:6px;">
+        <button class="btn-mode ${mode==='edit'?'active':''}" onclick="setMode('${type}','edit')">&#9998; EDIT</button>
+        <button class="btn-mode ${mode==='use'?'active':''}" onclick="setMode('${type}','use')">&#10003; USE</button>
+      </div>
+    </div>
+
+    <div class="example-notice" style="${mode==='edit'?'':'display:none;'}">&#9998; EDIT MODE — add, rename, or remove items. Switch to USE mode when ready to clean.</div>
+
+    <!-- Room details -->
+    <div class="card" style="margin-bottom:14px;">
+      <div class="sec-head" style="background:#3E5F4F;"><span style="font-size:10px;letter-spacing:3px;font-weight:700;font-family:system-ui;color:#B8962E;">ROOM DETAILS</span></div>
+      <div style="padding:12px 14px;">
+        <div class="grid3">
+          <div><label>Room Number</label><input type="text" value="${rd.room}" placeholder="101" data-type="${type}" data-field="room" oninput="updateRoomDetail(this)"></div>
+          <div><label>Housekeeper</label><input type="text" value="${rd.housekeeper}" placeholder="Maria S." data-type="${type}" data-field="housekeeper" oninput="updateRoomDetail(this)"></div>
+          <div><label>Date</label><input type="date" value="${rd.date||today()}" data-type="${type}" data-field="date" oninput="updateRoomDetail(this)"></div>
+        </div>
+      </div>
+    </div>
+
+    ${mode==='use'?`<!-- Progress bar -->
+    <div style="background:#fff;border:1px solid #E5DDD0;padding:12px 14px;margin-bottom:14px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <span style="font-size:10px;letter-spacing:2px;font-weight:600;font-family:system-ui;color:#8A8070;">PROGRESS</span>
+        <span style="font-size:13px;font-weight:700;color:${pct===100?'#55AA55':'#B8962E'};">${tickedItems} / ${totalItems} items &nbsp;${pct}%</span>
+      </div>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${pct}%;background:${pct===100?'#55AA55':'#B8962E'};"></div></div>
+    </div>`:''}
+
+    ${sections.map((sec,si) => `
+      <div class="card" style="margin-bottom:12px;">
+        <div class="sec-head" style="background:${cl.color};">
+          <span style="font-size:11px;font-weight:700;color:#fff;letter-spacing:1px;font-family:system-ui;">${sec.name}</span>
+          ${mode==='edit'?`<button class="del-btn" data-type="${type}" data-si="${si}" onclick="deleteSection(this)" style="background:transparent;color:#aaa;border:1px solid #aaa;padding:2px 7px;font-size:10px;">x section</button>`:''}
+        </div>
+        <div id="items-${type}-${si}">
+          ${(sec.items||[]).map((item,ii) => {
+            const key = `${type}-${si}-${ii}`;
+            if(mode==='edit') return `
+              <div class="edit-item">
+                <span style="font-size:11px;color:#8A8070;font-family:system-ui;min-width:20px;">${ii+1}.</span>
+                <input type="text" value="${item}" data-type="${type}" data-si="${si}" data-ii="${ii}" oninput="updateItem(this)">
+                <button class="del-btn" data-type="${type}" data-si="${si}" data-ii="${ii}" onclick="deleteItem(this)">x</button>
+              </div>`;
+            return `
+              <div class="use-item ${ticked[key]?'ticked':''}" onclick="tickItem('${key}',this)">
+                <input type="checkbox" ${ticked[key]?'checked':''} data-key="${key}" onclick="event.stopPropagation();tickItem('${key}',this.closest('.use-item'))">
+                <span class="item-text">${item}</span>
+              </div>`;
+          }).join('')}
+        </div>
+        ${mode==='edit'?`
+          <div style="display:flex;gap:6px;padding:8px 14px;border-top:1px solid #F0EBE3;">
+            <input type="text" id="new-item-${type}-${si}" placeholder="Add item..." style="flex:1;padding:6px 8px;border:1px solid #E5DDD0;font-size:12px;font-family:system-ui;background:#FAFAFA;outline:none;" onkeydown="if(event.key==='Enter')addItem('${type}',${si})">
+            <button class="btn-sec" style="font-size:10px;padding:4px 10px;" onclick="addItem('${type}',${si})">+ ADD</button>
+          </div>`:''}
+      </div>
+    `).join('')}
+
+    ${mode==='edit'?`<button style="background:#F8F5F0;border:1px dashed #E5DDD0;color:#8A8070;padding:8px;font-size:11px;font-family:system-ui;cursor:pointer;width:100%;text-align:center;" onclick="addSection('${type}')">+ ADD SECTION</button>`:''}
+
+    <div class="dl-bar">
+      ${mode==='use'?`
+        <button class="btn-danger" onclick="resetTicks('${type}')">RESET TICKS</button>
+        <button class="btn-gold" onclick="saveToHistory('${type}')">&#9733; SAVE TO HISTORY</button>
+      `:''}
+      <button class="btn-sec" onclick="emailChecklist('${type}')">&#9993; EMAIL THIS CHECKLIST</button>
+      <button class="btn-sec" onclick="printCurrentTab()">DOWNLOAD THIS PAGE &#8595;</button>
+    </div>
+    <div class="footer-note">HOTEL MASTERY HUB &middot; ROOM CLEANING CHECKLIST</div>
+  </div>`;
+}
+
+// ═══ ROOM DETAILS ═══
+function updateRoomDetail(el) {
+  const type = el.getAttribute('data-type');
+  const field = el.getAttribute('data-field');
+  if(!roomDetails[type]) roomDetails[type] = {room:'',housekeeper:'',date:''};
+  roomDetails[type][field] = el.value;
+  save();
+  // Update progress display if date changed
+  if(field==='date') renderChecklistTab(type);
+}
+
+// ═══ CHECKLIST EDITING ═══
+function tickItem(key, row) {
+  ticked[key] = !ticked[key];
+  row.classList.toggle('ticked', ticked[key]);
+  const cb = row.querySelector('input[type=checkbox]');
+  if(cb) cb.checked = ticked[key];
+  save();
+  // Update progress bar live
+  const type = key.split('-')[0];
+  updateProgress(type);
+}
+
+function updateProgress(type) {
+  const sections = checklists[type]||[];
+  let total=0, done=0;
+  sections.forEach((sec,si) => {
+    (sec.items||[]).forEach((_,ii) => {
+      total++;
+      if(ticked[`${type}-${si}-${ii}`]) done++;
+    });
+  });
+  const pct = total>0?Math.round(done/total*100):0;
+  const fill = document.querySelector(`#section-${type} .progress-bar-fill`);
+  const label = document.querySelector(`#section-${type} .progress-bar-wrap`)?.previousElementSibling?.querySelector('span:last-child');
+  if(fill) { fill.style.width=pct+'%'; fill.style.background=pct===100?'#55AA55':'#B8962E'; }
+  if(label) { label.textContent=`${done} / ${total} items   ${pct}%`; label.style.color=pct===100?'#55AA55':'#B8962E'; }
+}
+
+function updateItem(el) {
+  const type=el.getAttribute('data-type'), si=parseInt(el.getAttribute('data-si')), ii=parseInt(el.getAttribute('data-ii'));
+  checklists[type][si].items[ii] = el.value; save();
+}
+function addItem(type, si) {
+  const input = document.getElementById(`new-item-${type}-${si}`);
+  const val = input?.value?.trim(); if(!val) return;
+  checklists[type][si].items.push(val); input.value='';
+  save(); renderChecklistTab(type);
+}
+function deleteItem(el) {
+  const type=el.getAttribute('data-type'), si=parseInt(el.getAttribute('data-si')), ii=parseInt(el.getAttribute('data-ii'));
+  checklists[type][si].items.splice(ii,1); save(); renderChecklistTab(type);
+}
+function addSection(type) {
+  checklists[type].push({id:'s'+Date.now(), name:'New Section', items:[]}); save(); renderChecklistTab(type);
+}
+function deleteSection(el) {
+  const type=el.getAttribute('data-type'), si=parseInt(el.getAttribute('data-si'));
+  if(!confirm('Remove this section?')) return;
+  checklists[type].splice(si,1); save(); renderChecklistTab(type);
+}
+function resetTicks(type) {
+  if(!confirm('Reset all ticks for this checklist?')) return;
+  Object.keys(ticked).forEach(k=>{ if(k.startsWith(type+'-')) delete ticked[k]; });
+  save(); renderChecklistTab(type);
+}
+
+// ═══ HISTORY ═══
+function pruneHistory() {
+  const cutoff = new Date(); cutoff.setDate(cutoff.getDate()-HIST_DAYS);
+  history = history.filter(h => new Date(h.savedAt) >= cutoff);
+}
+
+function saveToHistory(type) {
+  const rd = roomDetails[type]||{};
+  const room = rd.room||'—';
+  const hsk = rd.housekeeper||'—';
+  const date = rd.date||today();
+  const sections = checklists[type]||[];
+  const cl = CHECKLISTS[type];
+
+  let total=0, done=0;
+  const itemSnap = sections.map((sec,si) => ({
+    name: sec.name,
+    items: (sec.items||[]).map((item,ii) => {
+      total++;
+      const t = !!ticked[`${type}-${si}-${ii}`];
+      if(t) done++;
+      return {text:item, ticked:t};
+    })
+  }));
+
+  const entry = {
+    id: Date.now(),
+    type, label: cl.label, color: cl.color,
+    room, housekeeper: hsk, date,
+    savedAt: new Date().toISOString(),
+    hotel: document.getElementById('s-hotel')?.value||'',
+    total, done,
+    sections: itemSnap,
+  };
+
+  history.unshift(entry);
+  pruneHistory();
+  save();
+  alert(`Saved to history ✓\n${cl.label} — Room ${room}\nHousekeeper: ${hsk}\nDate: ${date}\n${done}/${total} items completed`);
+}
+
+function renderHistory() {
+  pruneHistory();
+  const listEl = document.getElementById('history-list');
+  const noEl = document.getElementById('no-history');
+  const kpiEl = document.getElementById('history-kpis');
+
+  if(history.length===0) {
+    if(listEl) listEl.innerHTML='';
+    if(noEl) noEl.style.display='block';
+    if(kpiEl) kpiEl.innerHTML='';
+    return;
+  }
+  if(noEl) noEl.style.display='none';
+
+  // KPIs
+  const total = history.length;
+  const byType = {checkout:0,stayover:0,inspection:0};
+  history.forEach(h=>{ if(byType[h.type]!==undefined) byType[h.type]++; });
+  const avgComp = history.length>0?Math.round(history.reduce((s,h)=>s+(h.total>0?h.done/h.total*100:0),0)/history.length):0;
+
+  if(kpiEl) kpiEl.innerHTML = `
+    <div style="background:#2F4B3E;padding:12px;text-align:center;"><div style="font-size:9px;letter-spacing:3px;font-weight:700;font-family:system-ui;color:#8A8070;margin-bottom:4px;">TOTAL ARCHIVED</div><div style="font-size:22px;font-weight:700;color:#B8962E;font-family:Georgia,serif;">${total}</div><div style="font-size:10px;color:#8A8070;font-family:system-ui;">last 90 days</div></div>
+    <div style="background:#2F4B3E;padding:12px;text-align:center;"><div style="font-size:9px;letter-spacing:3px;font-weight:700;font-family:system-ui;color:#8A8070;margin-bottom:4px;">CHECKOUT CLEANS</div><div style="font-size:22px;font-weight:700;color:#B8962E;font-family:Georgia,serif;">${byType.checkout}</div></div>
+    <div style="background:#2F4B3E;padding:12px;text-align:center;"><div style="font-size:9px;letter-spacing:3px;font-weight:700;font-family:system-ui;color:#8A8070;margin-bottom:4px;">STAYOVERS / INSPECT.</div><div style="font-size:22px;font-weight:700;color:#B8962E;font-family:Georgia,serif;">${byType.stayover+byType.inspection}</div></div>
+    <div style="background:#2F4B3E;padding:12px;text-align:center;"><div style="font-size:9px;letter-spacing:3px;font-weight:700;font-family:system-ui;color:#8A8070;margin-bottom:4px;">AVG COMPLETION</div><div style="font-size:22px;font-weight:700;color:${avgComp>=90?'#55AA55':avgComp>=75?'#D4903A':'#CC5555'};font-family:Georgia,serif;">${avgComp}%</div></div>`;
+
+  if(listEl) listEl.innerHTML = history.map((h,hi) => {
+    const pct = h.total>0?Math.round(h.done/h.total*100):0;
+    const sections = (h.sections||[]).map(sec => `
+      <div style="margin-bottom:10px;">
+        <div class="hist-cl-label" style="color:${h.color};">${sec.name}</div>
+        ${(sec.items||[]).map(item => `
+          <div class="hist-item">
+            <span class="${item.ticked?'tick-yes':'tick-no'}">${item.ticked?'✓':'✗'}</span>
+            <span style="color:${item.ticked?'#1A1A1A':'#8A8070'};${item.ticked?'':'text-decoration:line-through;'}">${item.text}</span>
+          </div>`).join('')}
+      </div>`).join('');
+
+    return `<div class="hist-entry">
+      <div class="hist-head" onclick="toggleHist(${hi})">
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px;">
+            <span style="display:inline-block;background:${h.color};color:#fff;font-size:9px;font-weight:700;font-family:system-ui;padding:2px 8px;">${h.label.toUpperCase()}</span>
+            <strong style="font-size:13px;">Room ${h.room}</strong>
+            <span style="font-size:12px;color:#8A8070;font-family:system-ui;">${h.housekeeper}</span>
+          </div>
+          <div style="font-size:11px;color:#8A8070;font-family:system-ui;">${h.date} · ${h.hotel} · ${h.done}/${h.total} items · Saved ${new Date(h.savedAt).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="text-align:right;">
+            <div style="font-size:14px;font-weight:700;color:${pct===100?'#55AA55':pct>=75?'#D4903A':'#CC5555'};">${pct}%</div>
+            <div style="font-size:10px;color:#8A8070;font-family:system-ui;">complete</div>
+          </div>
+          <button class="btn-sec" style="font-size:9px;padding:4px 8px;" onclick="event.stopPropagation();deleteHistEntry(${hi})">DELETE</button>
+          <span style="font-size:16px;color:#8A8070;" id="hist-arrow-${hi}">&#9660;</span>
+        </div>
+      </div>
+      <div class="hist-body" id="hist-body-${hi}">
+        <div style="margin-bottom:10px;">
+          <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${pct}%;background:${pct===100?'#55AA55':'#B8962E'};"></div></div>
+        </div>
+        ${sections}
+        <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn-sec" style="font-size:10px;" onclick="printHistEntry(${hi})">PRINT THIS ENTRY</button>
+          <button class="btn-sec" style="font-size:10px;" onclick="emailHistEntry(${hi})">&#9993; EMAIL THIS ENTRY</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleHist(i) {
+  const body = document.getElementById('hist-body-'+i);
+  const arrow = document.getElementById('hist-arrow-'+i);
+  if(!body) return;
+  const open = body.classList.toggle('open');
+  if(arrow) arrow.innerHTML = open?'&#9650;':'&#9660;';
+}
+
+function deleteHistEntry(i) {
+  if(!confirm('Delete this history entry? This cannot be undone.')) return;
+  history.splice(i,1); save(); renderHistory();
+}
+
+function printHistEntry(i) {
+  const h = history[i]; if(!h) return;
+  const pct = h.total>0?Math.round(h.done/h.total*100):0;
+  const secs = (h.sections||[]).map(sec => `
+    <div style="margin-bottom:12px;">
+      <div style="font-weight:700;font-size:12px;font-family:system-ui;color:${h.color};margin-bottom:4px;">${sec.name}</div>
+      ${(sec.items||[]).map(item=>`
+        <div style="display:flex;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid #F0EBE3;font-family:system-ui;font-size:12px;">
+          <span style="color:${item.ticked?'#55AA55':'#CC5555'};font-weight:700;">${item.ticked?'✓':'✗'}</span>
+          <span style="${item.ticked?'':'color:#8A8070;text-decoration:line-through;'}">${item.text}</span>
+        </div>`).join('')}
+    </div>`).join('');
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${h.label} — Room ${h.room}</title>
+    <style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:Georgia,serif;color:#1A1A1A;padding:16px;}</style>
+    <script>window.onload=function(){window.print();};<\/script></head>
+    <body>
+      <div style="background:#2F4B3E;padding:12px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+          <div style="font-size:9px;color:#B8962E;letter-spacing:3px;font-family:system-ui;font-weight:600;margin-bottom:3px;">ROOM CLEANING RECORD</div>
+          <div style="font-size:18px;color:#F5F0E8;font-weight:700;">${h.label} — Room ${h.room}</div>
+          <div style="font-size:11px;color:#8A8070;font-family:system-ui;margin-top:2px;">${h.hotel} · ${h.date} · Housekeeper: ${h.housekeeper}</div>
+        </div>
+        <div style="text-align:right;"><div style="font-size:9px;color:#8A8070;font-family:system-ui;margin-bottom:3px;">COMPLETION</div><div style="font-size:22px;font-weight:700;color:${pct===100?'#55AA55':'#D4903A'};">${pct}%</div><div style="font-size:10px;color:#8A8070;font-family:system-ui;">${h.done}/${h.total} items</div></div>
+      </div>
+      ${secs}
+    </body></html>`;
+  window.open(URL.createObjectURL(new Blob([html],{type:'text/html'})),'_blank');
+}
+
+function emailHistEntry(i) {
+  const h = history[i]; if(!h) return;
+  let body = `ROOM CLEANING RECORD\n${h.label.toUpperCase()} — Room ${h.room}\nHousekeeper: ${h.housekeeper}\nDate: ${h.date}\nHotel: ${h.hotel}\nCompletion: ${h.done}/${h.total} items (${Math.round(h.done/h.total*100)}%)\n\n`;
+  (h.sections||[]).forEach(sec => {
+    body += `${sec.name.toUpperCase()}\n`;
+    (sec.items||[]).forEach(item => { body += `  ${item.ticked?'✓':'✗'} ${item.text}\n`; });
+    body += '\n';
+  });
+  body += '--\nHotel Mastery Hub — Room Cleaning Checklist';
+  window.location.href = `mailto:?subject=${encodeURIComponent(h.label+' — Room '+h.room+' — '+h.date)}&body=${encodeURIComponent(body)}`;
+}
+
+function downloadHistoryCSV() {
+  if(history.length===0){alert('No history to download.');return;}
+  const esc=v=>{const s=String(v||'');return/[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};
+  let csv='ROOM CLEANING CHECKLIST — HISTORY\r\nExported,'+new Date().toLocaleDateString('en-GB')+'\r\n\r\n';
+  csv+='Date,Type,Hotel,Room,Housekeeper,Section,Item,Ticked,Completion %\r\n';
+  history.forEach(h=>{
+    const pct=h.total>0?Math.round(h.done/h.total*100):0;
+    (h.sections||[]).forEach(sec=>{
+      (sec.items||[]).forEach(item=>{
+        csv+=`${[h.date,h.label,h.hotel,h.room,h.housekeeper,sec.name,item.text,item.ticked?'Yes':'No',pct+'%'].map(esc).join(',')}\r\n`;
+      });
+    });
+  });
+  const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=`checklist-history-${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+}
+
+// ═══ EXPORTS ═══
+function printCurrentTab() {
+  const el = document.getElementById('section-'+currentTab); if(!el) return;
+  const css = Array.from(document.styleSheets).map(s=>{try{return Array.from(s.cssRules).map(r=>r.cssText).join('\n');}catch(e){return '';}}).join('\n');
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>${css} .section{display:block!important;} .dl-bar,.btn-gold,.btn-sec,.btn-mode,.del-btn,.btn-danger{display:none!important;} @media print{body{margin:0;padding:12px;}}</style></head><body>${el.innerHTML}</body></html>`;
+  const blob = new Blob([html],{type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const win = window.open(url,'_blank');
+  if(win){win.onload=()=>{win.print();setTimeout(()=>URL.revokeObjectURL(url),1000);};}
+}
+
+function emailChecklist(type) {
+  const cl = CHECKLISTS[type];
+  const hotel = document.getElementById('s-hotel')?.value||'My Hotel';
+  const rd = roomDetails[type]||{};
+  let subject = `${cl.label} — Room ${rd.room||'—'} — ${rd.date||today()} — ${hotel}`;
+  let body = `${cl.label.toUpperCase()}\nRoom: ${rd.room||'—'} · Housekeeper: ${rd.housekeeper||'—'} · Date: ${rd.date||today()}\nHotel: ${hotel}\n\n`;
+  (checklists[type]||[]).forEach((sec,si) => {
+    body += `${sec.name.toUpperCase()}\n`;
+    (sec.items||[]).forEach((item,ii) => {
+      const t = ticked[`${type}-${si}-${ii}`];
+      body += `  ${t?'✓':'☐'} ${item}\n`;
+    });
+    body += '\n';
+  });
+  body += `--\nHotel Mastery Hub — Room Cleaning Checklist`;
+  window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+function emailCurrentTab() {
+  const type = ['checkout','stayover','inspection'].includes(currentTab)?currentTab:null;
+  if(type) { emailChecklist(type); return; }
+  if(currentTab==='history') {
+    const hotel=document.getElementById('s-hotel')?.value||'Hotel';
+    const subject=`Room Cleaning Checklist History — ${hotel}`;
+    let body=`CHECKLIST HISTORY — ${hotel}\nTotal archived: ${history.length} entries\n\n`;
+    history.slice(0,10).forEach(h=>{
+      body+=`${h.date} · ${h.label} · Room ${h.room} · ${h.housekeeper} · ${h.done}/${h.total} items\n`;
+    });
+    if(history.length>10) body+=`...and ${history.length-10} more entries\n`;
+    body+='\n--\nHotel Mastery Hub — Room Cleaning Checklist';
+    window.location.href=`mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  }
+}
+
+function exportCSV() {
+  const esc = val=>{const s=String(val||'');return/[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};
+  let csv=`ROOM CLEANING CHECKLIST\r\nHotel,${esc(document.getElementById('s-hotel')?.value||'')}\r\nExported,${new Date().toLocaleDateString('en-GB')}\r\n\r\n`;
+  ['checkout','stayover','inspection'].forEach(type=>{
+    csv+=`${CHECKLISTS[type].label.toUpperCase()}\r\nSECTION,ITEM\r\n`;
+    (checklists[type]||[]).forEach(sec=>{
+      (sec.items||[]).forEach(item=>{csv+=`${esc(sec.name)},${esc(item)}\r\n`;});
+    });
+    csv+='\r\n';
+  });
+  const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=`room-cleaning-checklist-${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+}
+
+function backupData() {
+  save();
+  const data={tool:'HMH Room Cleaning Checklist',version:'3.0',exported:new Date().toISOString(),
+    checklists,modes,ticked,roomDetails,history,
+    hotel:document.getElementById('s-hotel')?.value||''};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=`room-cleaning-checklist-backup-${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+}
+
+function restoreData(input) {
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      const d=JSON.parse(e.target.result);
+      if(!d.tool||!d.tool.includes('Room Cleaning Checklist')){alert('This does not appear to be a Room Cleaning Checklist backup.');return;}
+      if(!confirm('This will replace ALL current data including history.\nExported: '+new Date(d.exported).toLocaleDateString('en-GB')+'\n\nContinue?'))return;
+      if(d.checklists)checklists=d.checklists;
+      if(d.modes)modes=d.modes;
+      if(d.ticked)ticked=d.ticked;
+      if(d.roomDetails)roomDetails=d.roomDetails;
+      if(d.history)history=d.history;
+      if(d.hotel&&document.getElementById('s-hotel'))document.getElementById('s-hotel').value=d.hotel;
+      save();setTab('checkout');
+      alert('Backup restored.\nExported: '+new Date(d.exported).toLocaleDateString('en-GB')+'\nHistory entries: '+(d.history?.length||0));
+    }catch(err){alert('Could not read file.');}
+    input.value='';
+  };
+  reader.readAsText(file);
+}
+
+// Hidden hotel input
+const hotelInput=document.createElement('input');
+hotelInput.type='text';hotelInput.id='s-hotel';hotelInput.value='Hotel Bella Vista';
+hotelInput.style.display='none';hotelInput.oninput=save;
+document.body.appendChild(hotelInput);
+
+// ═══ INIT ═══
+(function(){
+  try{
+    const saved=localStorage.getItem(LS_KEY);
+    if(saved){
+      const d=JSON.parse(saved);
+      if(d.checklists)checklists=d.checklists;
+      if(d.modes)modes=d.modes;
+      if(d.ticked)ticked=d.ticked;
+      if(d.roomDetails)roomDetails=d.roomDetails;
+      if(d.history)history=d.history;
+      if(d.hotel)hotelInput.value=d.hotel;
+    } else {
+      initChecklists();
+      // Set today's date for all types
+      ['checkout','stayover','inspection'].forEach(t=>{ roomDetails[t].date=today(); });
+      save();
+    }
+  }catch(e){initChecklists();}
+  initChecklists();
+  // Ensure dates are set if empty
+  ['checkout','stayover','inspection'].forEach(t=>{
+    if(!roomDetails[t]) roomDetails[t]={room:'',housekeeper:'',date:''};
+    if(!roomDetails[t].date) roomDetails[t].date=today();
+  });
+  pruneHistory();
+})();
+</script>
+</body>
+</html>
