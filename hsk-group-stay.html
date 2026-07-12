@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HSK Group Stay Calculator -- Hotel Mastery Hub</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:Georgia,serif; background:#F8F5F0; min-height:100vh; color:#1A1A1A; }
+.header { background:#2F4B3E; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+.hb { color:#B8962E; font-size:10px; letter-spacing:4px; font-family:system-ui; font-weight:600; }
+.hs { color:#F5F0E8; font-size:10px; letter-spacing:3px; font-family:system-ui; margin-left:10px; opacity:0.75; }
+.header-btns { display:flex; gap:6px; flex-wrap:wrap; }
+.btn-hdr { padding:5px 12px; font-size:10px; letter-spacing:1px; cursor:pointer; font-family:system-ui; font-weight:600; border:1px solid rgba(184,150,46,0.4); color:#D4AF5A; background:transparent; }
+.btn-hdr.gold { background:#B8962E; color:#1A1A1A; border-color:#B8962E; }
+.tabs { background:#1C2E26; display:flex; overflow-x:auto; border-bottom:2px solid #3E5F4F; }
+.tab { padding:11px 16px; font-size:10px; letter-spacing:2px; font-family:system-ui; font-weight:600; color:#C9C2B0; cursor:pointer; white-space:nowrap; border-bottom:3px solid transparent; margin-bottom:-2px; flex-shrink:0; }
+.tab:hover { color:#F5F0E8; }
+.tab.active { color:#B8962E; border-bottom-color:#B8962E; }
+.wrap { max-width:1100px; margin:0 auto; padding:24px 16px 60px; }
+.section { display:none; }
+.section.active { display:block; }
+.card { background:#fff; border:1px solid #E5DDD0; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:16px; }
+.card-head { padding:10px 18px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:6px; }
+.card-title { font-size:11px; font-weight:700; color:#F5F0E8; letter-spacing:1px; font-family:system-ui; }
+.card-body { padding:16px 18px; }
+label { display:block; font-size:10px; color:#8A8070; letter-spacing:2px; font-family:system-ui; font-weight:600; margin-bottom:5px; }
+input[type=text],input[type=number],input[type=date] { width:100%; padding:8px 10px; border:1px solid #E5DDD0; font-size:13px; font-family:system-ui; background:#FAFAFA; color:#1A1A1A; outline:none; }
+input:focus { border-color:#B8962E; }
+select { width:100%; padding:8px 10px; border:1px solid #E5DDD0; font-size:12px; font-family:system-ui; background:#FAFAFA; color:#1A1A1A; outline:none; }
+.info-btn { background:#B8962E; border:none; color:#1A1A1A; width:18px; height:18px; border-radius:50%; font-size:11px; font-weight:700; cursor:pointer; font-family:system-ui; vertical-align:middle; margin-left:4px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; }
+.info-btn:hover { background:#D4AF5A; }
+.btn-gold { background:#B8962E; border:none; color:#1A1A1A; padding:9px 18px; font-size:11px; font-family:system-ui; font-weight:700; letter-spacing:1px; cursor:pointer; }
+.btn-gold:hover { background:#D4AF5A; }
+.btn-sec { background:#fff; border:1px solid #E5DDD0; color:#8A8070; padding:6px 12px; font-size:11px; font-family:system-ui; font-weight:600; cursor:pointer; }
+.btn-sec:hover { border-color:#B8962E; color:#B8962E; }
+.del-btn { background:transparent; border:none; color:#CCC; cursor:pointer; font-size:16px; padding:2px 6px; line-height:1; }
+.del-btn:hover { color:#CC5555; }
+.add-btn { background:#F8F5F0; border:1px dashed #E5DDD0; color:#8A8070; padding:8px; font-size:11px; font-family:system-ui; cursor:pointer; width:100%; text-align:center; margin-top:6px; }
+.add-btn:hover { border-color:#B8962E; color:#B8962E; }
+.action-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:16px; }
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+.grid4 { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:12px; }
+.field { margin-bottom:12px; }
+.toggle-btn { padding:6px 14px; font-size:11px; font-family:system-ui; font-weight:600; cursor:pointer; border:1px solid #E5DDD0; background:#fff; color:#8A8070; }
+.toggle-btn.active { background:#2F4B3E; color:#B8962E; border-color:#2F4B3E; }
+.t { width:100%; border-collapse:collapse; }
+.t th { padding:6px 8px; font-size:9px; color:#8A8070; letter-spacing:1px; font-family:system-ui; font-weight:600; background:#F0EBE3; border-right:1px solid #E5DDD0; text-align:left; white-space:nowrap; }
+.t th:last-child { border-right:none; }
+.t td { padding:0; border-bottom:1px solid #F0EBE3; border-right:1px solid #F0EBE3; vertical-align:middle; }
+.t td:last-child { border-right:none; }
+.t tr:last-child td { border-bottom:none; }
+.ti { width:100%; padding:6px 8px; border:none; font-size:12px; font-family:system-ui; background:transparent; outline:none; }
+.ti:focus { background:#FFFDF5; }
+.tc { padding:6px 10px; font-size:12px; font-family:system-ui; font-weight:700; text-align:right; }
+.kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px; }
+.kc { background:#2F4B3E; padding:14px 16px; }
+.kc-label { font-size:9px; color:#F5F0E8; opacity:0.7; letter-spacing:2px; font-family:system-ui; font-weight:600; margin-bottom:5px; }
+.kc-value { font-size:22px; font-weight:700; line-height:1; margin-bottom:3px; }
+.kc-sub { font-size:11px; color:#F5F0E8; opacity:0.7; font-family:system-ui; }
+.guide-step { display:flex; border-bottom:1px solid #F0EBE3; padding:13px 16px; align-items:flex-start; }
+.guide-step:last-child { border-bottom:none; }
+.guide-circle { width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:system-ui; flex-shrink:0; margin-right:12px; background:#B8962E; color:#1A1A1A; }
+.info-modal { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); z-index:999; align-items:center; justify-content:center; padding:20px; }
+.info-modal.open { display:flex; }
+.info-box { background:#fff; max-width:440px; width:100%; padding:24px; position:relative; }
+.hint { background:#FFF8F0; border-left:3px solid #B8962E; padding:9px 14px; font-size:12px; color:#8A8070; font-family:system-ui; line-height:1.6; }
+.example-notice { background:#1A3A5C; padding:10px 16px; font-size:12px; color:#fff; font-family:system-ui; margin-bottom:14px; }
+.footer-note { text-align:center; margin-top:28px; color:#8A8070; font-size:11px; font-family:system-ui; letter-spacing:2px; }
+.mode-toggle { display:flex; gap:0; border:1px solid #E5DDD0; }
+.mode-btn { padding:7px 16px; font-size:10px; letter-spacing:2px; font-family:system-ui; font-weight:700; cursor:pointer; background:#fff; color:#8A8070; border:none; }
+.mode-btn.active-view { background:#2F4B3E; color:#F5F0E8; }
+.mode-btn.active-edit { background:#D4903A; color:#1A1A1A; }
+.mode-banner { padding:9px 16px; font-size:11px; font-family:system-ui; font-weight:600; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+.mode-banner.view-mode { background:#EFEAE0; color:#8A8070; }
+.mode-banner.edit-mode { background:#FFF3E0; color:#E65100; border:1px solid #D4903A; }
+@media print {
+  .header,.tabs,.header-btns,.action-row,.add-btn,.del-btn,.btn-sec,.btn-gold,.info-modal { display:none !important; }
+  .section { display:block !important; }
+  body { background:#fff; }
+  .wrap { padding:8px; }
+  input,select { border:none !important; background:transparent !important; }
+}
+@media (max-width:700px) {
+  .kpi-grid { grid-template-columns:1fr 1fr; }
+  .grid2,.grid3,.grid4 { grid-template-columns:1fr; }
+  .t th, .t td { font-size:11px; }
+  .kc { padding:12px; }
+  .kc-value { font-size:18px; }
+  .rate-box { padding:12px 14px !important; }
+}
+.breakdown-grid { display:grid; grid-template-columns:minmax(100px,130px) 1fr; gap:16px; align-items:center; }
+.breakdown-stats { display:grid; grid-template-columns:repeat(auto-fit, minmax(90px,1fr)); gap:12px; }
+.rate-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:16px; }
+.rate-bar-row { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.rate-bar-label { font-size:10px; opacity:0.75; font-family:system-ui; flex:0 0 auto; min-width:56px; }
+.rate-bar-track { flex:1 1 80px; background:rgba(255,255,255,0.12); height:16px; position:relative; min-width:60px; }
+.rate-bar-value { font-size:12px; font-weight:700; font-family:system-ui; flex:0 0 auto; min-width:56px; text-align:right; }
+@media (max-width:400px) {
+  .breakdown-grid { grid-template-columns:1fr; }
+  .breakdown-grid > div:first-child { max-width:110px; margin:0 auto; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div style="display:flex;align-items:center;">
+    <span class="hb">HOTEL MASTERY HUB</span>
+    <span class="hs">&middot; HSK GROUP STAY CALCULATOR</span>
+  </div>
+  <div class="header-btns">
+    <button class="btn-hdr" onclick="exportCSV()">CSV</button>
+    <button class="btn-hdr" onclick="emailReport()">&#9993;</button>
+    <button class="btn-hdr gold" onclick="window.print()">PDF</button>
+    <button class="btn-hdr" onclick="backupData()">BACKUP &#8595;</button>
+    <button class="btn-hdr" onclick="document.getElementById('restore-input').click()">RESTORE &#8593;</button>
+    <input type="file" id="restore-input" accept=".json" style="display:none" onchange="restoreData(this)">
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" id="tab-guide" onclick="setTab('guide')">HOW TO USE</div>
+  <div class="tab" id="tab-setup" onclick="setTab('setup')">SETUP</div>
+  <div class="tab" id="tab-calc" onclick="setTab('calc')">CALCULATOR</div>
+  <div class="tab" id="tab-scenarios" onclick="setTab('scenarios')">SCENARIOS</div>
+</div>
+
+<div class="info-modal" id="info-modal">
+  <div class="info-box">
+    <button onclick="closeInfo()" style="position:absolute;top:12px;right:14px;background:transparent;border:none;font-size:20px;cursor:pointer;color:#8A8070;">×</button>
+    <div id="info-title" style="font-size:10px;color:#B8962E;letter-spacing:3px;font-family:system-ui;font-weight:600;margin-bottom:8px;padding-right:20px;"></div>
+    <div id="info-body" style="font-size:13px;color:#1A1A1A;font-family:system-ui;line-height:1.7;"></div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- HOW TO USE -->
+<div class="section active" id="section-guide">
+  <div style="background:#2F4B3E;padding:18px 24px;margin-bottom:20px;">
+    <div style="font-size:10px;color:#B8962E;letter-spacing:4px;font-family:system-ui;font-weight:600;margin-bottom:5px;">HOTEL MASTERY HUB</div>
+    <div style="font-size:20px;color:#F5F0E8;font-weight:700;margin-bottom:3px;">HSK Group Stay Calculator</div>
+    <div style="font-size:12px;color:#F5F0E8;opacity:0.75;font-family:system-ui;">Calculate the full housekeeping cost for a group booking — labour, linen, and supplies. Know your break-even room rate before you quote.</div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#2F4B3E;"><span class="card-title">WHAT THIS TOOL DOES</span></div>
+    <div class="card-body">
+      <p style="font-size:14px;font-family:system-ui;line-height:1.8;color:#1A1A1A;margin-bottom:12px;">When a group books a block of rooms for a fixed stay, you need to know the total housekeeping cost before you set your rate. This tool calculates exactly that — labour for arrival cleans and stayover services, linen costs based on your actual bed set configuration, and supply costs for the stay.</p>
+      <p style="font-size:14px;font-family:system-ui;line-height:1.8;color:#1A1A1A;margin-bottom:12px;">Linen is calculated the right way — per bed set type (single, double, king) with the exact items or weight in each set. A family room with 2 single beds and 1 double is configured correctly and priced correctly.</p>
+      <p style="font-size:14px;font-family:system-ui;line-height:1.8;color:#1A1A1A;">The result: total HSK cost for the group, HSK cost per room per night, the minimum room rate to break even on housekeeping, and the rate needed to hit your target margin.</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#1E4620;"><span class="card-title">HOW TO USE — THREE STEPS</span></div>
+    <div class="card-body" style="padding:0;">
+      <div class="guide-step"><div class="guide-circle">1</div><div><div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Setup — do once, update when rates change</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Enter hotel name, gross hourly rate and employer multiplier. Choose your laundry pricing model — per piece or per kg. Define your bed set types with their items (per piece) or weight (per kg). Add room-level items like bath mats. Define each ROOM TYPE once — its departure and stayover clean times, and how many of each bed set / room item it uses. Enter monthly supply invoice and room nights sold to derive supply cost per night.</div></div></div>
+      <div class="guide-step"><div class="guide-circle">2</div><div><div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Calculator — enter the group booking details</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Enter group name, check-in and check-out dates — stay length calculates automatically. The room list opens in read-only VIEW mode. Click ✎ EDIT to add a room row: pick a room type from your Setup catalog, then enter quantity, stayover cleans, and linen changes for this booking — cleaning times and linen composition come from the room type automatically.</div></div></div>
+      <div class="guide-step" style="border-bottom:none;"><div class="guide-circle">3</div><div><div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:3px;">Read the results and set your rate</div><div style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Total HSK cost for the group, HSK per room per night, break-even room rate (covering HSK only), and rate with your target margin. Set your target margin % to see what room rate you need to quote.</div></div></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#1A3A5C;"><span class="card-title">IMPORTANT — WHAT THIS TOOL COVERS</span></div>
+    <div class="card-body">
+      <p style="font-size:13px;font-family:system-ui;line-height:1.8;color:#1A1A1A;margin-bottom:8px;">This tool calculates <strong>housekeeping cost only</strong>. The break-even room rate shown is the minimum rate to cover HSK. Your actual room rate must also cover all other hotel costs — front desk, utilities, linen depreciation, overheads, and profit margin.</p>
+      <p style="font-size:13px;font-family:system-ui;line-height:1.8;color:#1A1A1A;">Use the break-even and target margin figures as a floor — never quote below the break-even rate unless you have a deliberate strategic reason.</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#3E5F4F;"><span class="card-title">EXPORT OPTIONS</span></div>
+    <div class="card-body" style="padding:0;">
+      <div style="padding:12px 16px;border-bottom:1px solid #F0EBE3;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:4px;"><span style="background:#2F4B3E;color:#B8962E;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">CSV</span><span style="font-size:13px;font-weight:700;">Full group cost breakdown</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">All room types, labour costs, linen costs, supply costs, totals, and KPIs. Good for sharing with a GM or attaching to a group booking proposal.</p></div>
+      <div style="padding:12px 16px;border-bottom:1px solid #F0EBE3;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:4px;"><span style="background:#2F4B3E;color:#B8962E;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">&#9993;</span><span style="font-size:13px;font-weight:700;">Email group cost summary</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Group name, stay dates, total rooms, total HSK cost, HSK per room per night, break-even rate, and target rate. Good for sharing with a property owner before confirming a group rate.</p></div>
+      <div style="padding:12px 16px;border-bottom:1px solid #F0EBE3;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:4px;"><span style="background:#B8962E;color:#1A1A1A;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">PDF</span><span style="font-size:13px;font-weight:700;">Print full report</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Setup and full calculator with all results. Good for keeping a record of each group booking cost calculation.</p></div>
+      <div style="padding:12px 16px;border-bottom:1px solid #F0EBE3;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:4px;"><span style="background:#B8962E;color:#1A1A1A;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">BACKUP &#8595;</span><span style="font-size:13px;font-weight:700;">Save everything as JSON</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Complete backup of setup and current calculator state. Restore to any device.</p></div>
+      <div style="padding:12px 16px;"><div style="display:flex;gap:10px;align-items:center;margin-bottom:4px;"><span style="background:#B8962E;color:#1A1A1A;font-size:10px;font-weight:700;font-family:system-ui;padding:3px 10px;">RESTORE &#8593;</span><span style="font-size:13px;font-weight:700;">Load from backup</span></div><p style="font-size:12px;color:#8A8070;font-family:system-ui;line-height:1.6;">Select a .json backup to restore all data. Confirms before replacing.</p></div>
+    </div>
+  </div>
+
+  <div style="background:#2F4B3E;padding:13px 18px;margin-bottom:20px;">
+    <div style="font-size:10px;color:#B8962E;letter-spacing:3px;font-family:system-ui;font-weight:600;margin-bottom:6px;">ONE RULE</div>
+    <p style="font-size:13px;color:#F5F0E8;font-family:system-ui;line-height:1.7;">Never quote a group rate before knowing your housekeeping cost for that stay. A busy group week at the wrong rate is worse than an empty week.</p>
+  </div>
+
+  <div class="action-row"><button class="btn-gold" onclick="setTab('setup')">GO TO SETUP &rarr;</button></div>
+  <div class="footer-note">HOTEL MASTERY HUB &middot; HSK GROUP STAY CALCULATOR</div>
+</div>
+
+<!-- SETUP -->
+<div class="section" id="section-setup">
+  <div style="margin-bottom:16px;">
+    <h2 style="font-size:20px;font-weight:700;">Setup</h2>
+    <p style="font-size:12px;color:#8A8070;font-family:system-ui;margin-top:2px;">Set once. Update when staff rates or supplier prices change.</p>
+  </div>
+  <div class="example-notice">&#9432; Pre-filled with example data for Hotel Bella Vista — replace with your own figures.</div>
+  <div class="hint" style="margin-bottom:16px;background:#FFF8F0;border-left:3px solid #B8962E;">Enter every price consistently — <strong>all including VAT, or all excluding VAT.</strong> Never mix the two: mixing understates some costs relative to others and throws off every figure this tool calculates. Apply this to bed set item prices, room item prices, and supplies below.</div>
+
+  <div class="card">
+    <div class="card-head" style="background:#2F4B3E;"><span class="card-title">PROPERTY &amp; STAFF RATE</span></div>
+    <div class="card-body">
+      <div class="grid4">
+        <div class="field"><label>HOTEL NAME</label><input type="text" id="s-hotel" value="Hotel Bella Vista" oninput="save()"></div>
+        <div class="field"><label>GROSS HOURLY RATE (€) <button class="info-btn" onclick="showInfo('rate')">?</button></label><input type="number" id="s-rate" value="12" step="0.05" oninput="save();updateRateDisplay()"></div>
+        <div class="field"><label>EMPLOYER MULTIPLIER <button class="info-btn" onclick="showInfo('multiplier')">?</button></label><input type="number" id="s-mult" value="1.28" step="0.01" min="1" max="2" oninput="save();updateRateDisplay()"></div>
+        <div class="field"><label>REAL COST PER HOUR <button class="info-btn" onclick="showInfo('realRate')">?</button></label><div id="real-rate-display" style="padding:9px 10px;background:#2F4B3E;font-size:15px;font-weight:700;font-family:system-ui;color:#B8962E;"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head" style="background:#2F4B3E;"><span class="card-title">LAUNDRY PRICING MODEL <button class="info-btn" onclick="showInfo('laundryModel')">?</button></span></div>
+    <div class="card-body">
+      <div style="display:flex;gap:8px;margin-bottom:12px;">
+        <button class="toggle-btn active" id="mode-piece" onclick="setLaundryMode('piece')">PER PIECE — individual item prices</button>
+        <button class="toggle-btn" id="mode-kg" onclick="setLaundryMode('kg')">PER KG — weight of one complete set</button>
+      </div>
+      <div id="laundry-mode-hint" style="font-size:12px;font-family:system-ui;color:#8A8070;background:#F8F5F0;padding:8px 12px;"></div>
+    </div>
+  </div>
+
+  <!-- BED SETS -->
+  <div class="card">
+    <div class="card-head" style="background:#1E4620;">
+      <span class="card-title">BED SET TYPES <button class="info-btn" onclick="showInfo('bedSets')">?</button></span>
+      <button class="btn-sec" onclick="addBedSet()" style="font-size:10px;padding:4px 10px;">+ ADD BED SET TYPE</button>
+    </div>
+    <div class="hint">One bed set = everything that goes into one linen change for one bed. Per piece: list each item and price. Per kg: weight of the complete set.</div>
+    <div id="bed-sets-container"></div>
+    <button class="add-btn" onclick="addBedSet()">+ ADD BED SET TYPE</button>
+  </div>
+
+  <!-- ROOM ITEMS -->
+  <div class="card">
+    <div class="card-head" style="background:#2A1A5C;">
+      <span class="card-title">ROOM ITEMS — NOT BED-SPECIFIC <button class="info-btn" onclick="showInfo('roomItems')">?</button></span>
+      <button class="btn-sec" onclick="addRoomItem()" style="font-size:10px;padding:4px 10px;">+ ADD ITEM</button>
+    </div>
+    <div class="hint">Bath mats, pool towels, extras — same regardless of bed configuration. Quantity per room set below in ROOM TYPES.</div>
+    <div id="room-items-container"></div>
+  </div>
+
+  <!-- ROOM TYPES -->
+  <div class="card">
+    <div class="card-head" style="background:#5C1A3A;">
+      <span class="card-title">ROOM TYPES <button class="info-btn" onclick="showInfo('roomTypesCatalog')">?</button></span>
+      <button class="btn-sec" onclick="addRoomType()" style="font-size:10px;padding:4px 10px;color:#1A1A1A;">+ ADD ROOM TYPE</button>
+    </div>
+    <div class="hint">Define each room type once — its cleaning times and bed set / room item composition. The Calculator picks from this list for every group booking, so nothing needs retyping and a room type can't be deleted by accident mid-booking.</div>
+    <div id="room-types-container"></div>
+    <button class="add-btn" onclick="addRoomType()" style="color:#1A1A1A;">+ ADD ROOM TYPE</button>
+  </div>
+
+  <!-- SUPPLIES -->
+  <div class="card">
+    <div class="card-head" style="background:#1A3A5C;"><span class="card-title">SUPPLIES <button class="info-btn" onclick="showInfo('supplies')">?</button></span></div>
+    <div class="hint">Derive supply cost per room night from your actual monthly invoice. Enter the invoice total and room nights sold — cost per night calculates automatically.</div>
+    <div class="card-body">
+      <div class="grid3">
+        <div class="field"><label>MONTHLY SUPPLY INVOICE (€)</label><input type="number" id="s-supply-invoice" value="680" step="10" min="0" oninput="save();updateSupplyDisplay()"></div>
+        <div class="field"><label>ROOM NIGHTS SOLD (that period)</label><input type="number" id="s-supply-nights" value="620" step="10" min="1" oninput="save();updateSupplyDisplay()"></div>
+        <div class="field"><label>SUPPLY COST PER ROOM NIGHT</label><div id="supply-display" style="padding:9px 10px;background:#2F4B3E;font-size:15px;font-weight:700;font-family:system-ui;color:#B8962E;"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="action-row"><button class="btn-gold" onclick="setTab('calc')">GO TO CALCULATOR &rarr;</button></div>
+  <div class="footer-note">HOTEL MASTERY HUB &middot; HSK GROUP STAY CALCULATOR</div>
+</div>
+
+<!-- CALCULATOR -->
+<div class="section" id="section-calc">
+  <div style="margin-bottom:16px;">
+    <h2 style="font-size:20px;font-weight:700;">Calculator</h2>
+    <p style="font-size:12px;color:#8A8070;font-family:system-ui;margin-top:2px;">Enter the group booking details. All costs calculate automatically.</p>
+  </div>
+
+  <!-- GROUP DETAILS -->
+  <div class="card">
+    <div class="card-head" style="background:#2F4B3E;"><span class="card-title">GROUP BOOKING DETAILS</span></div>
+    <div class="card-body">
+      <div class="grid4">
+        <div class="field"><label>GROUP NAME / REFERENCE</label><input type="text" id="c-group" value="Cycle Tour Group — July" oninput="save();calcAndRender()"></div>
+        <div class="field"><label>CHECK-IN DATE</label><input type="date" id="c-checkin" value="2026-07-14" oninput="save();calcStayLength();calcAndRender()"></div>
+        <div class="field"><label>CHECK-OUT DATE</label><input type="date" id="c-checkout" value="2026-07-21" oninput="save();calcStayLength();calcAndRender()"></div>
+        <div class="field"><label>STAY LENGTH (nights)</label><div id="stay-length-display" style="padding:9px 10px;background:#2F4B3E;font-size:15px;font-weight:700;font-family:system-ui;color:#B8962E;"></div></div>
+      </div>
+      <div class="grid3">
+        <div class="field"><label>TARGET MARGIN % <button class="info-btn" onclick="showInfo('margin')">?</button></label><input type="number" id="c-margin" value="20" step="1" min="0" max="100" oninput="save();calcAndRender()"></div>
+        <div class="field"><label>TOTAL ROOMS IN GROUP</label><div id="total-rooms-display" style="padding:9px 10px;background:#F8F5F0;font-size:15px;font-weight:700;font-family:system-ui;color:#1A1A1A;">—</div></div>
+        <div class="field"><label>TOTAL ROOM NIGHTS</label><div id="total-room-nights-display" style="padding:9px 10px;background:#F8F5F0;font-size:15px;font-weight:700;font-family:system-ui;color:#1A1A1A;">—</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROOM ROWS -->
+  <div class="card">
+    <div class="card-head" style="background:#2F4B3E;">
+      <span class="card-title">ROOM TYPES IN GROUP</span>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <div class="mode-toggle">
+          <button class="mode-btn active-view" id="calc-btn-view" onclick="setCalcMode('view')">&#128065; VIEW</button>
+          <button class="mode-btn" id="calc-btn-edit" onclick="setCalcMode('edit')">&#9998; EDIT</button>
+        </div>
+        <button class="btn-sec" id="calc-add-btn" onclick="addGroupRoom()" style="font-size:10px;padding:4px 10px;display:none;color:#1A1A1A;">+ ADD ROOM TYPE</button>
+      </div>
+    </div>
+    <div class="mode-banner view-mode" id="calc-banner-view">&#128065; VIEW MODE — read-only summary. Click ✎ EDIT to change room types, quantities, or remove a row.</div>
+    <div class="mode-banner edit-mode" id="calc-banner-edit" style="display:none;">&#9998; EDIT MODE — pick room types from your Setup catalog. Nothing here changes the catalog itself.</div>
+    <div class="hint">Pick a room type from Setup for each row, then enter quantity, stayover cleans, and linen changes for this booking. Cleaning times and linen composition come from the room type automatically.</div>
+    <div id="group-rooms-container"></div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="calc-results"></div>
+
+  <div class="footer-note">HOTEL MASTERY HUB &middot; HSK GROUP STAY CALCULATOR</div>
+</div>
+
+<!-- SCENARIOS -->
+<div class="section" id="section-scenarios">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+    <div>
+      <h2 style="font-size:20px;font-weight:700;">Scenarios</h2>
+      <p style="font-size:12px;color:#8A8070;font-family:system-ui;margin-top:2px;">Save your current setup and group composition, make changes, then compare — see exactly what changed and how it affects cost.</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#2F4B3E;"><span class="card-title">SAVE CURRENT SETUP AS A SCENARIO</span></div>
+    <div class="card-body" style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">
+      <div class="field" style="flex:1;min-width:220px;margin-bottom:0;"><label>SCENARIO NAME <span style="text-transform:none;letter-spacing:0;">(optional)</span></label><input type="text" id="scenario-name-input" placeholder='e.g. "10 Singles + 5 Doubles"'></div>
+      <button class="btn-gold" onclick="saveScenario()">&#9733; SAVE AS SCENARIO</button>
+    </div>
+  </div>
+
+  <div style="background:#FFF8F0;border-left:3px solid #B8962E;padding:10px 14px;font-size:12px;color:#8A8070;font-family:system-ui;margin-bottom:16px;line-height:1.6;">
+    Example: save the group's current composition as <strong style="color:#1A1A1A;">"10 Singles + 5 Doubles"</strong>. Change the room mix, dates, or a rate. Save again as <strong style="color:#1A1A1A;">"Proposed Mix"</strong>. Compare the two below — key figures side by side and exactly which inputs changed.
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head" style="background:#2F4B3E;"><span class="card-title">SAVED SCENARIOS</span></div>
+    <div style="padding:14px 16px;">
+      <div id="scenario-list"></div>
+      <div id="no-scenarios" style="padding:20px;text-align:center;color:#8A8070;font-family:system-ui;font-size:12px;">No scenarios saved yet. Save your current setup above to start comparing.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head" style="background:#2F4B3E;"><span class="card-title">COMPARE TWO SCENARIOS</span></div>
+    <div class="card-body">
+      <div class="grid2">
+        <div class="field"><label>SCENARIO A</label><select id="cmp-a" onchange="renderComparison()"></select></div>
+        <div class="field"><label>SCENARIO B</label><select id="cmp-b" onchange="renderComparison()"></select></div>
+      </div>
+      <div id="comparison-result"></div>
+    </div>
+  </div>
+
+  <div class="dl-bar">
+    <button class="btn-gold" onclick="setTab('calc')">&larr; BACK TO CALCULATOR</button>
+  </div>
+  <div class="footer-note">HOTEL MASTERY HUB &middot; HSK GROUP STAY CALCULATOR</div>
+</div>
+
+</div>
+
+<script>
+const LS_KEY = 'hmh-hsk-group-stay';
+let laundryMode = 'piece';
+let bedSetCounter = 10;
+let roomItemCounter = 10;
+let groupRoomCounter = 10;
+let itemCounter = 50;
+let scenarios = [];
+let scenarioCounter = 0;
+
+const INFO = {
+  rate: { title:'GROSS HOURLY RATE', text:'What the housekeeper earns per hour before tax. The real cost is higher once employer contributions are added — use the multiplier.' },
+  multiplier: { title:'EMPLOYER COST MULTIPLIER', text:'The business pays more than gross wages. Add: employer social security (8–15%), holiday pay accrual (8–12%), pension, and insurance. EU range typically 1.20–1.35. Example: €12/hr × 1.28 = €15.36 real cost per hour.' },
+  realRate: { title:'REAL COST PER HOUR', text:'Gross rate × multiplier. This is what each hour of cleaning labour truly costs the business. All labour calculations use this figure.' },
+  laundryModel: { title:'LAUNDRY PRICING MODEL', text:'Per piece: supplier charges per item — e.g. €1.54 per single fitted sheet. You enter item prices and which items are in each bed set type. Per kg: supplier charges by weight — e.g. €4.00/kg. You enter the weight of one complete set. Both calculate cost per linen change per room type.' },
+  bedSets: { title:'BED SET TYPES', text:'A bed set is everything that goes into one full linen change for one bed — fitted sheet, duvet cover, pillowcase(s), bath towel, hand towel. Define one set type per bed size used in your hotel. In the Calculator you specify how many of each set type each room uses.' },
+  roomItems: { title:'ROOM ITEMS — NOT BED-SPECIFIC', text:'Items that belong to the room regardless of bed configuration — bath mats, pool towels, extra amenities. These are added once per room per linen change, regardless of how many beds the room has.' },
+  roomTypesCatalog: { title:'ROOM TYPES', text:'Define each room type your hotel has once — its departure and stayover clean times, and how many of each bed set / room item it uses. The Calculator then just picks a room type and a quantity for each group booking — the cleaning times and linen composition come from here automatically, so they stay consistent across every group you quote.' },
+  supplies: { title:'SUPPLY COST PER ROOM NIGHT', text:'Derive from your actual monthly supply invoice. Take total spend on cleaning products and guest amenities (detergents, toilet paper, soap, shampoo, amenity kit) and divide by room nights sold. Example: €680 ÷ 620 nights = €1.10/night. Update when supplier prices change.' },
+  margin: { title:'TARGET MARGIN %', text:'The margin you want to achieve on room revenue above your HSK cost. Enter 20 for 20%. The target room rate = HSK cost per room night ÷ (1 − margin%). Note: this covers HSK only — your full room rate must also cover all other hotel costs.' },
+  depTime: { title:'DEPARTURE CLEAN TIME', text:'Minutes for a full departure clean for this room type — strip linen, clean bathroom, vacuum, make bed, restock. Time this in your hotel. Typical: single 20–30 min, double 25–35 min, family 35–50 min.' },
+  stayTime: { title:'STAYOVER CLEAN TIME', text:'Minutes for a stayover service — refresh, bins, replace used towels, wipe bathroom. No full linen change. Lighter than a departure.' },
+  linenChanges: { title:'LINEN CHANGES PER STAY', text:'Total full linen set changes per stay including the arrival change. Example: 7-night stay with one mid-stay change = 2 linen changes. Departure-only policy = 1. This is a major driver of laundry cost for a group stay.' },
+  kgRate: { title:'LAUNDRY RATE PER KG', text:'What your supplier charges per kilogram. From your invoice — total invoice ÷ total kg. Typical range: €3.50–€5.50/kg.' },
+};
+
+function showInfo(key) {
+  const info = INFO[key]; if(!info) return;
+  document.getElementById('info-title').textContent = info.title;
+  document.getElementById('info-body').textContent = info.text;
+  document.getElementById('info-modal').classList.add('open');
+}
+function closeInfo() { document.getElementById('info-modal').classList.remove('open'); }
+
+// ═══ DATA ═══
+let bedSets = [
+  { id:'bs1', name:'Single Bed Set', weight:3.0, items:[
+    {id:'i1', name:'Fitted sheet (single)', price:1.54},
+    {id:'i2', name:'Duvet cover (single)', price:2.12},
+    {id:'i3', name:'Pillowcase', price:0.61},
+    {id:'i4', name:'Bath towel', price:1.59},
+    {id:'i5', name:'Hand towel', price:0.74},
+  ]},
+  { id:'bs2', name:'Double Bed Set', weight:4.8, items:[
+    {id:'i1', name:'Fitted sheet (double)', price:3.09},
+    {id:'i2', name:'Duvet cover (double)', price:4.24},
+    {id:'i3', name:'Pillowcase', price:0.61},
+    {id:'i4', name:'Pillowcase', price:0.61},
+    {id:'i5', name:'Bath towel', price:1.59},
+    {id:'i6', name:'Bath towel', price:1.59},
+    {id:'i7', name:'Hand towel', price:0.74},
+  ]},
+];
+
+let roomItems = [
+  {id:'ri1', name:'Bath mat', price:0.74, weight:0.4},
+];
+let roomItemsWeight = 0.4;
+let kgRate = 4.00;
+
+let roomTypeCatalog = [
+  { id:'rt1', name:'Double Room', depTime:28, stayTime:14, bedSetQty:{bs1:0, bs2:1}, roomItemQty:{ri1:1} },
+  { id:'rt2', name:'Single Room', depTime:20, stayTime:10, bedSetQty:{bs1:1, bs2:0}, roomItemQty:{ri1:1} },
+  { id:'rt3', name:'Family Room', depTime:42, stayTime:22, bedSetQty:{bs1:2, bs2:1}, roomItemQty:{ri1:1} },
+];
+let roomTypeCounter = 10;
+
+let groupRooms = [
+  { id:'gr1', roomTypeId:'rt1', qty:12, stayCleans:1, linenChanges:1 },
+  { id:'gr2', roomTypeId:'rt2', qty:6, stayCleans:0, linenChanges:1 },
+  { id:'gr3', roomTypeId:'rt3', qty:2, stayCleans:1, linenChanges:2 },
+];
+
+function save() {
+  try { localStorage.setItem(LS_KEY, JSON.stringify({
+    laundryMode, bedSets, roomItems, roomItemsWeight, kgRate, groupRooms, scenarios, scenarioCounter,
+    roomTypeCatalog, roomTypeCounter,
+    bedSetCounter, roomItemCounter, groupRoomCounter, itemCounter,
+    hotel:g('s-hotel'), rate:g('s-rate'), mult:g('s-mult'),
+    supplyInvoice:g('s-supply-invoice'), supplyNights:g('s-supply-nights'),
+    group:g('c-group'), checkin:g('c-checkin'), checkout:g('c-checkout'), margin:g('c-margin'),
+  })); } catch(e) {}
+}
+
+function g(id) { return document.getElementById(id)?.value||''; }
+function v(id) { return parseFloat(document.getElementById(id)?.value)||0; }
+function fmt(n) { return '€'+(parseFloat(n)||0).toFixed(2); }
+function getRealRate() { return (parseFloat(g('s-rate'))||12)*(parseFloat(g('s-mult'))||1.28); }
+function getSupplyPerNight() { const inv=parseFloat(g('s-supply-invoice'))||0; const n=parseFloat(g('s-supply-nights'))||1; return n>0?inv/n:0; }
+function getStayLength() {
+  const ci=document.getElementById('c-checkin')?.value;
+  const co=document.getElementById('c-checkout')?.value;
+  if(!ci||!co) return 0;
+  const diff=(new Date(co)-new Date(ci))/(1000*60*60*24);
+  return diff>0?diff:0;
+}
+
+function updateRateDisplay() {
+  const el=document.getElementById('real-rate-display');
+  if(el) el.textContent=fmt(getRealRate())+'/hr';
+}
+
+function updateSupplyDisplay() {
+  const el=document.getElementById('supply-display');
+  if(el) el.textContent=fmt(getSupplyPerNight())+'/night';
+}
+
+function setLaundryMode(mode) {
+  laundryMode=mode;
+  document.getElementById('mode-piece').classList.toggle('active',mode==='piece');
+  document.getElementById('mode-kg').classList.toggle('active',mode==='kg');
+  const hint=document.getElementById('laundry-mode-hint');
+  if(hint) hint.textContent=mode==='piece'
+    ?'Per piece: enter individual item prices within each bed set type. Cost per set = sum of all item prices.'
+    :'Per kg: enter the weight of one complete bed set. Cost per set = weight × kg rate per kg.';
+  save(); renderSetup();
+}
+
+function calcStayLength() {
+  const len=getStayLength();
+  const el=document.getElementById('stay-length-display');
+  if(el) el.textContent=len>0?len+' nights':'—';
+}
+
+function setTab(tab) {
+  ['guide','setup','calc','scenarios'].forEach(t=>{
+    document.getElementById('section-'+t).classList.toggle('active',t===tab);
+    document.getElementById('tab-'+t).classList.toggle('active',t===tab);
+  });
+  if(tab==='setup') { updateRateDisplay(); updateSupplyDisplay(); setLaundryMode(laundryMode); renderSetup(); }
+  if(tab==='calc') { calcStayLength(); renderCalc(); calcAndRender(); }
+  if(tab==='scenarios') renderScenarios();
+}
+
+// ═══ SETUP RENDERS ═══
+function renderSetup() {
+  renderBedSets();
+  renderRoomItemsSetup();
+  renderRoomTypesSetup();
+}
+
+function calcBedSetCost(bs) {
+  if(laundryMode==='kg') return (parseFloat(bs.weight)||0)*kgRate;
+  return (bs.items||[]).reduce((t,item)=>t+(parseFloat(item.price)||0),0);
+}
+
+function calcRoomItemsKgCost() { return (parseFloat(roomItemsWeight)||0)*kgRate; }
+
+function renderBedSets() {
+  const c=document.getElementById('bed-sets-container'); if(!c) return;
+  c.innerHTML=bedSets.map((bs,bsi)=>`
+    <div style="border-top:2px solid #E5DDD0;">
+      <div style="background:#F8F5F0;padding:8px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <input type="text" value="${bs.name}" data-bsi="${bsi}" data-field="name" oninput="updateBedSet(this)" style="border:none;border-bottom:1px solid #B8962E;background:transparent;font-size:13px;font-weight:700;font-family:system-ui;outline:none;padding:2px 4px;min-width:160px;">
+          ${laundryMode==='kg'?`
+            <span style="font-size:11px;color:#8A8070;font-family:system-ui;margin-left:8px;">Weight per set:</span>
+            <input type="number" value="${bs.weight}" step="0.1" min="0" data-bsi="${bsi}" data-field="weight" oninput="updateBedSet(this)" style="width:70px;border:none;border-bottom:1px solid #B8962E;background:transparent;font-size:13px;font-weight:700;font-family:system-ui;outline:none;padding:2px 4px;text-align:right;">
+            <span style="font-size:11px;color:#8A8070;font-family:system-ui;">kg &nbsp;→&nbsp; <strong id="bs-cost-${bsi}" style="color:#B8962E;">${fmt(calcBedSetCost(bs))}</strong>/set</span>
+          `:''}
+        </div>
+        <div style="display:flex;gap:6px;align-items:center;">
+          ${laundryMode==='piece'?`<span style="font-size:12px;font-family:system-ui;color:#8A8070;">Set cost: <strong id="bs-cost-${bsi}" style="color:#B8962E;">${fmt(calcBedSetCost(bs))}</strong></span>`:''}
+          ${bedSets.length>1?`<button class="del-btn" data-bsi="${bsi}" onclick="deleteBedSet(this)">x</button>`:''}
+        </div>
+      </div>
+      ${laundryMode==='piece'?`
+        <table class="t">
+          <thead><tr>
+            <th style="min-width:200px;">ITEM IN SET</th>
+            <th style="min-width:130px;">PRICE PER PIECE (€)</th>
+            <th style="width:36px;"></th>
+          </tr></thead>
+          <tbody>
+            ${(bs.items||[]).map((item,ii)=>`
+              <tr style="background:${ii%2===0?'#fff':'#FAFAFA'};">
+                <td><input class="ti" type="text" value="${item.name}" data-bsi="${bsi}" data-ii="${ii}" data-field="name" oninput="updateBedSetItem(this)"></td>
+                <td><input class="ti" type="number" value="${item.price}" step="0.01" min="0" data-bsi="${bsi}" data-ii="${ii}" data-field="price" oninput="updateBedSetItem(this)" style="text-align:right;"></td>
+                <td style="text-align:center;padding:4px;">${(bs.items||[]).length>1?`<button class="del-btn" data-bsi="${bsi}" data-ii="${ii}" onclick="deleteBedSetItem(this)">x</button>`:''}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+        <button class="add-btn" data-bsi="${bsi}" onclick="addBedSetItem(this)">+ ADD ITEM TO ${bs.name.toUpperCase()}</button>
+      `:''}
+    </div>
+  `).join('');
+}
+
+function renderRoomItemsSetup() {
+  const c=document.getElementById('room-items-container'); if(!c) return;
+  if(laundryMode==='kg') {
+    c.innerHTML=`
+      <div style="padding:10px 14px;border-top:1px solid #E5DDD0;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <span style="font-size:12px;font-family:system-ui;color:#8A8070;">Combined weight of all room items per room:</span>
+        <input type="number" id="room-items-weight-input" value="${roomItemsWeight}" step="0.1" min="0" oninput="roomItemsWeight=parseFloat(this.value)||0;save();" style="width:80px;border:none;border-bottom:1px solid #B8962E;background:transparent;font-size:13px;font-weight:700;font-family:system-ui;outline:none;padding:2px 4px;text-align:right;">
+        <span style="font-size:12px;font-family:system-ui;color:#8A8070;">kg &nbsp;→&nbsp; <strong style="color:#B8962E;">${fmt(calcRoomItemsKgCost())}/room</strong></span>
+      </div>
+    `;
+  } else {
+    c.innerHTML=`
+      <table class="t">
+        <thead><tr>
+          <th style="min-width:200px;">ITEM</th>
+          <th style="min-width:130px;">PRICE PER PIECE (€)</th>
+          <th style="width:36px;"></th>
+        </tr></thead>
+        <tbody>
+          ${roomItems.map((ri,i)=>`
+            <tr style="background:${i%2===0?'#fff':'#FAFAFA'};">
+              <td><input class="ti" type="text" value="${ri.name}" data-idx="${i}" data-field="name" oninput="updateRoomItem(this)"></td>
+              <td><input class="ti" type="number" value="${ri.price}" step="0.01" min="0" data-idx="${i}" data-field="price" oninput="updateRoomItem(this)" style="text-align:right;"></td>
+              <td style="text-align:center;padding:4px;">${roomItems.length>1?`<button class="del-btn" data-idx="${i}" onclick="deleteRoomItem(this)">x</button>`:''}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+      <button class="add-btn" onclick="addRoomItem()">+ ADD ROOM ITEM</button>
+    `;
+  }
+}
+
+// ═══ ROOM TYPE CATALOG (Setup) ═══
+function getRoomType(id) { return roomTypeCatalog.find(rt=>rt.id===id) || roomTypeCatalog[0] || {name:'(no room type)',depTime:0,stayTime:0,bedSetQty:{},roomItemQty:{}}; }
+
+function renderRoomTypesSetup() {
+  const c=document.getElementById('room-types-container'); if(!c) return;
+  c.innerHTML=roomTypeCatalog.map((rt,rti)=>`
+    <div style="border-top:2px solid #E5DDD0;">
+      <div style="background:#F8F5F0;padding:8px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;">
+        <input type="text" value="${rt.name}" data-rti="${rti}" data-field="name" oninput="updateRoomType(this)" style="border:none;border-bottom:1px solid #B8962E;background:transparent;font-size:13px;font-weight:700;font-family:system-ui;outline:none;padding:2px 4px;min-width:160px;">
+        ${roomTypeCatalog.length>1?`<button class="del-btn" data-rti="${rti}" onclick="deleteRoomType(this)">x</button>`:''}
+      </div>
+      <div style="padding:10px 14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;">
+        <div class="field" style="margin-bottom:0;"><label>DEP. CLEAN TIME (min) <button class="info-btn" onclick="showInfo('depTime')" style="width:14px;height:14px;font-size:9px;">?</button></label><input type="number" value="${rt.depTime}" min="0" step="1" data-rti="${rti}" data-field="depTime" oninput="updateRoomType(this)"></div>
+        <div class="field" style="margin-bottom:0;"><label>STAYOVER TIME (min) <button class="info-btn" onclick="showInfo('stayTime')" style="width:14px;height:14px;font-size:9px;">?</button></label><input type="number" value="${rt.stayTime}" min="0" step="1" data-rti="${rti}" data-field="stayTime" oninput="updateRoomType(this)"></div>
+        ${bedSets.map(bs=>`<div class="field" style="margin-bottom:0;"><label>${bs.name.toUpperCase()} QTY</label><input type="number" value="${rt.bedSetQty?.[bs.id]||0}" min="0" step="1" data-rti="${rti}" data-bs="${bs.id}" oninput="updateRoomTypeBedSet(this)"></div>`).join('')}
+        ${laundryMode==='piece'?roomItems.map(ri=>`<div class="field" style="margin-bottom:0;"><label>${ri.name.toUpperCase()} QTY</label><input type="number" value="${rt.roomItemQty?.[ri.id]||0}" min="0" step="1" data-rti="${rti}" data-ri="${ri.id}" oninput="updateRoomTypeRoomItem(this)"></div>`).join(''):''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function updateRoomType(el) {
+  const rti=parseInt(el.getAttribute('data-rti'));
+  const field=el.getAttribute('data-field');
+  roomTypeCatalog[rti][field]=field==='name'?el.value:parseFloat(el.value)||0;
+  save(); if(field==='name') { renderCalc(); } else { calcAndRender(); }
+}
+function updateRoomTypeBedSet(el) {
+  const rti=parseInt(el.getAttribute('data-rti'));
+  const bsId=el.getAttribute('data-bs');
+  if(!roomTypeCatalog[rti].bedSetQty) roomTypeCatalog[rti].bedSetQty={};
+  roomTypeCatalog[rti].bedSetQty[bsId]=parseFloat(el.value)||0;
+  save(); calcAndRender();
+}
+function updateRoomTypeRoomItem(el) {
+  const rti=parseInt(el.getAttribute('data-rti'));
+  const riId=el.getAttribute('data-ri');
+  if(!roomTypeCatalog[rti].roomItemQty) roomTypeCatalog[rti].roomItemQty={};
+  roomTypeCatalog[rti].roomItemQty[riId]=parseFloat(el.value)||0;
+  save(); calcAndRender();
+}
+function addRoomType() {
+  roomTypeCounter++;
+  const id='rt'+roomTypeCounter;
+  const bedSetQty={}; bedSets.forEach(bs=>{ bedSetQty[bs.id]=0; });
+  const roomItemQty={}; roomItems.forEach(ri=>{ roomItemQty[ri.id]=0; });
+  roomTypeCatalog.push({id,name:'New Room Type',depTime:25,stayTime:12,bedSetQty,roomItemQty});
+  save(); renderRoomTypesSetup(); renderCalc();
+}
+function deleteRoomType(el) {
+  const rti=parseInt(el.getAttribute('data-rti'));
+  if(roomTypeCatalog.length<=1) return;
+  if(!confirm('Delete this room type from the catalog? Any group booking rows using it will need to be reassigned.')) return;
+  const id=roomTypeCatalog[rti].id;
+  roomTypeCatalog.splice(rti,1);
+  const fallbackId=roomTypeCatalog[0].id;
+  groupRooms.forEach(gr=>{ if(gr.roomTypeId===id) gr.roomTypeId=fallbackId; });
+  save(); renderRoomTypesSetup(); renderCalc();
+}
+
+// ═══ BED SET MUTATIONS ═══
+function updateBedSet(el) {
+  const bsi=parseInt(el.getAttribute('data-bsi'));
+  const field=el.getAttribute('data-field');
+  bedSets[bsi][field]=field==='name'?el.value:parseFloat(el.value)||0;
+  save();
+  const costEl=document.getElementById('bs-cost-'+bsi);
+  if(costEl) costEl.textContent=fmt(calcBedSetCost(bedSets[bsi]));
+  calcAndRender();
+}
+function addBedSet() {
+  bedSetCounter++;
+  const id='bs'+bedSetCounter;
+  bedSets.push({id,name:'New Bed Set',weight:3.0,items:[{id:'i1',name:'Item 1',price:0}]});
+  roomTypeCatalog.forEach(rt=>{ if(!rt.bedSetQty) rt.bedSetQty={}; rt.bedSetQty[id]=0; });
+  save(); renderBedSets(); renderRoomTypesSetup(); renderCalc();
+}
+function deleteBedSet(el) {
+  const bsi=parseInt(el.getAttribute('data-bsi'));
+  if(bedSets.length<=1) return;
+  const id=bedSets[bsi].id;
+  bedSets.splice(bsi,1);
+  roomTypeCatalog.forEach(rt=>{ if(rt.bedSetQty) delete rt.bedSetQty[id]; });
+  save(); renderBedSets(); renderRoomTypesSetup(); renderCalc();
+}
+function updateBedSetItem(el) {
+  const bsi=parseInt(el.getAttribute('data-bsi'));
+  const ii=parseInt(el.getAttribute('data-ii'));
+  const field=el.getAttribute('data-field');
+  bedSets[bsi].items[ii][field]=field==='name'?el.value:parseFloat(el.value)||0;
+  save();
+  const costEl=document.getElementById('bs-cost-'+bsi);
+  if(costEl) costEl.textContent=fmt(calcBedSetCost(bedSets[bsi]));
+  calcAndRender();
+}
+function addBedSetItem(el) {
+  const bsi=parseInt(el.getAttribute('data-bsi'));
+  itemCounter++;
+  bedSets[bsi].items.push({id:'i'+itemCounter,name:'New item',price:0});
+  save(); renderBedSets();
+}
+function deleteBedSetItem(el) {
+  const bsi=parseInt(el.getAttribute('data-bsi'));
+  const ii=parseInt(el.getAttribute('data-ii'));
+  if(bedSets[bsi].items.length<=1) return;
+  bedSets[bsi].items.splice(ii,1);
+  save(); renderBedSets(); calcAndRender();
+}
+
+// ═══ ROOM ITEM MUTATIONS ═══
+function updateRoomItem(el) {
+  const idx=parseInt(el.getAttribute('data-idx'));
+  const field=el.getAttribute('data-field');
+  roomItems[idx][field]=field==='name'?el.value:parseFloat(el.value)||0;
+  save(); calcAndRender();
+}
+function addRoomItem() {
+  roomItemCounter++;
+  const id='ri'+roomItemCounter;
+  roomItems.push({id,name:'New room item',price:0,weight:0});
+  roomTypeCatalog.forEach(rt=>{ if(!rt.roomItemQty) rt.roomItemQty={}; rt.roomItemQty[id]=0; });
+  save(); renderRoomItemsSetup(); renderRoomTypesSetup(); renderCalc();
+}
+function deleteRoomItem(el) {
+  const idx=parseInt(el.getAttribute('data-idx'));
+  if(roomItems.length<=1) return;
+  const id=roomItems[idx].id;
+  roomItems.splice(idx,1);
+  roomTypeCatalog.forEach(rt=>{ if(rt.roomItemQty) delete rt.roomItemQty[id]; });
+  save(); renderRoomItemsSetup(); renderRoomTypesSetup(); renderCalc();
+}
+
+// ═══ CALC — GROUP ROOMS ═══
+function calcLinenCostPerChange(rt) {
+  let cost=0;
+  bedSets.forEach(bs=>{ cost+=(parseFloat(rt.bedSetQty?.[bs.id])||0)*calcBedSetCost(bs); });
+  if(laundryMode==='kg') cost+=calcRoomItemsKgCost();
+  else roomItems.forEach(ri=>{ cost+=(parseFloat(rt.roomItemQty?.[ri.id])||0)*(parseFloat(ri.price)||0); });
+  return cost;
+}
+
+function calcGroupRoom(gr) {
+  const rt=getRoomType(gr.roomTypeId);
+  const realRate=getRealRate();
+  const qty=parseFloat(gr.qty)||0;
+  const stayLen=getStayLength()||1;
+  const labourDep=(parseFloat(rt.depTime)||0)/60*realRate*qty;
+  const labourStay=(parseFloat(rt.stayTime)||0)/60*realRate*(parseFloat(gr.stayCleans)||0)*qty;
+  const linenPerChange=calcLinenCostPerChange(rt);
+  const linenTotal=linenPerChange*(parseFloat(gr.linenChanges)||1)*qty;
+  const supplyTotal=getSupplyPerNight()*stayLen*qty;
+  const totalCost=labourDep+labourStay+linenTotal+supplyTotal;
+  const roomNights=qty*stayLen;
+  return {qty,stayLen,labourDep,labourStay,linenPerChange,linenTotal,supplyTotal,totalCost,roomNights,roomTypeName:rt.name};
+}
+
+// ═══ SCENARIOS — save named setups, compare any two side by side ═══
+function getCurrentSnapshot() {
+  return {
+    laundryMode, kgRate, roomItemsWeight,
+    rate: g('s-rate')||'12', mult: g('s-mult')||'1.28',
+    supplyInvoice: g('s-supply-invoice')||'0', supplyNights: g('s-supply-nights')||'1',
+    group: g('c-group')||'', checkin: g('c-checkin')||'', checkout: g('c-checkout')||'', margin: g('c-margin')||'20',
+    bedSets: JSON.parse(JSON.stringify(bedSets)),
+    roomItems: JSON.parse(JSON.stringify(roomItems)),
+    roomTypeCatalog: JSON.parse(JSON.stringify(roomTypeCatalog)),
+    groupRooms: JSON.parse(JSON.stringify(groupRooms)),
+  };
+}
+
+function resolveSnapshot(key) {
+  if(key==='__current__') return getCurrentSnapshot();
+  const sc = scenarios.find(s=>s.id===key);
+  return sc ? sc.snapshot : null;
+}
+
+function saveScenario() {
+  const typed = (document.getElementById('scenario-name-input')?.value||'').trim();
+  const name = typed || 'Scenario '+(scenarios.length+1);
+  scenarioCounter++;
+  scenarios.push({ id:'sc'+scenarioCounter, name, savedAt:new Date().toISOString(), snapshot:getCurrentSnapshot() });
+  save();
+  const nameField = document.getElementById('scenario-name-input');
+  if(nameField) nameField.value = '';
+  renderScenarios();
+  alert('Scenario saved: '+name+'. Your current Setup and Calculator have not been changed.');
+}
+
+function deleteScenario(id) {
+  if(!confirm('Delete this scenario permanently? This cannot be undone.')) return;
+  scenarios = scenarios.filter(s=>s.id!==id);
+  save();
+  renderScenarios();
+}
+
+// Pure (non-global-state) versions of the calc pipeline, so we can compute costs for a saved
+// scenario's snapshot — or the group booking inside it — without touching the live setup.
+function pureRealRate(snap) { return (parseFloat(snap.rate)||12)*(parseFloat(snap.mult)||1.28); }
+function pureBedSetCost(bs, snap) {
+  if(snap.laundryMode==='kg') return (parseFloat(bs.weight)||0)*(parseFloat(snap.kgRate)||0);
+  return (bs.items||[]).reduce((t,i)=>t+(parseFloat(i.price)||0),0);
+}
+function pureRoomItemsKgCost(snap) { return (parseFloat(snap.roomItemsWeight)||0)*(parseFloat(snap.kgRate)||0); }
+function pureLinenCostPerChange(rt, snap) {
+  let cost=0;
+  (snap.bedSets||[]).forEach(bs=>{ cost+=(parseFloat(rt.bedSetQty?.[bs.id])||0)*pureBedSetCost(bs,snap); });
+  if(snap.laundryMode==='kg') cost+=pureRoomItemsKgCost(snap);
+  else (snap.roomItems||[]).forEach(ri=>{ cost+=(parseFloat(rt.roomItemQty?.[ri.id])||0)*(parseFloat(ri.price)||0); });
+  return cost;
+}
+function pureSupplyPerNight(snap) { const inv=parseFloat(snap.supplyInvoice)||0, n=parseFloat(snap.supplyNights)||1; return n>0?inv/n:0; }
+function pureStayLength(snap) {
+  if(!snap.checkin||!snap.checkout) return 0;
+  const diff=(new Date(snap.checkout)-new Date(snap.checkin))/(1000*60*60*24);
+  return diff>0?diff:0;
+}
+function pureGetRoomType(id, snap) { return (snap.roomTypeCatalog||[]).find(rt=>rt.id===id) || (snap.roomTypeCatalog||[])[0] || {name:'(no room type)',depTime:0,stayTime:0,bedSetQty:{},roomItemQty:{}}; }
+function pureCalcGroupRoom(gr, snap) {
+  const rt=pureGetRoomType(gr.roomTypeId, snap);
+  const realRate=pureRealRate(snap);
+  const qty=parseFloat(gr.qty)||0;
+  const stayLen=pureStayLength(snap)||1;
+  const labourDep=(parseFloat(rt.depTime)||0)/60*realRate*qty;
+  const labourStay=(parseFloat(rt.stayTime)||0)/60*realRate*(parseFloat(gr.stayCleans)||0)*qty;
+  const linenPerChange=pureLinenCostPerChange(rt,snap);
+  const linenTotal=linenPerChange*(parseFloat(gr.linenChanges)||1)*qty;
+  const supplyTotal=pureSupplyPerNight(snap)*stayLen*qty;
+  const totalCost=labourDep+labourStay+linenTotal+supplyTotal;
+  const roomNights=qty*stayLen;
+  return {qty,stayLen,labourDep,labourStay,linenTotal,supplyTotal,totalCost,roomNights,roomTypeName:rt.name};
+}
+function pureCalcTotals(snap) {
+  const calcs=(snap.groupRooms||[]).map(gr=>pureCalcGroupRoom(gr,snap));
+  const totalHSK=calcs.reduce((t,c)=>t+c.totalCost,0);
+  const totalRoomNights=calcs.reduce((t,c)=>t+c.roomNights,0);
+  const hskPerRoomNight=totalRoomNights>0?totalHSK/totalRoomNights:0;
+  const margin=(parseFloat(snap.margin)||0)/100;
+  const targetRate=margin<1?hskPerRoomNight/(1-margin):0;
+  return {totalHSK, totalRoomNights, hskPerRoomNight, breakEven:hskPerRoomNight, targetRate};
+}
+
+// Flags exactly which inputs differ between two snapshots, grouped by area.
+function diffScenarios(a, b) {
+  const changes = [];
+  const money = v => '€'+(parseFloat(v)||0).toFixed(2);
+
+  const globalFields = [
+    {key:'group', label:'Group / contract name', fmt:v=>v||'—'},
+    {key:'checkin', label:'Check-in date', fmt:v=>v||'—'},
+    {key:'checkout', label:'Check-out date', fmt:v=>v||'—'},
+    {key:'margin', label:'Target margin %', fmt:v=>(v||0)+'%'},
+    {key:'laundryMode', label:'Laundry pricing model', fmt:v=>v==='piece'?'Per piece':'Per kg'},
+    {key:'rate', label:'Gross hourly rate', fmt:money},
+    {key:'mult', label:'Employer cost multiplier', fmt:v=>(parseFloat(v)||0).toFixed(2)},
+    {key:'kgRate', label:'Laundry rate per kg', fmt:money},
+    {key:'supplyInvoice', label:'Monthly supply invoice', fmt:money},
+    {key:'supplyNights', label:'Supply room nights sold', fmt:v=>v},
+    {key:'roomItemsWeight', label:'Room items weight (kg)', fmt:v=>v},
+  ];
+  globalFields.forEach(f=>{
+    const av=a[f.key], bv=b[f.key];
+    if(String(av)!==String(bv)) changes.push({scope:'Setup', item:f.label, from:f.fmt(av), to:f.fmt(bv)});
+  });
+
+  // Bed sets — matched by id
+  const aBS=a.bedSets||[], bBS=b.bedSets||[];
+  const bsIds = [...new Set([...aBS.map(x=>x.id), ...bBS.map(x=>x.id)])];
+  bsIds.forEach(id=>{
+    const av=aBS.find(x=>x.id===id), bv=bBS.find(x=>x.id===id);
+    if(av && !bv) changes.push({scope:'Bed Sets', item:av.name, from:'present', to:'removed in B'});
+    else if(!av && bv) changes.push({scope:'Bed Sets', item:bv.name, from:'not present in A', to:'added'});
+    else if(av && bv) {
+      if(av.name!==bv.name) changes.push({scope:'Bed Sets', item:'Name', from:av.name, to:bv.name});
+      if((a.laundryMode==='kg')||(b.laundryMode==='kg')) {
+        if(parseFloat(av.weight)!==parseFloat(bv.weight)) changes.push({scope:'Bed Sets', item:bv.name+' — weight', from:(av.weight||0)+' kg', to:(bv.weight||0)+' kg'});
+      } else {
+        const aItems=av.items||[], bItems=bv.items||[];
+        const itemIds=[...new Set([...aItems.map(x=>x.id),...bItems.map(x=>x.id)])];
+        itemIds.forEach(iid=>{
+          const ai=aItems.find(x=>x.id===iid), bi=bItems.find(x=>x.id===iid);
+          if(ai && !bi) changes.push({scope:'Bed Sets', item:bv.name+' — '+ai.name, from:money(ai.price), to:'removed'});
+          else if(!ai && bi) changes.push({scope:'Bed Sets', item:bv.name+' — '+bi.name, from:'—', to:'added ('+money(bi.price)+')'});
+          else if(ai && bi) {
+            if(ai.name!==bi.name) changes.push({scope:'Bed Sets', item:bv.name+' — item name', from:ai.name, to:bi.name});
+            if(parseFloat(ai.price)!==parseFloat(bi.price)) changes.push({scope:'Bed Sets', item:bv.name+' — '+bi.name, from:money(ai.price), to:money(bi.price)});
+          }
+        });
+      }
+    }
+  });
+
+  // Room items (non-bed-specific)
+  const aRI=a.roomItems||[], bRI=b.roomItems||[];
+  const riIds=[...new Set([...aRI.map(x=>x.id),...bRI.map(x=>x.id)])];
+  riIds.forEach(id=>{
+    const av=aRI.find(x=>x.id===id), bv=bRI.find(x=>x.id===id);
+    if(av && !bv) changes.push({scope:'Room Items', item:av.name, from:'present', to:'removed in B'});
+    else if(!av && bv) changes.push({scope:'Room Items', item:bv.name, from:'not present in A', to:'added'});
+    else if(av && bv) {
+      if(av.name!==bv.name) changes.push({scope:'Room Items', item:'Name', from:av.name, to:bv.name});
+      if(parseFloat(av.price)!==parseFloat(bv.price)) changes.push({scope:'Room Items', item:bv.name+' — price', from:money(av.price), to:money(bv.price)});
+    }
+  });
+
+  // Room type catalog
+  const rtFields = [
+    {key:'depTime', label:'Departure clean time (min)'},
+    {key:'stayTime', label:'Stayover clean time (min)'},
+  ];
+  const aRT=a.roomTypeCatalog||[], bRT=b.roomTypeCatalog||[];
+  const rtIds=[...new Set([...aRT.map(x=>x.id),...bRT.map(x=>x.id)])];
+  rtIds.forEach(id=>{
+    const av=aRT.find(x=>x.id===id), bv=bRT.find(x=>x.id===id);
+    if(av && !bv) changes.push({scope:'Room Types', item:av.name, from:'present', to:'removed in B'});
+    else if(!av && bv) changes.push({scope:'Room Types', item:bv.name, from:'not present in A', to:'added'});
+    else if(av && bv) {
+      if(av.name!==bv.name) changes.push({scope:'Room Types', item:'Name', from:av.name, to:bv.name});
+      rtFields.forEach(f=>{
+        if(String(av[f.key])!==String(bv[f.key])) changes.push({scope:'Room Types', item:bv.name+' — '+f.label, from:av[f.key], to:bv[f.key]});
+      });
+    }
+  });
+
+  // Group room composition — this is what actually makes each booking scenario unique here
+  const aGR=a.groupRooms||[], bGR=b.groupRooms||[];
+  const grIds=[...new Set([...aGR.map(x=>x.id),...bGR.map(x=>x.id)])];
+  grIds.forEach(id=>{
+    const av=aGR.find(x=>x.id===id), bv=bGR.find(x=>x.id===id);
+    const rtName = (x,snap) => x ? pureGetRoomType(x.roomTypeId, snap).name : '';
+    if(av && !bv) changes.push({scope:'Group Composition', item:rtName(av,a)+' (qty '+av.qty+')', from:'present', to:'removed in B'});
+    else if(!av && bv) changes.push({scope:'Group Composition', item:rtName(bv,b)+' (qty '+bv.qty+')', from:'not present in A', to:'added'});
+    else if(av && bv) {
+      if(parseFloat(av.qty)!==parseFloat(bv.qty)) changes.push({scope:'Group Composition', item:rtName(bv,b)+' — quantity', from:av.qty, to:bv.qty});
+      if(parseFloat(av.stayCleans)!==parseFloat(bv.stayCleans)) changes.push({scope:'Group Composition', item:rtName(bv,b)+' — stayover cleans', from:av.stayCleans, to:bv.stayCleans});
+      if(parseFloat(av.linenChanges)!==parseFloat(bv.linenChanges)) changes.push({scope:'Group Composition', item:rtName(bv,b)+' — linen changes', from:av.linenChanges, to:bv.linenChanges});
+    }
+  });
+
+  return changes;
+}
+
+function renderScenarios() {
+  const listEl = document.getElementById('scenario-list');
+  const noEl = document.getElementById('no-scenarios');
+  const selA = document.getElementById('cmp-a');
+  const selB = document.getElementById('cmp-b');
+  if(!listEl || !selA || !selB) return;
+
+  if(scenarios.length===0) { listEl.innerHTML=''; if(noEl) noEl.style.display='block'; }
+  else {
+    if(noEl) noEl.style.display='none';
+    listEl.innerHTML = scenarios.map(sc=>`
+      <div style="border:1px solid #E5DDD0;background:#fff;margin-bottom:8px;">
+        <div style="padding:12px 16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+          <div>
+            <div style="font-size:14px;font-weight:700;color:#1A1A1A;">${sc.name}</div>
+            <div style="font-size:11px;color:#8A8070;font-family:system-ui;">Saved ${new Date(sc.savedAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})} &middot; ${(sc.snapshot.groupRooms||[]).length} room line(s) &middot; ${sc.snapshot.laundryMode==='piece'?'Per piece':'Per kg'}</div>
+          </div>
+          <button class="btn-sec" style="font-size:10px;padding:5px 10px;" onclick="deleteScenario('${sc.id}')">DELETE</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  const options = [{id:'__current__', label:'— Current Setup (live) —'}].concat(scenarios.map(s=>({id:s.id, label:s.name})));
+  const buildOptions = (selectedId) => options.map(o=>`<option value="${o.id}" ${o.id===selectedId?'selected':''}>${o.label}</option>`).join('');
+  const prevA = selA.value, prevB = selB.value;
+  selA.innerHTML = buildOptions(prevA || '__current__');
+  selB.innerHTML = buildOptions(prevB || (scenarios.length ? scenarios[0].id : '__current__'));
+  renderComparison();
+}
+
+function renderComparison() {
+  const resultEl = document.getElementById('comparison-result');
+  if(!resultEl) return;
+  const keyA = document.getElementById('cmp-a')?.value || '__current__';
+  const keyB = document.getElementById('cmp-b')?.value || '__current__';
+  const snapA = resolveSnapshot(keyA);
+  const snapB = resolveSnapshot(keyB);
+  if(!snapA || !snapB) { resultEl.innerHTML=''; return; }
+
+  if(keyA===keyB) {
+    resultEl.innerHTML = `<div style="padding:20px;text-align:center;color:#8A8070;font-family:system-ui;font-size:12px;margin-top:14px;">Pick two different scenarios to compare.</div>`;
+    return;
+  }
+
+  const totalsA = pureCalcTotals(snapA);
+  const totalsB = pureCalcTotals(snapB);
+  const kpiRows = [
+    {label:'Total HSK Cost', a:totalsA.totalHSK, b:totalsB.totalHSK, money:true},
+    {label:'HSK Per Room / Night', a:totalsA.hskPerRoomNight, b:totalsB.hskPerRoomNight, money:true},
+    {label:'Break-Even Rate', a:totalsA.breakEven, b:totalsB.breakEven, money:true},
+    {label:'Target Rate', a:totalsA.targetRate, b:totalsB.targetRate, money:true},
+    {label:'Total Room Nights', a:totalsA.totalRoomNights, b:totalsB.totalRoomNights, money:false},
+  ];
+  const kpiHTML = kpiRows.map(r=>{
+    const delta = r.a!==null && r.b!==null ? r.b-r.a : null;
+    return `<tr style="border-bottom:1px solid #F0EBE3;">
+      <td style="padding:8px 12px;font-weight:700;">${r.label}</td>
+      <td style="padding:8px 12px;text-align:right;">${r.money?fmt(r.a):Math.round(r.a)}</td>
+      <td style="padding:8px 12px;text-align:right;">${r.money?fmt(r.b):Math.round(r.b)}</td>
+      <td style="padding:8px 12px;text-align:right;font-weight:700;color:${delta===null?'#8A8070':delta>0?'#CC5555':delta<0?'#55AA55':'#8A8070'};">${delta===null?'—':(delta>0?'+':'')+(r.money?fmt(delta):Math.round(delta))}</td>
+    </tr>`;
+  }).join('');
+
+  const changes = diffScenarios(snapA, snapB);
+  const scopes = ['Setup','Bed Sets','Room Items','Room Types','Group Composition'];
+  const changesHTML = changes.length===0
+    ? `<div style="padding:16px;font-size:12px;color:#8A8070;font-family:system-ui;">No differences found — these two scenarios are identical.</div>`
+    : scopes.filter(sc=>changes.some(c=>c.scope===sc)).map(sc=>`
+        <div style="padding:10px 16px;background:#F8F5F0;font-size:9px;letter-spacing:2px;font-weight:700;color:#8A8070;font-family:system-ui;">${sc.toUpperCase()}</div>
+        ${changes.filter(c=>c.scope===sc).map(c=>`
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 16px;border-bottom:1px solid #F0EBE3;flex-wrap:wrap;gap:6px;">
+            <span style="font-size:12px;font-family:system-ui;font-weight:700;color:#1A1A1A;">${c.item}</span>
+            <span style="font-size:12px;font-family:system-ui;color:#8A8070;">${c.from} <span style="color:#B8962E;">&rarr;</span> <strong style="color:#1A1A1A;">${c.to}</strong></span>
+          </div>
+        `).join('')}
+      `).join('');
+
+  resultEl.innerHTML = `
+    <div style="margin-top:16px;">
+      <div style="font-size:10px;letter-spacing:2px;font-weight:700;color:#8A8070;font-family:system-ui;margin-bottom:8px;">KEY FIGURES — A vs B</div>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:12px;font-family:system-ui;">
+          <thead><tr style="border-bottom:2px solid #2F4B3E;"><th style="padding:8px 12px;text-align:left;">METRIC</th><th style="padding:8px 12px;text-align:right;">A</th><th style="padding:8px 12px;text-align:right;">B</th><th style="padding:8px 12px;text-align:right;">DELTA (B−A)</th></tr></thead>
+          <tbody>${kpiHTML}</tbody>
+        </table>
+      </div>
+    </div>
+    <div style="margin-top:20px;">
+      <div style="font-size:10px;letter-spacing:2px;font-weight:700;color:#8A8070;font-family:system-ui;margin-bottom:8px;">WHAT CHANGED</div>
+      <div style="border:1px solid #E5DDD0;background:#fff;">${changesHTML}</div>
+    </div>
+  `;
+}
+
+// ═══ CALCULATOR — VIEW / EDIT MODE ═══
+let calcMode = 'view'; // safer default — the room list opens read-only
+
+function setCalcMode(m) {
+  calcMode=m;
+  document.getElementById('calc-btn-view').classList.toggle('active-view', m==='view');
+  document.getElementById('calc-btn-edit').classList.toggle('active-edit', m==='edit');
+  document.getElementById('calc-banner-view').style.display=m==='view'?'flex':'none';
+  document.getElementById('calc-banner-edit').style.display=m==='edit'?'flex':'none';
+  document.getElementById('calc-add-btn').style.display=m==='edit'?'block':'none';
+  renderCalc();
+}
+
+function renderCalc() {
+  const c=document.getElementById('group-rooms-container'); if(!c) return;
+
+  if(calcMode==='view') {
+    c.innerHTML=groupRooms.map((gr,i)=>{
+      const rt=getRoomType(gr.roomTypeId);
+      const calc=calcGroupRoom(gr);
+      return `
+      <div class="view-row" style="border-top:${i===0?'none':'1px solid #F0EBE3'};padding:14px 16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+          <div>
+            <div style="font-size:14px;font-weight:700;color:#1A1A1A;">${rt.name} <span style="font-weight:400;color:#8A8070;font-size:12px;font-family:system-ui;">&times; ${calc.qty}</span></div>
+            <div style="font-size:11.5px;color:#8A8070;font-family:system-ui;margin-top:2px;">${gr.stayCleans||0} stayover clean${gr.stayCleans===1?'':'s'} &middot; ${gr.linenChanges||1} linen change${gr.linenChanges===1?'':'s'} &middot; ${calc.roomNights} room nights</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:16px;font-weight:700;color:#B8962E;font-family:Georgia,serif;">${fmt(calc.totalCost)}</div>
+            <div style="font-size:11px;color:#8A8070;font-family:system-ui;">${fmt(calc.roomNights>0?calc.totalCost/calc.roomNights:0)}/room night</div>
+          </div>
+        </div>
+      </div>`;
+    }).join('') || `<div style="padding:16px;font-size:12px;color:#8A8070;font-family:system-ui;">No room types added to this group yet. Switch to ✎ EDIT to add some.</div>`;
+    calcAndRender();
+    return;
+  }
+
+  // EDIT mode
+  c.innerHTML=groupRooms.map((gr,i)=>{
+    const rt=getRoomType(gr.roomTypeId);
+    return `
+    <div style="border-top:${i===0?'none':'2px solid #E5DDD0'};">
+      <div style="background:#F8F5F0;padding:8px 14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        <select data-idx="${i}" onchange="updateGRType(this)" style="width:auto;max-width:100%;flex:1;min-width:140px;font-size:13px;font-weight:700;font-family:system-ui;border:none;border-bottom:1px solid #B8962E;background:transparent;">
+          ${roomTypeCatalog.map(cat=>`<option value="${cat.id}" ${cat.id===gr.roomTypeId?'selected':''}>${cat.name}</option>`).join('')}
+        </select>
+        <span style="font-size:11px;color:#8A8070;font-family:system-ui;">Dep ${rt.depTime}min &middot; Stay ${rt.stayTime}min — set in Setup</span>
+        ${groupRooms.length>1?`<button class="del-btn" data-idx="${i}" onclick="deleteGR(this)">x Remove from group</button>`:''}
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="t">
+          <thead><tr>
+            <th style="min-width:90px;">QUANTITY</th>
+            <th style="min-width:110px;">STAYOVER CLEANS</th>
+            <th style="min-width:110px;">LINEN CHANGES <button class="info-btn" onclick="showInfo('linenChanges')" style="font-size:9px;width:15px;height:15px;">?</button></th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><input class="ti" type="number" value="${gr.qty}" min="1" step="1" data-idx="${i}" data-field="qty" oninput="updateGR(this)" style="text-align:right;"></td>
+              <td><input class="ti" type="number" value="${gr.stayCleans}" min="0" step="1" data-idx="${i}" data-field="stayCleans" oninput="updateGR(this)" style="text-align:right;"></td>
+              <td><input class="ti" type="number" value="${gr.linenChanges}" min="1" step="1" data-idx="${i}" data-field="linenChanges" oninput="updateGR(this)" style="text-align:right;"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;}).join('');
+  calcAndRender();
+}
+
+function updateGR(el) {
+  const idx=parseInt(el.getAttribute('data-idx'));
+  const field=el.getAttribute('data-field');
+  groupRooms[idx][field]=parseFloat(el.value)||0;
+  save(); calcAndRender();
+}
+function updateGRType(el) {
+  const idx=parseInt(el.getAttribute('data-idx'));
+  groupRooms[idx].roomTypeId=el.value;
+  save(); renderCalc();
+}
+function addGroupRoom() {
+  groupRoomCounter++;
+  groupRooms.push({id:'gr'+groupRoomCounter, roomTypeId:roomTypeCatalog[0]?.id, qty:1, stayCleans:0, linenChanges:1});
+  save(); renderCalc();
+}
+function deleteGR(el) {
+  const idx=parseInt(el.getAttribute('data-idx'));
+  if(groupRooms.length<=1) return;
+  groupRooms.splice(idx,1);
+  save(); renderCalc();
+}
+
+// ═══ RESULTS ═══
+// ═══ RESULTS VISUALS ═══
+function svgDonutChart(segments, size) {
+  size = size||120;
+  const r=44, cx=size/2, cy=size/2, C=2*Math.PI*r;
+  const total=segments.reduce((s,x)=>s+(x.value||0),0)||1;
+  let offset=0;
+  const arcs=segments.filter(s=>s.value>0).map(seg=>{
+    const pct=seg.value/total;
+    const dash=pct*C;
+    const circle=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${seg.color}" stroke-width="16" stroke-dasharray="${dash.toFixed(1)} ${(C-dash).toFixed(1)}" stroke-dashoffset="${(-offset).toFixed(1)}" transform="rotate(-90 ${cx} ${cy})"/>`;
+    offset+=dash;
+    return circle;
+  }).join('');
+  return `<svg viewBox="0 0 ${size} ${size}" style="width:100%;max-width:120px;height:auto;display:block;margin:0 auto;">${arcs||`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#F0EBE3" stroke-width="16"/>`}</svg>`;
+}
+
+function calcAndRender() {
+  const stayLen=getStayLength()||1;
+  const allCalcs=groupRooms.map(gr=>({gr,calc:calcGroupRoom(gr)}));
+  const totalRooms=groupRooms.reduce((t,gr)=>t+(parseFloat(gr.qty)||0),0);
+  const totalRoomNights=allCalcs.reduce((t,{calc})=>t+calc.roomNights,0);
+  const totalLabour=allCalcs.reduce((t,{calc})=>t+calc.labourDep+calc.labourStay,0);
+  const totalLinen=allCalcs.reduce((t,{calc})=>t+calc.linenTotal,0);
+  const totalSupply=allCalcs.reduce((t,{calc})=>t+calc.supplyTotal,0);
+  const totalHSK=totalLabour+totalLinen+totalSupply;
+  const hskPerRoomNight=totalRoomNights>0?totalHSK/totalRoomNights:0;
+  const margin=v('c-margin')/100;
+  const breakEven=hskPerRoomNight;
+  const targetRate=margin<1?hskPerRoomNight/(1-margin):0;
+
+  // Update summary displays
+  const trEl=document.getElementById('total-rooms-display'); if(trEl) trEl.textContent=totalRooms+' rooms';
+  const trnEl=document.getElementById('total-room-nights-display'); if(trnEl) trnEl.textContent=totalRoomNights+' room nights';
+
+  const resultsEl=document.getElementById('calc-results'); if(!resultsEl) return;
+
+  resultsEl.innerHTML=`
+    <div class="kpi-grid">
+      <div class="kc"><div class="kc-label">TOTAL HSK COST</div><div class="kc-value" style="color:#B8962E;">${fmt(totalHSK)}</div><div class="kc-sub">Labour + Linen + Supplies</div></div>
+      <div class="kc"><div class="kc-label">HSK PER ROOM / NIGHT</div><div class="kc-value" style="color:#B8962E;">${fmt(hskPerRoomNight)}</div><div class="kc-sub">${totalRoomNights} room nights total</div></div>
+      <div class="kc"><div class="kc-label">BREAK-EVEN RATE <button class="info-btn" onclick="showInfo('margin')">?</button></div><div class="kc-value" style="color:#D4903A;">${fmt(breakEven)}</div><div class="kc-sub">HSK cost only — minimum floor</div></div>
+      <div class="kc"><div class="kc-label">TARGET RATE (${v('c-margin')}% margin) <button class="info-btn" onclick="showInfo('margin')">?</button></div><div class="kc-value" style="color:#55AA55;">${fmt(targetRate)}</div><div class="kc-sub">Above HSK cost — not full P&L</div></div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-head" style="background:#2F4B3E;"><span class="card-title">GROUP COST BREAKDOWN</span></div>
+      <div class="breakdown-grid" style="padding:16px;border-top:1px solid #E5DDD0;">
+        <div>${svgDonutChart([
+          {label:'Labour', value:totalLabour, color:'#2F4B3E'},
+          {label:'Linen', value:totalLinen, color:'#B8962E'},
+          {label:'Supplies', value:totalSupply, color:'#1A3A5C'},
+        ])}</div>
+        <div class="breakdown-stats">
+          <div>
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;"><span style="width:9px;height:9px;border-radius:50%;background:#2F4B3E;flex-shrink:0;"></span><span style="font-size:9px;color:#8A8070;letter-spacing:1.5px;font-family:system-ui;font-weight:700;">LABOUR</span></div>
+            <div style="font-size:18px;font-weight:700;color:#1A1A1A;margin-bottom:2px;">${fmt(totalLabour)}</div>
+            <div style="font-size:11px;color:#8A8070;font-family:system-ui;">${totalHSK>0?(totalLabour/totalHSK*100).toFixed(0):0}% &middot; ${fmt(totalRoomNights>0?totalLabour/totalRoomNights:0)}/night</div>
+          </div>
+          <div>
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;"><span style="width:9px;height:9px;border-radius:50%;background:#B8962E;flex-shrink:0;"></span><span style="font-size:9px;color:#8A8070;letter-spacing:1.5px;font-family:system-ui;font-weight:700;">LINEN</span></div>
+            <div style="font-size:18px;font-weight:700;color:#1A1A1A;margin-bottom:2px;">${fmt(totalLinen)}</div>
+            <div style="font-size:11px;color:#8A8070;font-family:system-ui;">${totalHSK>0?(totalLinen/totalHSK*100).toFixed(0):0}% &middot; ${fmt(totalRoomNights>0?totalLinen/totalRoomNights:0)}/night</div>
+          </div>
+          <div>
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;"><span style="width:9px;height:9px;border-radius:50%;background:#1A3A5C;flex-shrink:0;"></span><span style="font-size:9px;color:#8A8070;letter-spacing:1.5px;font-family:system-ui;font-weight:700;">SUPPLIES</span></div>
+            <div style="font-size:18px;font-weight:700;color:#1A1A1A;margin-bottom:2px;">${fmt(totalSupply)}</div>
+            <div style="font-size:11px;color:#8A8070;font-family:system-ui;">${totalHSK>0?(totalSupply/totalHSK*100).toFixed(0):0}% &middot; ${fmt(totalRoomNights>0?totalSupply/totalRoomNights:0)}/night</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-head" style="background:#2F4B3E;"><span class="card-title">COST PER ROOM TYPE</span></div>
+      <div style="overflow-x:auto;">
+        <table class="t" style="border-collapse:collapse;">
+          <thead><tr>
+            <th style="padding:7px 10px;">ROOM TYPE</th>
+            <th style="padding:7px 10px;">QTY</th>
+            <th style="padding:7px 10px;">ROOM NIGHTS</th>
+            <th style="padding:7px 10px;">DEP LABOUR</th>
+            <th style="padding:7px 10px;">STAY LABOUR</th>
+            <th style="padding:7px 10px;">LINEN/CHANGE</th>
+            <th style="padding:7px 10px;">LINEN TOTAL</th>
+            <th style="padding:7px 10px;">SUPPLIES</th>
+            <th style="padding:7px 10px;background:#2F4B3E;color:#B8962E;">TOTAL COST</th>
+            <th style="padding:7px 10px;background:#2F4B3E;color:#B8962E;">HSK/NIGHT</th>
+          </tr></thead>
+          <tbody>
+            ${allCalcs.map(({gr,calc},i)=>`
+              <tr style="background:${i%2===0?'#fff':'#FAFAFA'};">
+                <td style="padding:7px 10px;font-weight:700;font-size:12px;font-family:system-ui;">${calc.roomTypeName}</td>
+                <td style="padding:7px 10px;font-size:12px;font-family:system-ui;">${calc.qty}</td>
+                <td style="padding:7px 10px;font-size:12px;font-family:system-ui;">${calc.roomNights}</td>
+                <td style="padding:7px 10px;font-size:12px;font-family:system-ui;">${fmt(calc.labourDep)}</td>
+                <td style="padding:7px 10px;font-size:12px;font-family:system-ui;">${fmt(calc.labourStay)}</td>
+                <td style="padding:7px 10px;font-size:12px;font-family:system-ui;">${fmt(calc.linenPerChange)}</td>
+                <td style="padding:7px 10px;font-size:12px;font-family:system-ui;">${fmt(calc.linenTotal)}</td>
+                <td style="padding:7px 10px;font-size:12px;font-family:system-ui;">${fmt(calc.supplyTotal)}</td>
+                <td style="padding:7px 10px;font-size:12px;font-family:system-ui;font-weight:700;color:#B8962E;background:#F8F5F0;">${fmt(calc.totalCost)}</td>
+                <td style="padding:7px 10px;font-size:12px;font-family:system-ui;font-weight:700;color:#B8962E;background:#F8F5F0;">${fmt(calc.roomNights>0?calc.totalCost/calc.roomNights:0)}</td>
+              </tr>
+            `).join('')}
+            <tr style="background:#2F4B3E;border-top:2px solid #B8962E;">
+              <td style="padding:8px 10px;color:#B8962E;font-weight:700;font-family:system-ui;" colspan="2">GROUP TOTAL</td>
+              <td style="padding:8px 10px;color:#F5F0E8;font-weight:700;font-family:system-ui;">${totalRoomNights}</td>
+              <td style="padding:8px 10px;color:#F5F0E8;font-family:system-ui;" colspan="5">${fmt(totalLabour)} labour &nbsp;·&nbsp; ${fmt(totalLinen)} linen &nbsp;·&nbsp; ${fmt(totalSupply)} supplies</td>
+              <td style="padding:8px 10px;color:#B8962E;font-weight:700;font-size:14px;font-family:system-ui;">${fmt(totalHSK)}</td>
+              <td style="padding:8px 10px;color:#B8962E;font-weight:700;font-size:14px;font-family:system-ui;">${fmt(hskPerRoomNight)}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="rate-box" style="background:#2F4B3E;padding:16px 20px;margin-bottom:16px;">
+      <div style="font-size:9px;color:#B8962E;letter-spacing:3px;font-family:system-ui;font-weight:600;margin-bottom:14px;">RATE GUIDANCE — HSK COST ONLY</div>
+      <div class="rate-grid" style="margin-bottom:16px;">
+        <div><div style="font-size:10px;color:#F5F0E8;opacity:0.75;font-family:system-ui;margin-bottom:4px;">MINIMUM (break-even)</div><div style="font-size:20px;font-weight:700;color:#D4903A;">${fmt(breakEven)}<span style="font-size:11px;color:#F5F0E8;opacity:0.75;">/room/night</span></div><div style="font-size:11px;color:#F5F0E8;opacity:0.75;font-family:system-ui;margin-top:3px;">Covers HSK only. Do not quote below this.</div></div>
+        <div><div style="font-size:10px;color:#F5F0E8;opacity:0.75;font-family:system-ui;margin-bottom:4px;">TARGET (${v('c-margin')}% margin on HSK)</div><div style="font-size:20px;font-weight:700;color:#55AA55;">${fmt(targetRate)}<span style="font-size:11px;color:#F5F0E8;opacity:0.75;">/room/night</span></div><div style="font-size:11px;color:#F5F0E8;opacity:0.75;font-family:system-ui;margin-top:3px;">HSK cost + ${v('c-margin')}% margin. Add other hotel costs on top.</div></div>
+        <div><div style="font-size:10px;color:#F5F0E8;opacity:0.75;font-family:system-ui;margin-bottom:4px;">TOTAL GROUP HSK COST</div><div style="font-size:20px;font-weight:700;color:#B8962E;">${fmt(totalHSK)}</div><div style="font-size:11px;color:#F5F0E8;opacity:0.75;font-family:system-ui;margin-top:3px;">${totalRooms} rooms · ${stayLen} nights · ${totalRoomNights} room nights</div></div>
+      </div>
+      ${(()=>{
+        const scaleMax=Math.max(breakEven,targetRate,1)*1.15;
+        const bePct=Math.min(100,breakEven/scaleMax*100);
+        const tgPct=Math.min(100,targetRate/scaleMax*100);
+        return `
+        <div style="background:rgba(255,255,255,0.08);padding:12px 14px;">
+          <div class="rate-bar-row" style="margin-bottom:8px;">
+            <span class="rate-bar-label" style="color:#F5F0E8;">BREAK-EVEN</span>
+            <div class="rate-bar-track"><div style="width:${bePct}%;height:100%;background:#D4903A;"></div></div>
+            <span class="rate-bar-value" style="color:#F5F0E8;">${fmt(breakEven)}</span>
+          </div>
+          <div class="rate-bar-row">
+            <span class="rate-bar-label" style="color:#F5F0E8;">TARGET</span>
+            <div class="rate-bar-track"><div style="width:${tgPct}%;height:100%;background:#55AA55;"></div></div>
+            <span class="rate-bar-value" style="color:#F5F0E8;">${fmt(targetRate)}</span>
+          </div>
+        </div>`;
+      })()}
+    </div>
+  `;
+}
+
+// ═══ EXPORTS ═══
+function exportCSV() {
+  const esc=val=>{const s=String(val||'');return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};
+  const hotel=g('s-hotel')||'';
+  const group=g('c-group')||'Group';
+  const stayLen=getStayLength()||1;
+  const allCalcs=groupRooms.map(gr=>({gr,calc:calcGroupRoom(gr)}));
+  const totalHSK=allCalcs.reduce((t,{calc})=>t+calc.totalCost,0);
+  const totalRN=allCalcs.reduce((t,{calc})=>t+calc.roomNights,0);
+  const hskPerRN=totalRN>0?totalHSK/totalRN:0;
+  const margin=v('c-margin')/100;
+  const targetRate=margin<1?hskPerRN/(1-margin):0;
+  let csv=`HSK GROUP STAY CALCULATOR\r\nHotel,${esc(hotel)}\r\nGroup,${esc(group)}\r\nCheck-in,${g('c-checkin')}\r\nCheck-out,${g('c-checkout')}\r\nStay Length,${stayLen} nights\r\nLaundry Model,${laundryMode==='piece'?'Per piece':'Per kg'}\r\nSupply/Night,${fmt(getSupplyPerNight())}\r\nExported,${new Date().toLocaleDateString('en-GB')}\r\n\r\n`;
+  csv+=`ROOM TYPE,QTY,ROOM NIGHTS,DEP LABOUR,STAY LABOUR,LINEN/CHANGE,LINEN TOTAL,SUPPLIES,TOTAL COST,HSK/NIGHT\r\n`;
+  allCalcs.forEach(({gr,calc})=>{
+    const hskN=calc.roomNights>0?calc.totalCost/calc.roomNights:0;
+    csv+=`${esc(calc.roomTypeName)},${calc.qty},${calc.roomNights},${calc.labourDep.toFixed(2)},${calc.labourStay.toFixed(2)},${calc.linenPerChange.toFixed(2)},${calc.linenTotal.toFixed(2)},${calc.supplyTotal.toFixed(2)},${calc.totalCost.toFixed(2)},${hskN.toFixed(2)}\r\n`;
+  });
+  csv+=`\r\nKEY RESULTS\r\nTotal HSK Cost,${totalHSK.toFixed(2)}\r\nHSK per Room Night,${hskPerRN.toFixed(2)}\r\nBreak-even Rate,${hskPerRN.toFixed(2)}\r\nTarget Rate (${v('c-margin')}% margin),${targetRate.toFixed(2)}\r\n`;
+  const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download=`hsk-group-stay-${(group||'group').replace(/\s+/g,'-').toLowerCase()}-${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+function emailReport() {
+  const hotel=g('s-hotel')||'My Hotel';
+  const group=g('c-group')||'Group';
+  const stayLen=getStayLength()||1;
+  const allCalcs=groupRooms.map(gr=>({gr,calc:calcGroupRoom(gr)}));
+  const totalRooms=groupRooms.reduce((t,gr)=>t+(parseFloat(gr.qty)||0),0);
+  const totalHSK=allCalcs.reduce((t,{calc})=>t+calc.totalCost,0);
+  const totalRN=allCalcs.reduce((t,{calc})=>t+calc.roomNights,0);
+  const hskPerRN=totalRN>0?totalHSK/totalRN:0;
+  const margin=v('c-margin')/100;
+  const targetRate=margin<1?hskPerRN/(1-margin):0;
+  let body=`HSK GROUP STAY COST — ${hotel}\nGroup: ${group}\nStay: ${g('c-checkin')} → ${g('c-checkout')} (${stayLen} nights)\nRooms: ${totalRooms} · Room nights: ${totalRN}\n===============================\n\n`;
+  body+=`TOTAL HSK COST: ${fmt(totalHSK)}\nHSK per room per night: ${fmt(hskPerRN)}\n\nBREAK-EVEN RATE: ${fmt(hskPerRN)}/room/night (HSK only)\nTARGET RATE (${v('c-margin')}% margin): ${fmt(targetRate)}/room/night\n\nNOTE: Break-even and target rates cover housekeeping only. Full room rate must also cover all other hotel costs.\n\n--\nHotel Mastery Hub — HSK Group Stay Calculator`;
+  window.location.href=`mailto:?subject=${encodeURIComponent('HSK Group Stay Cost — '+hotel+' — '+group)}&body=${encodeURIComponent(body)}`;
+}
+
+// ═══ MIGRATION — old saves had room type fields embedded directly on groupRooms ═══
+function migrateRoomTypes() {
+  if(Array.isArray(roomTypeCatalog) && roomTypeCatalog.length>0) return; // already on the new structure
+  roomTypeCatalog=[];
+  groupRooms.forEach(gr=>{
+    if(gr.roomTypeId) return; // already migrated somehow
+    roomTypeCounter++;
+    const id='rt'+roomTypeCounter;
+    roomTypeCatalog.push({
+      id, name:gr.name||'Room Type',
+      depTime:gr.depTime||25, stayTime:gr.stayTime||12,
+      bedSetQty:gr.bedSetQty||{}, roomItemQty:gr.roomItemQty||{},
+    });
+    gr.roomTypeId=id;
+    delete gr.name; delete gr.depTime; delete gr.stayTime; delete gr.bedSetQty; delete gr.roomItemQty;
+  });
+  if(roomTypeCatalog.length===0) {
+    // no groupRooms at all — seed one default so dropdowns always have something
+    roomTypeCounter++;
+    roomTypeCatalog.push({id:'rt'+roomTypeCounter, name:'Standard Room', depTime:25, stayTime:12, bedSetQty:{}, roomItemQty:{}});
+  }
+}
+
+function backupData() {
+  const data={
+    tool:'HMH HSK Group Stay Calculator', version:'1.0', exported:new Date().toISOString(),
+    laundryMode, bedSets, roomItems, roomItemsWeight, kgRate, groupRooms, scenarios, scenarioCounter,
+    roomTypeCatalog, roomTypeCounter,
+    bedSetCounter, roomItemCounter, groupRoomCounter, itemCounter,
+    hotel:g('s-hotel'), rate:g('s-rate'), mult:g('s-mult'),
+    supplyInvoice:g('s-supply-invoice'), supplyNights:g('s-supply-nights'),
+    group:g('c-group'), checkin:g('c-checkin'), checkout:g('c-checkout'), margin:g('c-margin'),
+  };
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download=`hsk-group-stay-backup-${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+function restoreData(input) {
+  const file=input.files[0]; if(!file) return;
+  if(!confirm('This will replace ALL current data. Continue?')) { input.value=''; return; }
+  const reader=new FileReader();
+  reader.onload=function(e){
+    try {
+      const d=JSON.parse(e.target.result);
+      if(!d.tool||!d.tool.includes('HSK Group Stay')) { alert('This does not appear to be an HSK Group Stay Calculator backup.'); return; }
+      if(d.laundryMode) laundryMode=d.laundryMode;
+      if(d.bedSets) bedSets=d.bedSets;
+      if(d.roomItems) roomItems=d.roomItems;
+      if(d.roomItemsWeight!==undefined) roomItemsWeight=d.roomItemsWeight;
+      if(d.kgRate!==undefined) kgRate=d.kgRate;
+      if(d.groupRooms) groupRooms=d.groupRooms;
+      roomTypeCatalog = d.roomTypeCatalog || [];
+      if(d.roomTypeCounter) roomTypeCounter=d.roomTypeCounter;
+      migrateRoomTypes();
+      if(d.bedSetCounter) bedSetCounter=d.bedSetCounter;
+      if(d.roomItemCounter) roomItemCounter=d.roomItemCounter;
+      if(d.groupRoomCounter) groupRoomCounter=d.groupRoomCounter;
+      if(d.itemCounter) itemCounter=d.itemCounter;
+      if(d.scenarios) scenarios=d.scenarios;
+      if(d.scenarioCounter) scenarioCounter=d.scenarioCounter;
+      const flds=['hotel','rate','mult','supplyInvoice','supplyNights','group','checkin','checkout','margin'];
+      const ids=['s-hotel','s-rate','s-mult','s-supply-invoice','s-supply-nights','c-group','c-checkin','c-checkout','c-margin'];
+      flds.forEach((f,i)=>{ if(d[f]&&document.getElementById(ids[i])) document.getElementById(ids[i]).value=d[f]; });
+      save(); renderSetup(); setTab('calc');
+      alert('Backup restored. Exported: '+new Date(d.exported).toLocaleDateString('en-GB'));
+    } catch(err) { alert('Could not read file. Make sure it is a valid HSK Group Stay Calculator backup.'); }
+    input.value='';
+  };
+  reader.readAsText(file);
+}
+
+// ═══ INIT ═══
+(function(){
+  try {
+    const saved=localStorage.getItem(LS_KEY);
+    if(saved){
+      const d=JSON.parse(saved);
+      if(d.laundryMode) laundryMode=d.laundryMode;
+      if(d.bedSets) bedSets=d.bedSets;
+      if(d.roomItems) roomItems=d.roomItems;
+      if(d.roomItemsWeight!==undefined) roomItemsWeight=d.roomItemsWeight;
+      if(d.kgRate!==undefined) kgRate=d.kgRate;
+      if(d.groupRooms) groupRooms=d.groupRooms;
+      roomTypeCatalog = d.roomTypeCatalog || [];
+      if(d.roomTypeCounter) roomTypeCounter=d.roomTypeCounter;
+      migrateRoomTypes();
+      if(d.bedSetCounter) bedSetCounter=d.bedSetCounter;
+      if(d.roomItemCounter) roomItemCounter=d.roomItemCounter;
+      if(d.groupRoomCounter) groupRoomCounter=d.groupRoomCounter;
+      if(d.itemCounter) itemCounter=d.itemCounter;
+      if(d.scenarios) scenarios=d.scenarios;
+      if(d.scenarioCounter) scenarioCounter=d.scenarioCounter;
+      const flds=['hotel','rate','mult','supplyInvoice','supplyNights','group','checkin','checkout','margin'];
+      const ids=['s-hotel','s-rate','s-mult','s-supply-invoice','s-supply-nights','c-group','c-checkin','c-checkout','c-margin'];
+      flds.forEach((f,i)=>{ if(d[f]&&document.getElementById(ids[i])) document.getElementById(ids[i]).value=d[f]; });
+    } else { save(); }
+  } catch(e){}
+  updateRateDisplay();
+  updateSupplyDisplay();
+  setLaundryMode(laundryMode);
+  calcStayLength();
+})();
+</script>
+</body>
+</html>
